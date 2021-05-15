@@ -2,7 +2,7 @@ import React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import MainLayout from '../layouts/MainLayout';
-import theme from '../styles/theme';
+import theme from '../theme';
 
 const Home = () => (
   <ThemeProvider theme={theme}>
