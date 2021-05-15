@@ -86,6 +86,12 @@ const SideNav = ({ open }) => {
             <ListItem button>
               <ListItemText primary="Dashobard" />
             </ListItem>
+            <ListItem button>
+              <ListItemText primary="Data management" />
+            </ListItem>
+            <ListItem button>
+              <ListItemText primary="Report" />
+            </ListItem>
           </List>
         </div>
       </Drawer>
