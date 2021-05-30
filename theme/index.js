@@ -8,4 +8,5 @@ export default createMuiTheme({
   typography,
   palette,
   mixins,
+  spacing: 4,
 });
