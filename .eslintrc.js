@@ -4,6 +4,7 @@ module.exports = {
     es2021: true,
   },
   extends: [
+    "eslint:recommended",
     'plugin:react/recommended',
     'next',
   ],
@@ -18,5 +19,9 @@ module.exports = {
     'react',
   ],
   rules: {
+    'react/react-in-jsx-scope': 'off'
   },
+  "globals": {
+    "React": "writable"
+  }
 };

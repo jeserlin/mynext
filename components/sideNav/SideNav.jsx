@@ -84,13 +84,16 @@ const SideNav = ({ open }) => {
         <div className={classes.list}>
           <List>
             <ListItem button>
-              <ListItemText primary="Dashobard" />
+              <ListItemText primary="About me" />
             </ListItem>
             <ListItem button>
-              <ListItemText primary="Data management" />
+              <ListItemText primary="Tech" />
             </ListItem>
             <ListItem button>
-              <ListItemText primary="Report" />
+              <ListItemText primary="Cooking" />
+            </ListItem>
+            <ListItem button>
+              <ListItemText primary="Baking" />
             </ListItem>
           </List>
         </div>
