@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-
 import {
   Drawer, List, ListItem, ListItemText, makeStyles,
 } from '@material-ui/core';
+
+import { commonFontFamily2 } from '../../theme/typography';
 
 const propTypes = {
   open: PropTypes.bool,
@@ -58,7 +59,31 @@ const useStyles = makeStyles((theme) => ({
   list: {
     paddingTop: 64,
   },
+  listText: {
+    '& > span': {
+      fontFamily: commonFontFamily2,
+    }
+  }
 }));
+
+const menuList = [
+  {
+    text: 'About me',
+    path: '',
+  },
+  {
+    text: 'Tech',
+    path: '',
+  },
+  {
+    text: 'Cooking',
+    path: '',
+  },
+  {
+    text: 'Baking',
+    path: '',
+  },
+];
 
 const SideNav = ({ open }) => {
   const classes = useStyles();
@@ -83,18 +108,15 @@ const SideNav = ({ open }) => {
         <div className={clsx('toolbarHeight', classes.toolbar)} />
         <div className={classes.list}>
           <List>
-            <ListItem button>
-              <ListItemText primary="About me" />
-            </ListItem>
-            <ListItem button>
-              <ListItemText primary="Tech" />
-            </ListItem>
-            <ListItem button>
-              <ListItemText primary="Cooking" />
-            </ListItem>
-            <ListItem button>
-              <ListItemText primary="Baking" />
-            </ListItem>
+            {menuList.map((item) => (
+              <ListItem button key={item.text}>
+                <ListItemText
+                  className={classes.listText}
+                  primary={item.text}
+                />
+              </ListItem>
+            ))
+            }
           </List>
         </div>
       </Drawer>

@@ -10,9 +10,12 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100vh',
     paddingTop: theme.mixins.toolbar.minHeight,
   },
+  content: {
+    padding: theme.spacing(12),
+  },
 }));
 
-const MainLayout = () => {
+const MainLayout = ({ children }) => {
   const classes = useStyles();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -21,6 +24,9 @@ const MainLayout = () => {
       <Header />
       <Box className={classes.root}>
         <SideNav open={isOpen} />
+        <main className={classes.content}>
+          {children}
+        </main>
       </Box>
     </>
   );
