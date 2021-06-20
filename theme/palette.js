@@ -33,4 +33,10 @@ export default {
     main: '#4caf50',
     dark: '#388e3c',
   },
+  text: {
+    primary: '#15191D',
+    secondary: '#555',
+    disabled: '#888',
+    hint: '#555',
+  },
 };

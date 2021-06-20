@@ -1,13 +1,10 @@
 ---
 title: '佛卡夏'
 excerpt: '免揉佛卡夏'
-coverImage: '/assets/blog/dynamic-routing/cover.jpg'
+coverImage: '/assets/posts/baking/focaccia.jpg'
 date: '2021-06-19T00:00:07.322Z'
-author:
-  name: From youtube
-  picture: '/assets/blog/authors/jj.jpeg'
 ogImage:
-  url: '/assets/blog/dynamic-routing/cover.jpg'
+  url: '/assets/posts/baking/focaccia.jpg'
 ---
 
 ### 材料

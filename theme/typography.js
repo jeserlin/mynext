@@ -5,12 +5,12 @@ export default {
   fontFamily: commonFontFamily,
   h1: {
     fontSize: 28,
-    fontWeight: 300,
+    fontWeight: 400,
     lineHeight: 1.29,
   },
   h2: {
     fontSize: 26,
-    fontWeight: 300,
+    fontWeight: 400,
     lineHeight: 1.29,
   },
   h3: {

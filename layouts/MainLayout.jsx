@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.mixins.toolbar.minHeight,
   },
   content: {
+    width: '100%',
     padding: theme.spacing(12),
   },
 }));
