@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     '& > ul,li,ol': {
       ...theme.typography.body1,
       color: theme.palette.text.secondary,
-      paddingBottom: theme.spacing(1),
+      paddingBottom: theme.spacing(1.5),
     }
   },
 }));
