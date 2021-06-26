@@ -39,9 +39,9 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    width: 60,
+    width: 0,
     [theme.breakpoints.up('sm')]: {
-      width: 60,
+      width: drawerWidth,
     },
   },
   drawerPaper: {

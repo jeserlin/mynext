@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Box, makeStyles } from '@material-ui/core';
+import React, { useState, useCallback } from 'react';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { Box, makeStyles, useTheme } from '@material-ui/core';
 
 import Header from '../components/header';
 import SideNav from '../components/sideNav';
@@ -18,11 +19,20 @@ const useStyles = makeStyles((theme) => ({
 
 const MainLayout = ({ children }) => {
   const classes = useStyles();
-  const [isOpen, setIsOpen] = useState(true);
+  const theme = useTheme();
+  const isUpSm = useMediaQuery(theme.breakpoints.up('sm'));
+  const defaultIsOpen = isUpSm ? true : false;
+
+  // State
+  const [isOpen, setIsOpen] = useState(defaultIsOpen);
+
+  const onToggleMenu = useCallback(() => {
+    setIsOpen((prevState) => !prevState);
+  }, []);
 
   return (
     <>
-      <Header />
+      <Header onClickMenuIcon={onToggleMenu} />
       <Box className={classes.root}>
         <SideNav open={isOpen} />
         <main className={classes.content}>
