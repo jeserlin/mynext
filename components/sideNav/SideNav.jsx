@@ -62,8 +62,8 @@ const useStyles = makeStyles((theme) => ({
   listText: {
     '& > span': {
       fontFamily: commonFontFamily2,
-    }
-  }
+    },
+  },
 }));
 
 const menuList = [
@@ -115,8 +115,7 @@ const SideNav = ({ open }) => {
                   primary={item.text}
                 />
               </ListItem>
-            ))
-            }
+            ))}
           </List>
         </div>
       </Drawer>

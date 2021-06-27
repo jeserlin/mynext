@@ -1,9 +1,18 @@
 import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Box, makeStyles, useTheme } from '@material-ui/core';
 
 import Header from '../components/header';
 import SideNav from '../components/sideNav';
+
+const propTypes = {
+  children: PropTypes.node,
+};
+
+const defaultProps = {
+  children: null,
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +30,7 @@ const MainLayout = ({ children }) => {
   const classes = useStyles();
   const theme = useTheme();
   const isUpSm = useMediaQuery(theme.breakpoints.up('sm'));
-  const defaultIsOpen = isUpSm ? true : false;
+  const defaultIsOpen = !!isUpSm;
 
   // State
   const [isOpen, setIsOpen] = useState(defaultIsOpen);
@@ -42,5 +51,8 @@ const MainLayout = ({ children }) => {
     </>
   );
 };
+
+MainLayout.propTypes = propTypes;
+MainLayout.defaultProps = defaultProps;
 
 export default MainLayout;

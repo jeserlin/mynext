@@ -2,14 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import MenuIcon from '@material-ui/icons/Menu';
-import { AppBar, Toolbar, IconButton, makeStyles } from '@material-ui/core';
+import {
+  AppBar, Toolbar, IconButton, makeStyles,
+} from '@material-ui/core';
 
 const propTypes = {
   onClickMenuIcon: PropTypes.func,
 };
 
 const defaultProps = {
-  onClickMenuIcon: () => {},
+  onClickMenuIcon: () => { },
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       display: 'none',
     },
-  }
+  },
 }));
 
 const Header = ({ onClickMenuIcon }) => {
@@ -40,7 +42,7 @@ const Header = ({ onClickMenuIcon }) => {
         />
       </Toolbar>
     </AppBar>
-  )
+  );
 };
 
 Header.propTypes = propTypes;
