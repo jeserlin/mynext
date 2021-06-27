@@ -1,10 +1,21 @@
+/* eslint-disable react/no-danger */
+import React from 'react';
 import ErrorPage from 'next/error';
-import Image from 'next/image'
+import Image from 'next/image';
+import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 
-import markdownToHtml from '../../lib/markdownToHtml'
-import { getPostBySlug, getAllPosts } from '../../lib/api'
+import markdownToHtml from '../../lib/markdownToHtml';
+import { getPostBySlug, getAllPosts } from '../../lib/api';
+
+const propTypes = {
+  post: PropTypes.shap({}),
+};
+
+const defaultProps = {
+  post: {},
+};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& > * > img': {
       borderRadius: theme.spacing(4),
-    }
+    },
   },
   markdown: {
     '& > h3': {
@@ -41,23 +52,23 @@ const useStyles = makeStyles((theme) => ({
       ...theme.typography.body1,
       color: theme.palette.text.secondary,
       paddingBottom: theme.spacing(1.5),
-    }
+    },
   },
 }));
 
-const BakingPost = ({ post, morePosts, preview }) => {
+const BakingPost = ({ post }) => {
   const classes = useStyles();
 
-  const router = useRouter()
+  const router = useRouter();
   if (!router.isFallback && !post?.slug) {
-    return <ErrorPage statusCode={404} />
+    return <ErrorPage statusCode={404} />;
   }
 
   return (
     <>
       <Typography
-        variant='h1'
-        color='textSecondary'
+        variant="h1"
+        color="textSecondary"
         className={classes.title}
       >
         {post.title}
@@ -75,17 +86,16 @@ const BakingPost = ({ post, morePosts, preview }) => {
               <Image
                 src={post.coverImage}
                 layout="responsive"
-                width='100'
-                height='100'
+                width="100"
+                height="100"
               />
             )
-            : ''
-          }
+            : ''}
         </Grid>
       </Grid>
     </>
-  )
-}
+  );
+};
 
 export async function getStaticProps({ params }) {
   const post = getPostBySlug(params.slug, [
@@ -95,8 +105,8 @@ export async function getStaticProps({ params }) {
     'content',
     'ogImage',
     'coverImage',
-  ])
-  const content = await markdownToHtml(post.content || '')
+  ]);
+  const content = await markdownToHtml(post.content || '');
 
   return {
     props: {
@@ -105,22 +115,23 @@ export async function getStaticProps({ params }) {
         content,
       },
     },
-  }
+  };
 }
 
 export async function getStaticPaths() {
-  const posts = getAllPosts(['slug'])
+  const posts = getAllPosts(['slug']);
 
   return {
-    paths: posts.map((post) => {
-      return {
-        params: {
-          slug: post.slug,
-        },
-      }
-    }),
+    paths: posts.map((post) => ({
+      params: {
+        slug: post.slug,
+      },
+    })),
     fallback: false,
-  }
+  };
 }
+
+BakingPost.propTypes = propTypes;
+BakingPost.defaultProps = defaultProps;
 
 export default BakingPost;
