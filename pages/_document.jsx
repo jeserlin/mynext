@@ -16,7 +16,8 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link rel="shortcut icon" href="/favicon.ico" />
+          <link rel="apple-touch-icon" sizes="192x192" href="/favicon.ico" />
+          <link rel="shortcut icon" sizes="16x16" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Open+Sans&display=swap" rel="stylesheet" />
         </Head>
