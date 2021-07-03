@@ -1,8 +1,7 @@
-/* eslint-disable react/no-danger */
 import React from 'react';
+import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
 import Image from 'next/image';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 
@@ -10,7 +9,12 @@ import markdownToHtml from '../../lib/markdownToHtml';
 import { getPostBySlug, getAllPosts } from '../../lib/api';
 
 const propTypes = {
-  post: PropTypes.shap({}),
+  post: PropTypes.shape({
+    slug: PropTypes.string,
+    title: PropTypes.string,
+    content: PropTypes.string,
+    coverImage: PropTypes.string,
+  }),
 };
 
 const defaultProps = {
@@ -77,6 +81,7 @@ const BakingPost = ({ post }) => {
         <Grid item xs={12} md={8} className={classes.content}>
           <div
             className={classes.markdown}
+            // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </Grid>
@@ -98,7 +103,7 @@ const BakingPost = ({ post }) => {
 };
 
 export async function getStaticProps({ params }) {
-  const post = getPostBySlug(params.slug, [
+  const post = getPostBySlug('baking', params.slug, [
     'title',
     'date',
     'slug',
@@ -119,7 +124,7 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const posts = getAllPosts(['slug']);
+  const posts = getAllPosts('baking', ['slug']);
 
   return {
     paths: posts.map((post) => ({
