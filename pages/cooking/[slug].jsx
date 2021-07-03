@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 
 import markdownToHtml from '../../lib/markdownToHtml';
-import { getPostBySlug, getAllPosts } from '../../lib/api';
+import { getPostBySlug, getPostsByFolder } from '../../lib/api';
 
 const propTypes = {
   post: PropTypes.shape({
@@ -124,7 +124,10 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const posts = getAllPosts('cooking', ['slug']);
+  const posts = getPostsByFolder({
+    folder: 'cooking',
+    fields: ['slug'],
+  });
 
   return {
     paths: posts.map((post) => ({
