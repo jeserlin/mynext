@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import Link from 'next/link';
 import {
   Drawer, List, ListItem, ListItemText, makeStyles,
 } from '@material-ui/core';
@@ -69,19 +70,19 @@ const useStyles = makeStyles((theme) => ({
 const menuList = [
   {
     text: 'About me',
-    path: '',
+    path: '/about-me',
   },
   {
     text: 'Tech',
-    path: '',
+    path: '/tech',
   },
   {
     text: 'Cooking',
-    path: '',
+    path: '/cooking',
   },
   {
     text: 'Baking',
-    path: '',
+    path: '/baking',
   },
 ];
 
@@ -109,12 +110,21 @@ const SideNav = ({ open }) => {
         <div className={classes.list}>
           <List>
             {menuList.map((item) => (
-              <ListItem button key={item.text}>
-                <ListItemText
-                  className={classes.listText}
-                  primary={item.text}
-                />
-              </ListItem>
+              <Link
+                key={item.text}
+                href={item.path}
+              >
+                <ListItem
+                  button
+                  component="a"
+                >
+                  <ListItemText
+                    className={classes.listText}
+                    primary={item.text}
+                    component="a"
+                  />
+                </ListItem>
+              </Link>
             ))}
           </List>
         </div>
