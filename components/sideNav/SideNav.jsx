@@ -114,10 +114,7 @@ const SideNav = ({ open }) => {
                 key={item.text}
                 href={item.path}
               >
-                <ListItem
-                  button
-                  component="a"
-                >
+                <ListItem button>
                   <ListItemText
                     className={classes.listText}
                     primary={item.text}

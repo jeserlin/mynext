@@ -22,7 +22,10 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     width: '100%',
-    padding: theme.spacing(12),
+    padding: theme.spacing(4),
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(12),
+    },
   },
 }));
 
