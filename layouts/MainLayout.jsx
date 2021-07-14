@@ -1,10 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Box, makeStyles, useTheme } from '@material-ui/core';
+import {
+  Box, makeStyles, useTheme,
+} from '@material-ui/core';
 
 import Header from '../components/header';
 import SideNav from '../components/sideNav';
+// import BottomNav from '../components/bottomNav';
 
 const propTypes = {
   children: PropTypes.node,
@@ -43,7 +46,7 @@ const MainLayout = ({ children }) => {
   }, []);
 
   return (
-    <>
+    <Box>
       <Header onClickMenuIcon={onToggleMenu} />
       <Box className={classes.root}>
         <SideNav open={isOpen} />
@@ -51,7 +54,8 @@ const MainLayout = ({ children }) => {
           {children}
         </main>
       </Box>
-    </>
+      {/* <BottomNav /> */}
+    </Box>
   );
 };
 

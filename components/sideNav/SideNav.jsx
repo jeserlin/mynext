@@ -6,6 +6,7 @@ import {
   Drawer, List, ListItem, ListItemText, makeStyles,
 } from '@material-ui/core';
 
+import { menuList } from '../../constants/common';
 import { commonFontFamily2 } from '../../theme/typography';
 
 const propTypes = {
@@ -66,25 +67,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
-const menuList = [
-  {
-    text: 'About me',
-    path: '/about-me',
-  },
-  {
-    text: 'Tech',
-    path: '/tech',
-  },
-  {
-    text: 'Cooking',
-    path: '/cooking',
-  },
-  {
-    text: 'Baking',
-    path: '/baking',
-  },
-];
 
 const SideNav = ({ open }) => {
   const classes = useStyles();

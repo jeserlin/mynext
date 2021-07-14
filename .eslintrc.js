@@ -18,5 +18,13 @@ module.exports = {
     'react',
   ],
   rules: {
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+      },
+    ],
   },
 };
