@@ -1,13 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import {
-  Box, makeStyles, useTheme,
+  Box, Slide, makeStyles, useTheme,
 } from '@material-ui/core';
 
 import Header from '../components/header';
 import SideNav from '../components/sideNav';
-// import BottomNav from '../components/bottomNav';
+import BottomNav from '../components/bottomNav';
 
 const propTypes = {
   children: PropTypes.node,
@@ -30,31 +31,39 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(12),
     },
   },
+  bottomNav: {
+    width: '100%',
+    position: 'fixed',
+    bottom: 0,
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
+  },
 }));
 
 const MainLayout = ({ children }) => {
   const classes = useStyles();
   const theme = useTheme();
+
   const isUpSm = useMediaQuery(theme.breakpoints.up('sm'));
   const defaultIsOpen = !!isUpSm;
 
-  // State
-  const [isOpen, setIsOpen] = useState(defaultIsOpen);
-
-  const onToggleMenu = useCallback(() => {
-    setIsOpen((prevState) => !prevState);
-  }, []);
+  const trigger = useScrollTrigger();
 
   return (
     <Box>
-      <Header onClickMenuIcon={onToggleMenu} />
+      <Header />
       <Box className={classes.root}>
-        <SideNav open={isOpen} />
+        <SideNav open={defaultIsOpen} />
         <main className={classes.content}>
           {children}
         </main>
       </Box>
-      {/* <BottomNav /> */}
+      <Slide direction="up" in={!trigger}>
+        <Box className={classes.bottomNav}>
+          <BottomNav />
+        </Box>
+      </Slide>
     </Box>
   );
 };
