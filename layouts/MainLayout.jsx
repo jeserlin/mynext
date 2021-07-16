@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     width: '100%',
     padding: theme.spacing(4),
+    marginBottom: 56 * 2,
     [theme.breakpoints.up('sm')]: {
       padding: theme.spacing(12),
     },
@@ -41,14 +43,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children }, props) => {
+  const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
 
   const isUpSm = useMediaQuery(theme.breakpoints.up('sm'));
   const defaultIsOpen = !!isUpSm;
 
-  const trigger = useScrollTrigger();
+  const trigger = useScrollTrigger({
+    target: window ? window() : undefined,
+    threshold: 0,
+  });
 
   return (
     <Box>
