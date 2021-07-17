@@ -1,13 +1,19 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 import {
-  BottomNavigation, BottomNavigationAction,
+  BottomNavigation, BottomNavigationAction, makeStyles,
 } from '@material-ui/core';
 
 import { menuList } from '../../constants/common';
 
+const useStyles = makeStyles((theme) => ({
+  selected: {
+    color: theme.palette.primary.dark,
+  },
+}));
+
 const BottomNav = () => {
+  const classes = useStyles();
   const router = useRouter();
   const { route } = router;
   const parentRoute = route.split('/')[1];
@@ -22,18 +28,15 @@ const BottomNav = () => {
       value={`/${parentRoute}`}
       onChange={onChangeNav}
     >
-      {menuList.map(({ imgPath, text, path }) => (
+      {menuList.map(({ image, text, path }) => (
         <BottomNavigationAction
           key={text}
           value={path}
           label={text}
-          icon={(
-            <Image
-              src={imgPath}
-              width={24}
-              height={24}
-            />
-              )}
+          icon={image()}
+          classes={{
+            selected: classes.selected,
+          }}
         />
       ))}
     </BottomNavigation>
