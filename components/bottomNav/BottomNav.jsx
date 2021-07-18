@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const BottomNav = () => {
   const classes = useStyles();
+
   const router = useRouter();
   const { route } = router;
   const parentRoute = route.split('/')[1];

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import {
   Drawer, List, ListItem, ListItemText, makeStyles,
 } from '@material-ui/core';
@@ -71,35 +72,40 @@ const useStyles = makeStyles((theme) => ({
 const SideNav = ({ open }) => {
   const classes = useStyles();
 
+  const router = useRouter();
+  const { route } = router;
+  const parentRoute = route.split('/')[1];
+
   return (
     <>
       <Drawer
-        className={clsx({
-          [classes.drawer]: true,
+        className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
         })}
         classes={{
-          paper: clsx({
-            [classes.drawerPaper]: true,
+          paper: clsx(classes.drawerPaper, {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
           }),
         }}
         variant="permanent"
       >
-        <div className={clsx('toolbarHeight', classes.toolbar)} />
+        <div className={classes.toolbar} />
         <div className={classes.list}>
           <List>
-            {menuList.map((item) => (
+            {menuList.map(({ text, path }) => (
               <Link
-                key={item.text}
-                href={item.path}
+                key={text}
+                href={path}
               >
-                <ListItem button>
+                <ListItem
+                  button
+                  selected={path === `/${parentRoute}`}
+                >
                   <ListItemText
                     className={classes.listText}
-                    primary={item.text}
+                    primary={text}
                     component="a"
                   />
                 </ListItem>
