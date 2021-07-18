@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Grid, Typography, makeStyles } from '@material-ui/core';
 
-import markdownToHtml from '../../lib/markdownToHtml';
-import { getPostBySlug, getPostsByFolder } from '../../lib/api';
+import markdownToHtml from 'lib/markdownToHtml';
+import { getPostBySlug, getPostsByFolder } from 'lib/api';
 
 const propTypes = {
   post: PropTypes.shape({

@@ -6,8 +6,8 @@ import {
   Drawer, List, ListItem, ListItemText, makeStyles,
 } from '@material-ui/core';
 
-import { menuList } from '../../constants/common';
-import { commonFontFamily2 } from '../../theme/typography';
+import { menuList } from 'constants/common';
+import { commonFontFamily2 } from 'theme/typography';
 
 const propTypes = {
   open: PropTypes.bool,

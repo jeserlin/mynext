@@ -7,9 +7,9 @@ import {
   Box, Slide, makeStyles, useTheme,
 } from '@material-ui/core';
 
-import Header from '../components/header';
-import SideNav from '../components/sideNav';
-import BottomNav from '../components/bottomNav';
+import Header from 'components/header';
+import SideNav from 'components/sideNav';
+import BottomNav from 'components/bottomNav';
 
 const propTypes = {
   children: PropTypes.node,

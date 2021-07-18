@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { Typography } from '@material-ui/core';
 
-import { getPostsByFolder } from '../../lib/api';
+import { getPostsByFolder } from 'lib/api';
 
 const propTypes = {
   posts: PropTypes.arrayOf(PropTypes.shape({

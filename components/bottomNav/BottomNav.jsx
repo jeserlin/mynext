@@ -4,7 +4,7 @@ import {
   BottomNavigation, BottomNavigationAction, makeStyles,
 } from '@material-ui/core';
 
-import { menuList } from '../../constants/common';
+import { menuList } from 'constants/common';
 
 const useStyles = makeStyles((theme) => ({
   actionItem: {

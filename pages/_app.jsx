@@ -3,10 +3,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ThemeProvider } from '@material-ui/styles';
-import MainLayout from '../layouts/MainLayout';
+import MainLayout from 'layouts/MainLayout';
 
-import '../styles/globals.css';
-import theme from '../theme';
+import 'styles/globals.css';
+import theme from 'theme';
 
 const propTypes = {
   Component: PropTypes.func.isRequired,
