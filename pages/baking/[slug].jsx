@@ -1,10 +1,13 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { Grid, makeStyles } from '@material-ui/core';
 
+import PostHeader from 'components/postHeader';
+import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
 import { getPostBySlug, getPostsByFolder } from 'lib/api';
 
@@ -25,9 +28,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
   },
-  title: {
-    marginBottom: theme.spacing(4),
-  },
   content: {
     order: 2,
     [theme.breakpoints.up('md')]: {
@@ -43,21 +43,6 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(4),
     },
   },
-  markdown: {
-    '& > h3': {
-      ...theme.typography.h3,
-      color: theme.palette.primary.dark,
-    },
-    '& > h4': {
-      ...theme.typography.h4,
-      color: theme.palette.secondary.dark,
-    },
-    '& > ul,li,ol': {
-      ...theme.typography.body1,
-      color: theme.palette.text.secondary,
-      paddingBottom: theme.spacing(1.5),
-    },
-  },
 }));
 
 const BakingPost = ({ post }) => {
@@ -70,20 +55,10 @@ const BakingPost = ({ post }) => {
 
   return (
     <>
-      <Typography
-        variant="h1"
-        color="textSecondary"
-        className={classes.title}
-      >
-        {post.title}
-      </Typography>
+      <PostHeader title={post.title} />
       <Grid container className={classes.root}>
         <Grid item xs={12} md={8} className={classes.content}>
-          <div
-            className={classes.markdown}
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
+          <PostContent content={post.content} />
         </Grid>
         <Grid item xs={12} md={4} className={classes.image}>
           {post.coverImage
