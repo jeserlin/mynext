@@ -7,6 +7,11 @@ import {
 import { menuList } from '../../constants/common';
 
 const useStyles = makeStyles((theme) => ({
+  actionItem: {
+    '&$selected': {
+      color: theme.palette.primary.dark,
+    },
+  },
   selected: {
     color: theme.palette.primary.dark,
   },
@@ -35,6 +40,7 @@ const BottomNav = () => {
           label={text}
           icon={image()}
           classes={{
+            root: classes.actionItem,
             selected: classes.selected,
           }}
         />
