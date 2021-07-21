@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   post: {
     cursor: 'pointer',
+    height: '100%',
     backgroundColor: fade(theme.palette.primary.main, 0.3),
     [theme.breakpoints.up('sm')]: {
       padding: theme.spacing(10),
@@ -75,13 +76,17 @@ const Baking = ({ posts }) => {
             <Link href={`/baking/${slug}`}>
               <a>
                 <Box className={classes.post}>
-                  <Image
-                    src={coverImage}
-                    layout="responsive"
-                    width="100"
-                    height="100"
-                    className={classes.postImage}
-                  />
+                  {coverImage
+                    ? (
+                      <Image
+                        src={coverImage}
+                        layout="responsive"
+                        width="100"
+                        height="100"
+                        className={classes.postImage}
+                      />
+                    )
+                    : ''}
                 </Box>
                 <Box
                   position="absolute"
