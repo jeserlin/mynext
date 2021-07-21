@@ -34,7 +34,7 @@ export default {
     dark: '#388e3c',
   },
   text: {
-    primary: '#15191D',
+    primary: '#383838',
     secondary: '#555',
     disabled: '#888',
     hint: '#555',

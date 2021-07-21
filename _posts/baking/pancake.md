@@ -1,7 +1,7 @@
 ---
 title: '鬆餅'
 excerpt: '萬用鬆餅粉'
-coverImage: ''
+coverImage: '/assets/posts/baking/pancake.png'
 date: '2021-06-21T00:00:07.322Z'
 ogImage:
   url: ''

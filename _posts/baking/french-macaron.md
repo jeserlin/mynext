@@ -1,7 +1,7 @@
 ---
 title: '法式馬卡龍'
 excerpt: '法式馬卡龍'
-coverImage: ''
+coverImage: '/assets/posts/baking/french_macaron.png'
 date: '2021-06-21T00:00:07.322Z'
 ogImage:
   url: ''
