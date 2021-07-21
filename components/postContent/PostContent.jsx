@@ -24,7 +24,10 @@ const useStyles = makeStyles((theme) => ({
     '& > ul,li,ol': {
       ...theme.typography.body1,
       color: theme.palette.text.secondary,
-      paddingBottom: theme.spacing(1.5),
+      paddingBottom: theme.spacing(2),
+      [theme.breakpoints.up('sm')]: {
+        paddingBottom: theme.spacing(1.5),
+      },
     },
   },
 }));

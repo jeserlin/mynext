@@ -18,7 +18,7 @@ export const menuList = [
   },
   {
     image: () => (<ImgBaking />),
-    text: 'Baking & Desserts',
+    text: 'Baking',
     path: '/baking',
   },
   {
