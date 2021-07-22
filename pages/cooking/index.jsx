@@ -32,9 +32,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: fade(theme.palette.primary.main, 0.3),
     [theme.breakpoints.up('sm')]: {
       padding: theme.spacing(10),
-      transition: 'padding .3s linear',
+      transitionDuration: '.3s',
       '&:hover': {
-        padding: theme.spacing(8),
+        boxShadow: '0 5px 10px rgba(0, 0, 0, 0.3)',
       },
     },
   },
@@ -66,8 +66,9 @@ const Cooking = ({ posts }) => {
             key={slug}
             item
             xs={12}
-            md={6}
-            lg={4}
+            sm={6}
+            md={4}
+            lg={3}
             component={Box}
             position="relative"
           >

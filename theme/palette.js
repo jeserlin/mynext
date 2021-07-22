@@ -4,9 +4,9 @@ export default {
     white: '#FFF',
   },
   primary: {
-    light: '#e5d8cb',
-    main: '#DFCFBE',
-    dark: '#9c9085',
+    light: '#F1E7E3',
+    main: '#EEE2DC',
+    dark: '#A69E9A',
   },
   secondary: {
     light: '#ecb8ac',
