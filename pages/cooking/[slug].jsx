@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Grid, makeStyles } from '@material-ui/core';
+import { Box, Grid, makeStyles } from '@material-ui/core';
 
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
@@ -25,6 +25,11 @@ const defaultProps = {
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(0, 10),
+    },
+  },
+  contentBox: {
     width: '100%',
   },
   content: {
@@ -53,13 +58,13 @@ const CookingPost = ({ post }) => {
   }
 
   return (
-    <>
+    <Box className={classes.root}>
       <PostHeader title={post.title} />
-      <Grid container className={classes.root}>
-        <Grid item xs={12} sm={8} md={9} lg={10} className={classes.content}>
+      <Grid container className={classes.contentBox}>
+        <Grid item xs={12} sm={8} md={9} className={classes.content}>
           <PostContent content={post.content} />
         </Grid>
-        <Grid item xs={12} sm={4} md={3} lg={2} className={classes.image}>
+        <Grid item xs={12} sm={4} md={3} className={classes.image}>
           {post.coverImage
             ? (
               <Image
@@ -72,7 +77,7 @@ const CookingPost = ({ post }) => {
             : ''}
         </Grid>
       </Grid>
-    </>
+    </Box>
   );
 };
 
