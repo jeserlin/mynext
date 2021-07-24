@@ -6,6 +6,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import MainLayout from 'layouts/MainLayout';
 
 import 'styles/globals.css';
+import 'styles/a11y-dark.css';
 import theme from 'theme';
 
 const propTypes = {
