@@ -2,17 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
-import { Box, Grid, makeStyles } from '@material-ui/core';
+import {
+  Box, Grid, makeStyles, Typography,
+} from '@material-ui/core';
 
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
 import { getPostBySlug, getPostsByFolder } from 'lib/api';
+import { formatDate } from 'lib/convertors';
 
 const propTypes = {
   post: PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
+    date: PropTypes.string,
     content: PropTypes.string,
   }),
 };
@@ -49,6 +53,13 @@ const TechPost = ({ post }) => {
   return (
     <Box className={classes.root}>
       <PostHeader title={post.title} />
+      <Typography
+        variant="caption"
+        color="textSecondary"
+        gutterBottom
+      >
+        {`更新時間: ${formatDate(post.date)}`}
+      </Typography>
       <Grid container className={classes.contentBox}>
         <Grid item xs={12} md={8} className={classes.content}>
           <PostContent content={post.content} />

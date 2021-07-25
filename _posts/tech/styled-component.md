@@ -10,17 +10,16 @@ ogImage:
 ### WHY?
 
 踏入React的世界之後，在view的方面我們最常煩惱的大概就是 — 某個元素到底該不該被獨立成一個component？ 之後還有沒有機會再次使用？component一多的時候要怎麼管理？ css class name 該如何妥善管理…根據props改變style有沒有更有效率的方法… 如果你有以上痛點也許styled-component可以解決你的問題。
-
-
-
+<br>
+<br>
 使用styled-component到底有什麼優點呢:<br>
 styled-component是基於優化react component中的css寫法的結果。
-1. `Automatic critical CSS`: styled-component會紀錄有哪些元件被渲染到頁面上，並自動地載入所需要的樣式（也就是說不會載入多餘的東西）。
-2. `No class name bugs`: styled-component會為樣式產生unique的class name，所以我們不需要擔心style被複寫或者是拼寫錯誤。
+1. `Automatic critical CSS`: 紀錄有哪些元件被渲染到頁面上，並自動地載入所需要的樣式（也就是說不會載入多餘的東西）。
+2. `No class name bugs`: 為樣式產生unique的class name，所以我們不需要擔心style被複寫或者是拼寫錯誤。
 3. `Easier deletion of CSS`: 當我們在管理css的時候會發現確認一個class name到底有沒有被使用很麻煩，但使用styled-component就可以避免這個狀況，因為每個style都是緊密的跟著他所屬的component。
 4. `Simple dynamic styling`: 可以簡單並直覺地透過props或者是global主題來決定component的style。
 5. `Painless maintenance`: 不需要從多份CSS file管理component的樣式。
-6. `Automatic vendor prefixing`: styled-component幫我們處理了各種瀏覽器的css前綴(-webkit-/-moz-/-o-/-ms-)我們只需要寫標準的css寫法就好了。
+6. `Automatic vendor prefixing`: 處理了各種瀏覽器的css前綴(-webkit-/-moz-/-o-/-ms-)我們只需要寫標準的css寫法就好了。
 
 ***
 

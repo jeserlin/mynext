@@ -34,6 +34,12 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: theme.spacing(1.5),
       },
     },
+    '& > img': {
+      width: '100%',
+    },
+    '& > * > a': {
+      color: theme.palette.info.main,
+    },
   },
 }));
 
