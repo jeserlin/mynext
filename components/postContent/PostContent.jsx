@@ -1,7 +1,7 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, fade } from '@material-ui/core';
 
 const propTypes = {
   content: PropTypes.string,
@@ -13,6 +13,8 @@ const defaultProps = {
 
 const useStyles = makeStyles((theme) => ({
   markdown: {
+    ...theme.typography.body1,
+    color: theme.palette.text.primary,
     '& > h3': {
       ...theme.typography.h3,
       color: theme.palette.primary.dark,
@@ -21,8 +23,11 @@ const useStyles = makeStyles((theme) => ({
       ...theme.typography.h4,
       color: theme.palette.secondary.dark,
     },
+    '& *:not(pre) > code': {
+      padding: theme.spacing(0.5),
+      backgroundColor: fade(theme.palette.primary.light, 0.5),
+    },
     '& > ul,li,ol': {
-      ...theme.typography.body1,
       color: theme.palette.text.secondary,
       paddingBottom: theme.spacing(2),
       [theme.breakpoints.up('sm')]: {

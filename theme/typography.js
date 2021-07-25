@@ -46,12 +46,12 @@ export default {
   body1: {
     fontSize: 16,
     fontWeight: 'normal',
-    lineHeight: 1.25,
+    lineHeight: 1.5,
   },
   body2: {
     fontSize: 14,
     fontWeight: 'normal',
-    lineHeight: 1.14,
+    lineHeight: 1.43,
   },
   button: {
     fontSize: 16,
