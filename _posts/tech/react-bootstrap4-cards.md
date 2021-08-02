@@ -1,6 +1,6 @@
 ---
 title: 'Bootstrap 4 – Cards (card columns)'
-excerpt: 'Bootstrap 4 提供了類似Masonry的排列方式，讓大家用CSS就能達到類似的效果。本篇文章紀錄新component -- Cards Columns在畫面上的呈現，以及如何設定一些客製化的樣式。'
+excerpt: 'Bootstrap 4 提供了類似Masonry的排列方式，讓大家用CSS就能達到類似的效果。'
 coverImage: '/assets/posts/tech/bootstrap4.png'
 date: '2019-08-14T00:00:00.000Z'
 ogImage:

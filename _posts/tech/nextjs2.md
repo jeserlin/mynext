@@ -15,7 +15,7 @@ ogImage:
 
 我們只要在pages folder下新增react component並且export就完成頁面的新增了，比如說我們來建立一個about頁面：
 
-```javascript
+```jsx
 // pages/about.js
 export default function About() {
   return (
@@ -40,7 +40,7 @@ export default function About() {
 
 為了實現client-side rendering我們要使用Next.js的Link API。首先我們要使用next/link來連結兩個頁面：
 
-```javascript
+```jsx
 // This is the Link API
 import Link from 'next/link';
 
@@ -70,9 +70,9 @@ export default Index;
 
 next/link是一個HOC，他只接受href及少部分類似的props。 如果我們需要傳遞props的話，應該要在他的chidren中傳遞。以上方的例子來說，我們應該把props寫在`<a>`裡面：
 
-```javascript
+```jsx
 <Link href="/about">
-    <a title="About Page">About Page</a>
+  <a title="About Page">About Page</a>
 </Link>
 ```
 
