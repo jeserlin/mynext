@@ -1,7 +1,15 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-const Home = () => (
-  <div>Home</div>
-);
+const Home = () => {
+  const router = useRouter();
+  const homePage = '/tech';
+
+  useEffect(() => {
+    router.push(homePage);
+  }, []);
+
+  return null;
+};
 
 export default Home;

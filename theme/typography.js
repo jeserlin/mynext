@@ -60,7 +60,7 @@ export default {
     textTransform: null,
   },
   caption: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'normal',
     lineHeight: 1.14,
   },
