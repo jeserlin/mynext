@@ -1,7 +1,7 @@
 ---
 title: 'pyenv: 輕鬆切換python版本'
-excerpt: '在React框架下輕鬆設定Google Analytics！'
-coverImage: '/assets/posts/tech/google_analytics.png'
+excerpt: '使用pyenv輕鬆建立虛擬環境 & 使用設定版本python。'
+coverImage: '/assets/posts/tech/pyenv.png'
 date: '2019-08-14T00:00:00.000Z'
 ogImage:
   url: ''

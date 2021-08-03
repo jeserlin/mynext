@@ -1,7 +1,7 @@
 ---
 title: 'React Bootstrap - WHY & HOW'
-excerpt: 'styled-component 讓我們更便利地處理css同時也大大提升了component的維護性。'
-coverImage: '/assets/posts/tech/styled_component.png'
+excerpt: 'React-Bootstrap的簡單介紹 & 範例。'
+coverImage: '/assets/posts/tech/react_bootstrap.png'
 date: '2019-08-14T00:00:00.000Z'
 ogImage:
   url: ''
