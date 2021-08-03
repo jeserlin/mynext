@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(10),
       transitionDuration: '.3s',
       '&:hover': {
-        boxShadow: '0 5px 10px rgba(0, 0, 0, 0.3)',
+        boxShadow: theme.shadows[1],
       },
     },
   },

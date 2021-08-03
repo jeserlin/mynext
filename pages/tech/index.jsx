@@ -26,9 +26,10 @@ const useStyles = makeStyles((theme) => ({
   post: {
     cursor: 'pointer',
     color: theme.palette.text.secondary,
+    width: '100%',
     transitionDuration: '.3s',
     '&:hover': {
-      boxShadow: '8px 11px 16px -9px rgba(0, 0, 0, 0.3)',
+      boxShadow: theme.shadows[1],
     },
   },
   coverImg: {
@@ -75,7 +76,7 @@ const Tech = ({ posts }) => {
           <Grid
             key={slug}
             item
-            sm={12}
+            xs={12}
             md={6}
           >
             <Link href={`/tech/${slug}`}>
