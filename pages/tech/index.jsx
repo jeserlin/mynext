@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Image from 'next/image';
+import _ from 'lodash';
 import { getPostsByFolder } from 'lib/api';
 import {
   Box, Grid, Typography, makeStyles, fade,
@@ -117,9 +118,10 @@ export async function getStaticProps() {
     fields: ['slug', 'title', 'coverImage', 'excerpt', 'date'],
   });
 
+  const sortedPosts = _.sortBy(posts, ['date']).reverse();
   return {
     props: {
-      posts,
+      posts: sortedPosts,
     },
   };
 }
