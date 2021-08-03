@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
   postInfo: {
     width: '75%',
-    marginLeft: theme.spacing(1),
+    marginLeft: theme.spacing(2),
     padding: theme.spacing(4),
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.primary.main, 0.1),
@@ -69,11 +69,10 @@ const Tech = ({ posts }) => {
 
   return (
     <>
-      <Grid container alignItems="stretch" spacing={5}>
+      <Grid container alignItems="stretch" spacing={6}>
         {posts.map(({
           slug, title, coverImage, excerpt, date,
         }) => (
-
           <Grid
             key={slug}
             item
