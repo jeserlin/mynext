@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
 import {
-  Box, Grid, makeStyles, Typography,
+  Box, Grid, Typography, makeStyles,
 } from '@material-ui/core';
 
+import GoBack from 'components/goBack';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
@@ -42,6 +43,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const techMainPath = '/tech';
+
 const TechPost = ({ post }) => {
   const classes = useStyles();
 
@@ -51,21 +54,24 @@ const TechPost = ({ post }) => {
   }
 
   return (
-    <Box className={classes.root}>
-      <PostHeader title={post.title} />
-      <Typography
-        variant="caption"
-        color="textSecondary"
-        gutterBottom
-      >
-        {`更新時間: ${formatDate(post.date)}`}
-      </Typography>
-      <Grid container className={classes.contentBox}>
-        <Grid item xs={12} md={8} className={classes.content}>
-          <PostContent content={post.content} />
+    <>
+      <GoBack path={techMainPath} />
+      <Box className={classes.root}>
+        <PostHeader title={post.title} />
+        <Typography
+          variant="caption"
+          color="textSecondary"
+          gutterBottom
+        >
+          {`更新時間: ${formatDate(post.date)}`}
+        </Typography>
+        <Grid container className={classes.contentBox}>
+          <Grid item xs={12} md={8} className={classes.content}>
+            <PostContent content={post.content} />
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   );
 };
 

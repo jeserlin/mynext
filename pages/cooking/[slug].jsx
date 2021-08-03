@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Box, Grid, makeStyles } from '@material-ui/core';
 
+import GoBack from 'components/goBack';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const cookingMainPath = '/cooking';
 const CookingPost = ({ post }) => {
   const classes = useStyles();
 
@@ -58,26 +60,29 @@ const CookingPost = ({ post }) => {
   }
 
   return (
-    <Box className={classes.root}>
-      <PostHeader title={post.title} />
-      <Grid container className={classes.contentBox}>
-        <Grid item xs={12} sm={8} md={9} className={classes.content}>
-          <PostContent content={post.content} />
+    <>
+      <GoBack path={cookingMainPath} />
+      <Box className={classes.root}>
+        <PostHeader title={post.title} />
+        <Grid container className={classes.contentBox}>
+          <Grid item xs={12} sm={8} md={9} className={classes.content}>
+            <PostContent content={post.content} />
+          </Grid>
+          <Grid item xs={12} sm={4} md={3} className={classes.image}>
+            {post.coverImage
+              ? (
+                <Image
+                  src={post.coverImage}
+                  layout="responsive"
+                  width="100"
+                  height="100"
+                />
+              )
+              : ''}
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={4} md={3} className={classes.image}>
-          {post.coverImage
-            ? (
-              <Image
-                src={post.coverImage}
-                layout="responsive"
-                width="100"
-                height="100"
-              />
-            )
-            : ''}
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </>
   );
 };
 
