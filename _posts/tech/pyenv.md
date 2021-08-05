@@ -3,7 +3,9 @@ title: 'pyenv: 輕鬆切換python版本'
 excerpt: '使用pyenv輕鬆建立虛擬環境 & 使用設定版本python。'
 coverImage: '/assets/posts/tech/pyenv.png'
 date: '2019-09-15T00:00:00.000Z'
-labels: []
+labels: [
+  'pyenv'
+]
 ---
 
 pyenv 是一個管理python版本的套件， 在開發不同project的時候常常會遇到使用版本不同的問題。

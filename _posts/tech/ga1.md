@@ -3,7 +3,10 @@ title: '在React上設定GA Part1'
 excerpt: '在React框架下輕鬆設定Google Analytics！'
 coverImage: '/assets/posts/tech/google_analytics.png'
 date: '2019-08-14T00:00:00.000Z'
-labels: []
+labels: [
+  'GA',
+  'google analytics'
+]
 ---
 
 開始在github page上建自己的blog有一小段時間了， 雖然沒幾篇文章，但是還是蠻好奇到底有沒有人來看。
