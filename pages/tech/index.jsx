@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
   },
   coverImg: {
     width: '25%',
+    '& > * > img': {
+      borderRadius: theme.shape.borderRadius,
+    },
   },
   postInfo: {
     width: '75%',

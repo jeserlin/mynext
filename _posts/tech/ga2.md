@@ -3,8 +3,7 @@ title: '在React上設定GA Part2'
 excerpt: '在Google Analytics也能讀取react-router的路徑！'
 coverImage: '/assets/posts/tech/google_analytics.png'
 date: '2019-08-14T00:00:00.000Z'
-ogImage:
-  url: ''
+labels: []
 ---
 
 在<a href='/tech/ga1'>上一篇文章</a>中已經設定好可以在GA dashboard上看總覽人數了, 但由於我是使用react-router，在沒有多做一些處理的前提下只能抓到index的路徑。

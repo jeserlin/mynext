@@ -3,8 +3,7 @@ title: 'Bootstrap 4 – Cards (card columns)'
 excerpt: 'Bootstrap 4 提供了類似Masonry的排列方式，讓大家用CSS就能達到類似的效果。'
 coverImage: '/assets/posts/tech/bootstrap4.png'
 date: '2019-08-14T00:00:00.000Z'
-ogImage:
-  url: ''
+labels: []
 ---
 
 Bootstrap 4 中的Cards 取代了 Bootstrap 3中的 panels、wells、thumbnails。

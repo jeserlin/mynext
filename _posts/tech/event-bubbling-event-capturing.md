@@ -3,8 +3,7 @@ title: 'Sample'
 excerpt: 'Sample'
 coverImage: ''
 date: '2021-07-24T00:00:00.000Z'
-ogImage:
-  url: ''
+labels: []
 ---
 
 ### Sample code

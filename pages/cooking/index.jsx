@@ -21,37 +21,40 @@ const defaultProps = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing(0, 10),
-    },
-  },
   post: {
     cursor: 'pointer',
-    height: '100%',
-    backgroundColor: fade(theme.palette.primary.main, 0.3),
-    [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing(10),
-      transitionDuration: '.3s',
-      '&:hover': {
-        boxShadow: theme.shadows[1],
-      },
+    color: theme.palette.text.secondary,
+    width: '100%',
+    transitionDuration: '.3s',
+    '&:hover': {
+      boxShadow: theme.shadows[1],
     },
   },
-  postImage: {
-    borderRadius: theme.spacing(1),
-    [theme.breakpoints.up('sm')]: {
-      borderRadius: 0,
+  coverImg: {
+    width: '25%',
+    '& > * > img': {
+      borderRadius: theme.shape.borderRadius,
     },
+  },
+  postInfo: {
+    width: '75%',
+    marginLeft: theme.spacing(2),
+    padding: theme.spacing(4),
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.primary.main, 0.1),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   postTitle: {
-    cursor: 'pointer',
-    width: 'calc(100% - 80px)',
-    textAlign: 'center',
-    margin: theme.spacing(0, 5),
-    padding: theme.spacing(2),
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.primary.dark,
+    ...theme.typography.subtitle1,
+    color: theme.palette.text.primary,
+    marginBottom: theme.spacing(4),
+  },
+  postDesc: {
+    ...theme.typography.body2,
+    color: theme.palette.text.secondary,
+    marginBottom: theme.spacing(2),
   },
 }));
 
@@ -60,41 +63,35 @@ const Cooking = ({ posts }) => {
 
   return (
     <>
-      <Grid container spacing={10} className={classes.root}>
-        {posts.map(({ slug, title, coverImage }) => (
+      <Grid container alignItems="stretch" spacing={6}>
+        {posts.map(({
+          slug, title, coverImage, labels,
+        }) => (
           <Grid
             key={slug}
             item
             xs={12}
-            sm={6}
-            md={4}
-            lg={3}
-            component={Box}
-            position="relative"
+            md={6}
           >
             <Link href={`/cooking/${slug}`}>
               <a>
-                <Box className={classes.post}>
-                  {coverImage
-                    ? (
-                      <Image
-                        src={coverImage}
-                        layout="responsive"
-                        width="100"
-                        height="100"
-                        className={classes.postImage}
-                      />
-                    )
-                    : ''}
-                </Box>
-                <Box
-                  position="absolute"
-                  bottom={1}
-                  className={classes.postTitle}
-                >
-                  <Typography>
-                    {title}
-                  </Typography>
+                <Box display="flex" className={classes.post}>
+                  <Box className={classes.coverImg}>
+                    {coverImage
+                      ? (
+                        <Image
+                          src={coverImage}
+                          layout="responsive"
+                          width="100"
+                          height="100"
+                        />
+                      )
+                      : ''}
+                  </Box>
+                  <Box className={classes.postInfo}>
+                    <Typography className={classes.postTitle}>{title}</Typography>
+                    <Typography className={classes.postDesc}>{labels.join(', ')}</Typography>
+                  </Box>
                 </Box>
               </a>
             </Link>
@@ -108,7 +105,7 @@ const Cooking = ({ posts }) => {
 export async function getStaticProps() {
   const posts = getPostsByFolder({
     folder: 'cooking',
-    fields: ['slug', 'title', 'excerpt', 'coverImage'],
+    fields: ['slug', 'title', 'labels', 'coverImage'],
   });
 
   return {
