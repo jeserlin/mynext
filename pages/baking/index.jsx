@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
   },
   coverImg: {
     width: '25%',
+    '& > * > img': {
+      borderRadius: theme.shape.borderRadius,
+    },
   },
   postInfo: {
     width: '75%',
@@ -107,8 +110,6 @@ export async function getStaticProps() {
     fields: ['slug', 'title', 'labels', 'coverImage'],
   });
 
-  console.log(posts);
-  console.log(posts.labels);
   return {
     props: {
       posts,
