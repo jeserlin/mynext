@@ -3,8 +3,12 @@ title: '鬆餅'
 excerpt: '萬用鬆餅粉'
 coverImage: '/assets/posts/baking/pancake.png'
 date: '2021-06-21T00:00:07.322Z'
-ogImage:
-  url: ''
+labels: [
+  '低筋麵粉',
+  '泡打粉',
+  '蛋',
+  '牛奶'
+]
 ---
 
 ### 材料

@@ -3,8 +3,11 @@ title: '佛卡夏'
 excerpt: '免揉佛卡夏'
 coverImage: '/assets/posts/baking/focaccia.jpg'
 date: '2021-06-19T00:00:07.322Z'
-ogImage:
-  url: '/assets/posts/baking/focaccia.jpg'
+labels: [
+  '高筋麵粉',
+  '酵母',
+  '橄欖油'
+]
 ---
 
 ### 材料
