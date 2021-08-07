@@ -3,10 +3,18 @@ title: '韓式炒魚糕'
 excerpt: '韓式炒魚糕'
 coverImage: '/assets/posts/cooking/korean_fried_eomuk.png'
 date: '2021-06-23T00:00:07.322Z'
-labels: [
+ingredient: [
   '韓國魚板',
+  '糯米椒',
+  '芝麻',
   '醬油',
-  '麻油'
+  '麻油',
+  '糖'
+]
+labels: [
+  '魚板',
+  '炒魚板',
+  '韓式'
 ]
 ---
 

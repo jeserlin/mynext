@@ -3,10 +3,18 @@ title: '芒果奶酪'
 excerpt: '芒果奶酪'
 coverImage: '/assets/posts/baking/mango_panna_cotta.png'
 date: '2021-07-21T00:00:00.000Z'
-labels: [
+ingredient: [
+  '芒果',
   '牛奶',
   '鮮奶油',
-  '吉利丁'
+  '吉利丁',
+  '細砂糖'
+]
+labels: [
+  '芒果',
+  '奶酪',
+  'mango',
+  'panna cotta'
 ]
 ---
 

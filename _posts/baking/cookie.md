@@ -3,10 +3,17 @@ title: '曲奇'
 excerpt: '曲奇'
 coverImage: '/assets/posts/baking/cookie.png'
 date: '2021-08-07T00:00:07.322Z'
+ingredient: [
+  '無鹽奶油',
+  '糖粉',
+  '低筋麵粉',
+  '玉米粉',
+  '鹽'
+]
 labels: [
   '珍妮曲奇',
-  '低筋麵粉',
-  '無鹽奶油'
+  '曲奇',
+  'cookie'
 ]
 ---
 

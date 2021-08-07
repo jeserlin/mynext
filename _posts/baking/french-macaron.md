@@ -3,10 +3,17 @@ title: '法式馬卡龍'
 excerpt: '法式馬卡龍'
 coverImage: '/assets/posts/baking/french_macaron.png'
 date: '2021-06-21T00:00:07.322Z'
-labels: [
-  '杏仁粉',
+ingredient: [
   '蛋白',
-  '糖粉'
+  '杏仁粉',
+  '細砂糖',
+  '糖粉',
+  '巧克力粉'
+]
+labels: [
+  '馬卡龍',
+  'macaron',
+  'macaroon'
 ]
 ---
 

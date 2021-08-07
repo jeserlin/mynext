@@ -3,9 +3,18 @@ title: '涼拌雞絲'
 excerpt: '涼拌雞絲'
 coverImage: '/assets/posts/cooking/shredded_chicken_salad.png'
 date: '2021-06-23T00:00:07.322Z'
-labels: [
+ingredient: [
   '雞胸肉',
-  '小黃瓜'
+  '小黃瓜',
+  '辣椒',
+  '醬油',
+  '香油',
+  '烏醋',
+  '糖'
+]
+labels: [
+  '涼拌雞絲',
+  '雞絲'
 ]
 ---
 

@@ -65,7 +65,7 @@ const Cooking = ({ posts }) => {
     <>
       <Grid container alignItems="stretch" spacing={6}>
         {posts.map(({
-          slug, title, coverImage, labels,
+          slug, title, coverImage, ingredient,
         }) => (
           <Grid
             key={slug}
@@ -90,7 +90,9 @@ const Cooking = ({ posts }) => {
                   </Box>
                   <Box className={classes.postInfo}>
                     <Typography className={classes.postTitle}>{title}</Typography>
-                    <Typography className={classes.postDesc}>{labels.join(', ')}</Typography>
+                    <Typography className={classes.postDesc}>
+                      {`食材: ${ingredient.join(', ')}`}
+                    </Typography>
                   </Box>
                 </Box>
               </a>
@@ -105,7 +107,7 @@ const Cooking = ({ posts }) => {
 export async function getStaticProps() {
   const posts = getPostsByFolder({
     folder: 'cooking',
-    fields: ['slug', 'title', 'labels', 'coverImage'],
+    fields: ['slug', 'title', 'labels', 'coverImage', 'ingredient'],
   });
 
   return {
