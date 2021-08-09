@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
-  Drawer, List, ListItem, ListItemText, makeStyles,
+  Drawer, List, ListItem, ListItemText, makeStyles, fade,
 } from '@material-ui/core';
 
 import { menuList } from 'constants/common';
@@ -50,8 +50,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     zIndex: theme.zIndex.appBar - 1,
     borderRight: 0,
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.secondary.dark,
+    color: theme.palette.primary.dark,
   },
   toolbar: {
     display: 'flex',
@@ -60,9 +59,24 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 2),
   },
   list: {
-    paddingTop: 64,
+    marginTop: 84,
+    borderRight: `1px solid ${theme.palette.primary.light}`,
+  },
+  listItem: {
+    '&.MuiListItem-root': {
+      '&.Mui-selected': {
+        color: theme.palette.secondary.main,
+        backgroundColor: 'transparent',
+      },
+    },
+    '&.MuiListItem-button': {
+      '&:hover': {
+        backgroundColor: fade(theme.palette.primary.main, 0.1),
+      },
+    },
   },
   listText: {
+    padding: theme.spacing(0, 0, 0, 2),
     '& > span': {
       fontFamily: commonFontFamily2,
     },
@@ -102,6 +116,7 @@ const SideNav = ({ open }) => {
                 <ListItem
                   button
                   selected={path === `/${parentRoute}`}
+                  className={classes.listItem}
                 >
                   <ListItemText
                     className={classes.listText}
