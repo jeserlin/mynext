@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
+import mermaid from 'mermaid';
 import { useRouter } from 'next/router';
 import {
   Box, Grid, Typography, makeStyles,
@@ -52,6 +53,10 @@ const TechPost = ({ post }) => {
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />;
   }
+
+  useEffect(() => {
+    mermaid.contentLoaded();
+  });
 
   return (
     <>

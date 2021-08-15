@@ -7,6 +7,7 @@ import MainLayout from 'layouts/MainLayout';
 
 import 'styles/globals.css';
 import 'styles/a11y-dark.css';
+import 'styles/mermaid.css';
 import theme from 'theme';
 
 const propTypes = {

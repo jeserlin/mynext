@@ -1,0 +1,8 @@
+.mermaid g.node rect {
+    fill: #fff !important;
+    stroke: #9c9085 !important;
+}
+
+.mermaid .label {
+    color: #555 !important;
+}
