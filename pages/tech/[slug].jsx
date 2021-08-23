@@ -71,7 +71,7 @@ const TechPost = ({ post }) => {
           {`更新時間: ${formatDate(post.date)}`}
         </Typography>
         <Grid container className={classes.contentBox}>
-          <Grid item xs={12} md={9} className={classes.content}>
+          <Grid item xs={12} lg={10} xl={9} className={classes.content}>
             <PostContent content={post.content} />
           </Grid>
         </Grid>
