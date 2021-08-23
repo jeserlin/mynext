@@ -2,7 +2,7 @@
 title: '事件捕捉 & 事件冒泡 (Event capturing & event bubbling)'
 excerpt: '事件捕捉 & 事件冒泡的運作原理以及使用情境。'
 coverImage: '/assets/posts/tech/event_capturing_bubbling.png'
-date: '2021-08-22T00:00:00.000Z'
+date: '2021-08-24T00:00:00.000Z'
 labels: []
 ---
 ### 事件捕捉 (Event capturing)
@@ -90,7 +90,9 @@ target.addEventListener(type, listener, useCapture)
 
 ### Event.stopPropagation()
 
-然而在實際的情況下，我們不一定會希望事件一層一層地被傳遞，因此我們會需要使用`Event.stopPropagation()`。舉個例子來說，我們有一個`button`他的上面還有另一個 `Element`用來控制他的value是`asc`還是`desc`。我們預期的結果是點擊`sort type`的時候，他會切換`asc`或`desc`但是不會觸發`button`的event，只有在點擊`button`的時候才會觸發`button`上的event：
+然而在實際的情況下，我們不一定會希望事件一層一層地被傳遞，因此我們會需要使用`Event.stopPropagation()`。
+
+舉個例子來說，我們有一個`button`他的上面還有另一個 `Element`用來控制他的value是`asc`還是`desc`。我們預期的結果是點擊`sort type`的時候，他會切換`asc`或`desc`但是不會觸發`button`的event，只有在點擊`button`的時候才會觸發`button`上的event：
 
 <iframe height="400" style="width: 100%;" scrolling="no" title="Event stopPropagation" src="https://codepen.io/jeserlin/embed/vYZYyKJ?default-tab=result&editable=true" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/jeserlin/pen/vYZYyKJ">
