@@ -90,9 +90,9 @@ target.addEventListener(type, listener, useCapture)
 
 ### Event.stopPropagation()
 
-然而在實際的情況下，我們不一定會希望事件一層一層地被傳遞，因此我們會需要使用`Event.stopPropagation()`。
+然而在實際的情況下，我們不一定會希望事件一層一層地被傳遞，這時候我們可以使用`Event.stopPropagation()`來阻止當前事件繼續進行捕捉或冒泡。
 
-舉個例子來說，我們有一個`button`他的上面還有另一個 `Element`用來控制他的value是`asc`還是`desc`。我們預期的結果是點擊`sort type`的時候，他會切換`asc`或`desc`但是不會觸發`button`的event，只有在點擊`button`的時候才會觸發`button`上的event：
+舉個例子來說，我們有一個`button`他的上面還有另一個 `Element`用來控制value是`asc`還是`desc`。我們預期的結果是點擊`sort type`的時候，他會切換成`asc`或`desc`但不會觸發`button`的event，只有在點擊`button`的時候才會觸發`button`上的event：
 
 <iframe height="400" style="width: 100%;" scrolling="no" title="Event stopPropagation" src="https://codepen.io/jeserlin/embed/vYZYyKJ?default-tab=result&editable=true" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href="https://codepen.io/jeserlin/pen/vYZYyKJ">
@@ -100,10 +100,8 @@ target.addEventListener(type, listener, useCapture)
   on <a href="https://codepen.io">CodePen</a>.
 </iframe>
 
-### Event.preventDefault()
-// TODO
 ### 資料來源
 
 - <a href='https://javascript.info/ui' target="_blank">https://javascript.info/ui</a>
-- <a href='https://developer.mozilla.org/zh-TW/docs/Web/API/Event/eventPhase' target="_blank">https://developer.mozilla.org/zh-TW/docs/Web/API/Event/eventPhase</a>
-- <a href='https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener' target="_blank">https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener</a>
+- <a href='https://developer.mozilla.org/zh-TW/docs/Web/API/Event/eventPhase' target="_blank">MDN Web Docs - Event phase</a>
+- <a href='https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener' target="_blank">MDN Web Docs - AddEventListener</a>
