@@ -3,7 +3,13 @@ title: '事件捕捉 & 事件冒泡 (Event capturing & event bubbling)'
 excerpt: '事件捕捉 & 事件冒泡的運作原理以及使用情境。'
 coverImage: '/assets/posts/tech/event_capturing_bubbling.png'
 date: '2021-08-24T00:00:00.000Z'
-labels: []
+labels: [
+    'event capturing',
+    'event bubbling',
+    'stopPropagation',
+    '事件捕捉',
+    '事件冒泡',
+]
 ---
 ### 事件捕捉 (Event capturing)
 事件傳遞的順序是從上到下，由最外層的`Window`到`Document`最後到事件發起的`Element`。

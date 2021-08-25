@@ -23,6 +23,16 @@ const useStyles = makeStyles((theme) => ({
       ...theme.typography.h4,
       color: theme.palette.secondary.dark,
     },
+    '& > h5': {
+      ...theme.typography.h5,
+      margin: theme.spacing(4, 0),
+      color: theme.palette.secondary.dark,
+    },
+    '& > h6': {
+      ...theme.typography.h6,
+      margin: theme.spacing(4, 0),
+      color: theme.palette.secondary.dark,
+    },
     '& *:not(pre) > code': {
       padding: theme.spacing(0.5),
       backgroundColor: fade(theme.palette.primary.light, 0.5),
