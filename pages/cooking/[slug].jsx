@@ -65,10 +65,10 @@ const CookingPost = ({ post }) => {
       <Box className={classes.root}>
         <PostHeader title={post.title} />
         <Grid container className={classes.contentBox}>
-          <Grid item xs={12} sm={8} md={9} className={classes.content}>
+          <Grid item xs={12} md={8} className={classes.content}>
             <PostContent content={post.content} />
           </Grid>
-          <Grid item xs={12} sm={4} md={3} className={classes.image}>
+          <Grid item xs={12} md={4} className={classes.image}>
             {post.coverImage
               ? (
                 <Image
