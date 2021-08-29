@@ -37,6 +37,18 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(0.5),
       backgroundColor: fade(theme.palette.primary.light, 0.5),
     },
+    '& > ul': {
+      paddingLeft: theme.spacing(5),
+      [theme.breakpoints.up('sm')]: {
+        paddingLeft: theme.spacing(10),
+      },
+      '& > li > ul': {
+        paddingLeft: theme.spacing(4),
+        [theme.breakpoints.up('sm')]: {
+          paddingLeft: theme.spacing(10),
+        },
+      },
+    },
     '& > ul,li,ol': {
       color: theme.palette.text.secondary,
       paddingBottom: theme.spacing(2),
