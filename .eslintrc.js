@@ -36,4 +36,5 @@ module.exports = {
       },
     },
   },
+  ignorePatterns: ['jsconfig.json', 'package.json', 'package-lock.json'],
 };
