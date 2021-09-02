@@ -1,3 +1,5 @@
+[![Lint & Test](https://github.com/jeserlin/mynext/actions/workflows/lint_test.yml/badge.svg)](https://github.com/jeserlin/mynext/actions/workflows/lint_test.yml)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
