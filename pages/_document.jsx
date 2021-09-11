@@ -26,6 +26,17 @@ class MyDocument extends Document {
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#c69f79" />
+          <meta name="author" content="Jeserlin, jeserlin@me.com" />
+          <meta name="description" content="Jeserlin's blog." />
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content="Jeserlin's blog" />
+          <meta property="og:description" content="Front-end developer" />
+          <meta property="og:url" content="https://myblog-jeserlin.vercel.app" />
+          <meta property="og:site_name" content="Jeserlin's blog" />
+          <meta property="og:image" content="https://myblog-jeserlin.vercel.app/yuan.png" />
+          <meta property="og:image:width" content="200" />
+          <meta property="og:image:height" content="200" />
+          <meta property="og:locale" content="zh_TW" />
           <meta name="msapplication-TileColor" content="#e5d8cb" />
           <meta name="theme-color" content="#ffffff" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
