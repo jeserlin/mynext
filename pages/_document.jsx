@@ -37,6 +37,7 @@ class MyDocument extends Document {
           <meta property="og:image:width" content="200" />
           <meta property="og:image:height" content="200" />
           <meta property="og:locale" content="zh_TW" />
+          <meta name="google-site-verification" content="u3o7yoBytPdLTXnMSDaDS5s5JY87tP0fNtx2OeDeP1I" />
           <meta name="msapplication-TileColor" content="#e5d8cb" />
           <meta name="theme-color" content="#ffffff" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
