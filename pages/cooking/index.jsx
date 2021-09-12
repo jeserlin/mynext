@@ -7,6 +7,7 @@ import {
   Box, Grid, Typography, fade, makeStyles,
 } from '@material-ui/core';
 
+import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
 
 const propTypes = {
@@ -63,6 +64,10 @@ const Cooking = ({ posts }) => {
 
   return (
     <>
+      <SeoHeader
+        title="Cooking"
+        description="All about cooking"
+      />
       <Grid container alignItems="stretch" spacing={6}>
         {posts.map(({
           slug, title, coverImage, ingredient,

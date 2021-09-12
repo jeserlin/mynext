@@ -1,6 +1,6 @@
 ---
 title: '在React上設定GA Part2'
-excerpt: '在Google Analytics也能讀取react-router的路徑！'
+desc: '在Google Analytics也能讀取react-router的路徑。'
 coverImage: '/assets/posts/tech/google_analytics.png'
 date: '2019-08-14T00:00:00.000Z'
 labels: [

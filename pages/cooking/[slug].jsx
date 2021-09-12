@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Box, Grid, makeStyles } from '@material-ui/core';
 
+import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
@@ -15,6 +16,7 @@ const propTypes = {
   post: PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
+    desc: PropTypes.string,
     content: PropTypes.string,
     coverImage: PropTypes.string,
   }),
@@ -61,6 +63,10 @@ const CookingPost = ({ post }) => {
 
   return (
     <>
+      <SeoHeader
+        title={`${post.title}`}
+        description={post.desc}
+      />
       <GoBack path={cookingMainPath} />
       <Box className={classes.root}>
         <PostHeader title={post.title} />
@@ -89,6 +95,7 @@ const CookingPost = ({ post }) => {
 export async function getStaticProps({ params }) {
   const post = getPostBySlug('cooking', params.slug, [
     'title',
+    'desc',
     'date',
     'slug',
     'content',

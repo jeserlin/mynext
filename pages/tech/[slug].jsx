@@ -7,6 +7,7 @@ import {
   Box, Grid, Typography, makeStyles,
 } from '@material-ui/core';
 
+import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
@@ -18,6 +19,7 @@ const propTypes = {
   post: PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
+    desc: PropTypes.string,
     date: PropTypes.string,
     content: PropTypes.string,
   }),
@@ -60,6 +62,10 @@ const TechPost = ({ post }) => {
 
   return (
     <>
+      <SeoHeader
+        title={`${post.title}`}
+        description={post.desc}
+      />
       <GoBack path={techMainPath} />
       <Box className={classes.root}>
         <PostHeader title={post.title} />
@@ -83,6 +89,7 @@ const TechPost = ({ post }) => {
 export async function getStaticProps({ params }) {
   const post = getPostBySlug('tech', params.slug, [
     'title',
+    'desc',
     'date',
     'slug',
     'content',

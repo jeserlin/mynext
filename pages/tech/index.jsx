@@ -9,6 +9,7 @@ import {
   Box, Grid, Typography, makeStyles, fade,
 } from '@material-ui/core';
 
+import SeoHeader from 'components/seoHeader';
 import { formatDate } from 'lib/convertors';
 
 const propTypes = {
@@ -72,6 +73,10 @@ const Tech = ({ posts }) => {
 
   return (
     <>
+      <SeoHeader
+        title="Tech"
+        description="All about tech"
+      />
       <Grid container alignItems="stretch" spacing={6}>
         {posts.map(({
           slug, title, coverImage, excerpt, date,

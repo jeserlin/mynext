@@ -1,6 +1,6 @@
 ---
 title: '涼拌雞絲'
-excerpt: '涼拌雞絲'
+desc: '涼拌雞絲'
 coverImage: '/assets/posts/cooking/shredded_chicken_salad.png'
 date: '2021-06-23T00:00:07.322Z'
 ingredient: [

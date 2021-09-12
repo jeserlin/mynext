@@ -1,6 +1,6 @@
 ---
 title: 'styled-component - WHY & HOW'
-excerpt: 'styled-component 讓我們更便利地處理css同時也大大提升了component的維護性。'
+desc: 'styled-component 讓我們更便利地處理css同時也大大提升了component的維護性。'
 coverImage: '/assets/posts/tech/styled_component.png'
 date: '2019-08-14T00:00:00.000Z'
 labels: [

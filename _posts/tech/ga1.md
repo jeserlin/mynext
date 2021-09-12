@@ -1,6 +1,6 @@
 ---
 title: '在React上設定GA Part1'
-excerpt: '在React框架下輕鬆設定Google Analytics！'
+desc: '在React框架下輕鬆設定Google Analytics。'
 coverImage: '/assets/posts/tech/google_analytics.png'
 date: '2019-08-14T00:00:00.000Z'
 labels: [
