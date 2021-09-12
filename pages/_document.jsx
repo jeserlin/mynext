@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
@@ -42,6 +43,17 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#ffffff" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Open+Sans&display=swap" rel="stylesheet" />
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-PQJDQCSC9J" />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-PQJDQCSC9J');
+            `,
+            }}
+          />
         </Head>
         <body>
           <Main />
