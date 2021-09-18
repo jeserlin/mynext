@@ -1,6 +1,7 @@
 ---
 title: '鳳梨紅茶果醬'
 desc: '鳳梨紅茶果醬'
+type: 'cooking'
 coverImage: '/assets/posts/cooking/pineapple_black_tea_jam.png'
 date: '2021-08-29T00:00:07.322Z'
 ingredient: [

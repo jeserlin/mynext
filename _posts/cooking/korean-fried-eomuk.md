@@ -1,6 +1,7 @@
 ---
 title: '韓式炒魚糕'
 desc: '韓式炒魚糕'
+type: 'cooking'
 coverImage: '/assets/posts/cooking/korean_fried_eomuk.png'
 date: '2021-06-23T00:00:07.322Z'
 ingredient: [

@@ -1,6 +1,7 @@
 ---
 title: 'Next.js #1 (建立)'
 desc: '認識Next.js，React官方推薦作為server side rendering的框架。'
+type: 'tech'
 coverImage: '/assets/posts/tech/nextjs.png'
 date: '2019-11-18T00:00:00.000Z'
 labels: [

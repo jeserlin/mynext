@@ -1,6 +1,7 @@
 ---
 title: 'pyenv: 輕鬆切換python版本'
 desc: '使用pyenv輕鬆建立虛擬環境 & 使用設定版本python。'
+type: 'tech'
 coverImage: '/assets/posts/tech/pyenv.png'
 date: '2019-09-15T00:00:00.000Z'
 labels: [

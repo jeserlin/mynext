@@ -1,17 +1,20 @@
 {
     "name": "mynext",
     "version": "0.1.0",
+    "type": "module",
     "private": true,
     "scripts": {
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "eslint . --ext .js,.jsx,.json "
+        "lint": "eslint . --ext .js,.jsx,.json ",
+        "generate-sitemap": "node sitemap-generator.js"
     },
     "dependencies": {
         "@material-ui/core": "^4.11.4",
         "@material-ui/icons": "^4.11.2",
         "@next/eslint-plugin-next": "^11.0.0",
+        "@sergeymyssak/nextjs-sitemap": "^2.0.3",
         "clsx": "^1.1.1",
         "date-fns": "^2.22.1",
         "gray-matter": "^4.0.3",

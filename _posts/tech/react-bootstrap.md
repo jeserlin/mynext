@@ -1,6 +1,7 @@
 ---
 title: 'React Bootstrap - WHY & HOW'
 desc: 'React-Bootstrap的簡單介紹 & 範例。'
+type: 'tech'
 coverImage: '/assets/posts/tech/react_bootstrap.png'
 date: '2019-08-14T00:00:00.000Z'
 labels: [

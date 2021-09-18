@@ -1,6 +1,7 @@
 ---
 title: '鬆餅'
 desc: '萬用鬆餅粉'
+type: 'baking'
 coverImage: '/assets/posts/baking/pancake.png'
 date: '2021-06-21T00:00:07.322Z'
 ingredient: [

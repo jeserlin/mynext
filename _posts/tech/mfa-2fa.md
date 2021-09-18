@@ -1,6 +1,7 @@
 ---
 title: '多重要素驗證 / 雙重認證 (MFA / 2FA)'
 desc: '介紹多重要素驗證及雙重認證，認識各種雙重認證的優缺點。'
+type: 'tech'
 coverImage: '/assets/posts/tech/mfa_2fa.png'
 date: '2021-08-27T00:00:00.000Z'
 labels: [

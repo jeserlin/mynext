@@ -1,6 +1,7 @@
 ---
 title: 'Next.js #2 (Router)'
 desc: 'Next.js提供了Link API，讓我們輕鬆處理server side和client side的routing。'
+type: 'tech'
 coverImage: '/assets/posts/tech/nextjs.png'
 date: '2019-11-24T00:00:00.000Z'
 labels: [
