@@ -21,10 +21,10 @@ getDynamicPaths().then((paths) => {
   const Sitemap = configureSitemap({
     domains: [{ domain: 'myblog-jeserlin.vercel.app', defaultLocale: 'zh-TW' }],
     include: paths,
-    exclude: ['/api/*', '/tech/*', '/baking/*', '/cooking/*'],
+    exclude: ['/api/*', '/tech/*', '/baking/*', '/cooking/*', '/404'],
     excludeIndex: true,
     pagesConfig: {
-      '/project/*': {
+      '/pages/*': {
         priority: '0.5',
         changefreq: 'daily',
       },

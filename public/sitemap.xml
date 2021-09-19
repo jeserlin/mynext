@@ -4,11 +4,6 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-        <loc>https://myblog-jeserlin.vercel.app/404/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/404/" />
-    </url>
-    <url>
         <loc>https://myblog-jeserlin.vercel.app/about-me/</loc>
         <lastmod>2021-09-19</lastmod>
 		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/about-me/" />
