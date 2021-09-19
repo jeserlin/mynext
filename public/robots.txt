@@ -1,0 +1,6 @@
+Sitemap: https://myblog-jeserlin.vercel.app/sitemap.xml
+
+User-agent: *
+Allow: /*
+
+Disallow: /api/*
