@@ -1,7 +1,9 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
 import mermaid from 'mermaid';
+
 import { useRouter } from 'next/router';
 import {
   Box, Grid, Typography, makeStyles,
@@ -9,6 +11,7 @@ import {
 
 import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';
+import ScrollTop from 'components/scrollTop';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
@@ -48,7 +51,8 @@ const useStyles = makeStyles((theme) => ({
 
 const techMainPath = '/tech';
 
-const TechPost = ({ post }) => {
+const TechPost = (props) => {
+  const { post } = props;
   const classes = useStyles();
 
   const router = useRouter();
@@ -82,6 +86,7 @@ const TechPost = ({ post }) => {
           </Grid>
         </Grid>
       </Box>
+      <ScrollTop {...props} />
     </>
   );
 };

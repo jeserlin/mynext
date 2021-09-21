@@ -32,7 +32,7 @@ const GoBack = ({ path }) => {
   };
 
   return (
-    <Box className={classes.root} onClick={onClickGoBack}>
+    <Box id="back-to-top-anchor" className={classes.root} onClick={onClickGoBack}>
       <ArrowBackIos fontSize="small" />
       <Typography>Back</Typography>
     </Box>

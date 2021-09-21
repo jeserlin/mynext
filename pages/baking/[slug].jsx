@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -8,6 +9,7 @@ import { Box, Grid, makeStyles } from '@material-ui/core';
 
 import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';
+import ScrollTop from 'components/scrollTop';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
@@ -54,7 +56,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const bakingMainPath = '/baking';
-const BakingPost = ({ post }) => {
+const BakingPost = (props) => {
+  const { post } = props;
   const classes = useStyles();
 
   const router = useRouter();
@@ -89,6 +92,7 @@ const BakingPost = ({ post }) => {
           </Grid>
         </Grid>
       </Box>
+      <ScrollTop {...props} />
     </>
   );
 };
