@@ -15,9 +15,13 @@ const defaultProps = {
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    display: 'none',
     position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
   },
   icon: {
     color: theme.palette.common.white,
