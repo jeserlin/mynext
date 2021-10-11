@@ -21,12 +21,12 @@
         "lodash": "^4.17.21",
         "markdown-it": "^12.2.0",
         "mermaid": "^8.11.4",
-        "next": "10.2.0",
+        "next": "^11.1.2",
         "next-seo": "^4.26.0",
         "path": "^0.12.7",
         "prop-types": "^15.7.2",
-        "react": "17.0.2",
-        "react-dom": "17.0.2"
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
     },
     "devDependencies": {
         "@svgr/webpack": "^5.5.0",
