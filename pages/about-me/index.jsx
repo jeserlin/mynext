@@ -45,7 +45,7 @@ const AboutMe = () => {
       <Grid container>
         <Grid item xs={12} sm={2}>
           <Avatar
-            variant="square"
+            variant="rounded"
             className={classes.avatar}
           >
             J
