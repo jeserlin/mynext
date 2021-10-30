@@ -5,102 +5,90 @@
     xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>https://myblog-jeserlin.vercel.app/about-me/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/about-me/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/" />
+        <lastmod>2021-10-30</lastmod>
+    </url>
+    <url>
+        <loc>https://myblog-jeserlin.vercel.app/baking/madeleine/</loc>
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/baking/cookie/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/baking/cookie/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/baking/mango-panna-cotta/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/baking/mango-panna-cotta/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/baking/french-macaron/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/baking/french-macaron/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/baking/pancake/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/baking/pancake/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/baking/focaccia/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/baking/focaccia/" />
+        <lastmod>2021-10-30</lastmod>
+    </url>
+    <url>
+        <loc>https://myblog-jeserlin.vercel.app/cooking/chicken-chestnut-soup/</loc>
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/cooking/pineapple_black_tea_jam/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/cooking/pineapple_black_tea_jam/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/cooking/korean-fried-eomuk/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/cooking/korean-fried-eomuk/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/cooking/shredded-chicken-salad/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/cooking/shredded-chicken-salad/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/mfa-2fa/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/mfa-2fa/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/event-bubbling-event-capturing/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/event-bubbling-event-capturing/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/nextjs2/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/nextjs2/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/nextjs1/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/nextjs1/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/pyenv/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/pyenv/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/ga1/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/ga1/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/ga2/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/ga2/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/react-bootstrap/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/react-bootstrap/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/react-bootstrap4-cards/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/react-bootstrap4-cards/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
     <url>
         <loc>https://myblog-jeserlin.vercel.app/tech/styled-component/</loc>
-        <lastmod>2021-09-19</lastmod>
-		<xhtml:link rel="alternate" hreflang="zh-TW" href="https://myblog-jeserlin.vercel.app/tech/styled-component/" />
+        <lastmod>2021-10-30</lastmod>
     </url>
 </urlset>
