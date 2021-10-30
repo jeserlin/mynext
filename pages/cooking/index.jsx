@@ -82,16 +82,14 @@ const Cooking = ({ posts }) => {
               <a>
                 <Box display="flex" className={classes.post}>
                   <Box className={classes.coverImg}>
-                    {coverImage
-                      ? (
-                        <Image
-                          src={coverImage}
-                          layout="responsive"
-                          width="100"
-                          height="100"
-                        />
-                      )
-                      : ''}
+                    {coverImage && (
+                      <Image
+                        src={coverImage}
+                        layout="responsive"
+                        width="100"
+                        height="100"
+                      />
+                    )}
                   </Box>
                   <Box className={classes.postInfo}>
                     <Typography className={classes.postTitle}>{title}</Typography>

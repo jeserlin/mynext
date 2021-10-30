@@ -79,16 +79,14 @@ const BakingPost = (props) => {
             <PostContent content={post.content} />
           </Grid>
           <Grid item xs={12} sm={4} md={3} className={classes.image}>
-            {post.coverImage
-              ? (
-                <Image
-                  src={post.coverImage}
-                  layout="responsive"
-                  width="100"
-                  height="100"
-                />
-              )
-              : ''}
+            {post.coverImage && (
+              <Image
+                src={post.coverImage}
+                layout="responsive"
+                width="100"
+                height="100"
+              />
+            )}
           </Grid>
         </Grid>
       </Box>

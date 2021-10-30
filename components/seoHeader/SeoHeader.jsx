@@ -17,7 +17,7 @@ const SeoHeader = ({ title, description }) => (
     title={title}
     description={description}
     openGraph={{
-      title,
+      title: `Jeserlin | ${title}`,
       description,
     }}
   />

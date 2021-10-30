@@ -1,6 +1,7 @@
 ---
 title: '鬆餅'
-desc: '萬用鬆餅粉'
+desc: '市面上有各種各樣的鬆餅粉，但是其實只需要幾種材料就可以做出成分單純又健康的鬆餅粉。
+搭配各種調味粉還能輕鬆做出不同的口味喔。'
 type: 'baking'
 coverImage: '/assets/posts/baking/pancake.png'
 date: '2021-06-21T00:00:07.322Z'
