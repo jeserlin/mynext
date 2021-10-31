@@ -42,7 +42,7 @@ const AboutMe = () => {
         title="About me"
         description="All about Jeserlin"
       />
-      <Grid container>
+      <Grid container spacing={2}>
         <Grid item xs={12} sm={2}>
           <Avatar
             variant="rounded"

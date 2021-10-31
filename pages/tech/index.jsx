@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Image from 'next/image';
-import _ from 'lodash';
+import LazyLoad from 'react-lazyload';
 import { getPostsByFolder } from 'lib/api';
 import {
   Box, Grid, Typography, makeStyles, fade,
@@ -86,6 +87,11 @@ const Tech = ({ posts }) => {
             item
             xs={12}
             md={6}
+            component={LazyLoad}
+            once
+            height={150}
+            throttle={80}
+            offset={80}
           >
             <Link href={`/tech/${slug}`}>
               <a>

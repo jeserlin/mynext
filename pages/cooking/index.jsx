@@ -3,6 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import Link from 'next/link';
+import LazyLoad from 'react-lazyload';
 import {
   Box, Grid, Typography, fade, makeStyles,
 } from '@material-ui/core';
@@ -77,6 +78,11 @@ const Cooking = ({ posts }) => {
             item
             xs={12}
             md={6}
+            component={LazyLoad}
+            once
+            height={120}
+            throttle={60}
+            offset={60}
           >
             <Link href={`/cooking/${slug}`}>
               <a>
