@@ -4,7 +4,7 @@ export const commonFontFamily2 = '"Indie Flower", cursive';
 export default {
   fontFamily: commonFontFamily,
   h1: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: 400,
     lineHeight: 1.29,
   },

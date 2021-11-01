@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
 import mermaid from 'mermaid';
-
 import { useRouter } from 'next/router';
 import {
   Box, Grid, Typography, makeStyles,
@@ -80,8 +79,9 @@ const TechPost = (props) => {
         >
           {`更新時間: ${formatDate(post.date)}`}
         </Typography>
+        <Box mb={10} />
         <Grid container className={classes.contentBox}>
-          <Grid item xs={12} lg={10} xl={9} className={classes.content}>
+          <Grid item xs={12} lg={10} xl={8} className={classes.content}>
             <PostContent content={post.content} />
           </Grid>
         </Grid>

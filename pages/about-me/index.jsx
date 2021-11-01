@@ -1,7 +1,7 @@
 import React from 'react';
 import SeoHeader from 'components/seoHeader';
 import {
-  Avatar, Box, Divider, Grid, Link, Typography, makeStyles,
+  Avatar, Box, Divider, Link, Typography, makeStyles,
 } from '@material-ui/core';
 import { EmailOutlined, GitHub, RoomOutlined } from '@material-ui/icons';
 
@@ -42,16 +42,16 @@ const AboutMe = () => {
         title="About me"
         description="All about Jeserlin"
       />
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={2}>
+      <Box display={{ xs: 'block', md: 'flex' }}>
+        <Box mr={15} mb={4}>
           <Avatar
             variant="rounded"
             className={classes.avatar}
           >
             J
           </Avatar>
-        </Grid>
-        <Grid item xs={12} sm={5}>
+        </Box>
+        <Box width={{ xs: '100%', md: '40%' }}>
           <Typography
             variant="h6"
             color="textSecondary"
@@ -87,8 +87,8 @@ const AboutMe = () => {
               {githubLink}
             </Link>
           </Box>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </>
   );
 };

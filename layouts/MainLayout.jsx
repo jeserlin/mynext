@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import {
-  Box, Slide, makeStyles, useTheme,
+  Box, Container, Slide, makeStyles, useTheme,
 } from '@material-ui/core';
 
 import Header from 'components/header';
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(4),
     marginBottom: 56 * 2,
     [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing(12),
+      padding: theme.spacing(12, 8),
     },
   },
   bottomNav: {
@@ -62,7 +62,9 @@ const MainLayout = ({ children }, props) => {
       <Box className={classes.root}>
         <SideNav open={defaultIsOpen} />
         <main className={classes.content}>
-          {children}
+          <Container>
+            {children}
+          </Container>
         </main>
       </Box>
       <Slide direction="up" in={!trigger}>
