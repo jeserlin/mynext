@@ -32,7 +32,7 @@ graph TD
 
 <div class="mermaid">
 graph TD
-    window["Window"] --> document["Document"]
+    window["Window"] --- document["Document"]
     document["Document"] -.-> window["Window"]
     document --- html["Element html"]
     html["Element html"] -.-> document
