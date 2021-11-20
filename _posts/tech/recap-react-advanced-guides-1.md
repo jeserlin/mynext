@@ -2,7 +2,7 @@
 title: 'Recap React - Accessibility / Code splitting'
 desc: '紀錄重讀React advanced guides的筆記。'
 type: 'tech'
-coverImage: '/assets/posts/tech/recap_react_main_concepts.png'
+coverImage: '/assets/posts/tech/recap_react_advanced_guides.png'
 date: '2021-11-20T00:00:00.000Z'
 labels: [
     'react',
