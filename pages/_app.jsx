@@ -7,7 +7,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import { DefaultSeo } from 'next-seo';
 
 import 'styles/globals.css';
-import 'styles/a11y-dark.css';
+import 'styles/codepen-embed.css';
 import 'styles/mermaid.css';
 import theme from 'theme';
 
