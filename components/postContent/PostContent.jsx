@@ -62,6 +62,11 @@ const useStyles = makeStyles((theme) => ({
     '& > * > a': {
       color: theme.palette.info.main,
     },
+    '& > hr': {
+      height: 1,
+      backgroundColor: theme.palette.primary.dark,
+      border: 'none',
+    },
   },
 }));
 

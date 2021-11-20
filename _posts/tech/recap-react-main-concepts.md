@@ -26,7 +26,7 @@ labels: [
 ### Components and Props
 - two ways to define a component: ` function` / `class components`
 - props are `read-only`
-- extract component when it is used serveral times / complex enough
+- extract component when it is used several times / complex enough
 - all react component must act like `pure functions` with respect to their props
 
 
