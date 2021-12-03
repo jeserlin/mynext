@@ -1,6 +1,6 @@
 ---
 title: '事件捕捉 & 事件冒泡 (Event capturing & event bubbling)'
-desc: '事件捕捉 & 事件冒泡的運作原理以及使用情境。'
+desc: '事件捕捉 & 事件冒泡的運作原理以及使用情境'
 type: 'tech'
 coverImage: '/assets/posts/tech/event_capturing_bubbling.png'
 date: '2021-08-24T00:00:00.000Z'

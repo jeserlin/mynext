@@ -1,6 +1,6 @@
 ---
 title: 'Recap React - Main concepts'
-desc: '紀錄重讀React main concepts的筆記。'
+desc: '重讀React main concepts的筆記'
 type: 'tech'
 coverImage: '/assets/posts/tech/recap_react_main_concepts.png'
 date: '2021-11-17T00:00:00.000Z'

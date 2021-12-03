@@ -1,6 +1,6 @@
 ---
 title: 'Note - 重新認識javascript (1)'
-desc: '重新認識javascript'
+desc: '變數 / 資料型別 / 物件 / 陣列 / 型別判斷'
 type: 'tech'
 coverImage: '/assets/posts/tech/javascript.png'
 date: '2021-12-02T00:00:00.000Z'

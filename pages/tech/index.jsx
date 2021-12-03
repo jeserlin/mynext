@@ -80,7 +80,7 @@ const Tech = ({ posts }) => {
       />
       <Grid container alignItems="stretch" spacing={6}>
         {posts.map(({
-          slug, title, coverImage, excerpt, date,
+          slug, title, coverImage, desc, date,
         }) => (
           <Grid
             key={slug}
@@ -108,7 +108,7 @@ const Tech = ({ posts }) => {
                   </Box>
                   <Box className={classes.postInfo}>
                     <Typography className={classes.postTitle}>{title}</Typography>
-                    <Typography className={classes.postDesc}>{excerpt}</Typography>
+                    <Typography className={classes.postDesc}>{desc}</Typography>
                     <Typography className={classes.postDate}>
                       {`更新時間: ${formatDate(date)}`}
                     </Typography>
@@ -126,7 +126,7 @@ const Tech = ({ posts }) => {
 export async function getStaticProps() {
   const posts = getPostsByFolder({
     folder: 'tech',
-    fields: ['slug', 'title', 'coverImage', 'excerpt', 'date'],
+    fields: ['slug', 'title', 'coverImage', 'desc', 'date'],
   });
 
   const sortedPosts = _.sortBy(posts, ['date']).reverse();

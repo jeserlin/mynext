@@ -1,6 +1,6 @@
 ---
 title: 'javascript - Array'
-desc: '紀錄array的常用methods，方便查看。'
+desc: 'array的常用methods'
 type: 'tech'
 coverImage: '/assets/posts/tech/array.png'
 date: '2021-11-21T00:00:00.000Z'

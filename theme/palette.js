@@ -37,6 +37,6 @@ export default {
     primary: '#383838',
     secondary: '#555',
     disabled: '#888',
-    hint: '#555',
+    hint: '#8c8c8c',
   },
 };
