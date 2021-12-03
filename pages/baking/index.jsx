@@ -15,7 +15,6 @@ const propTypes = {
   posts: PropTypes.arrayOf(PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
-    excerpt: PropTypes.string,
     coverImage: PropTypes.string,
   })),
 };
