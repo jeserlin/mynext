@@ -1,6 +1,6 @@
 ---
 title: 'Note - 重新認識javascript (2)'
-desc: '加號 / 減號 / 乘號 / 除號 / 取餘數'
+desc: '算術運算子'
 type: 'tech'
 coverImage: '/assets/posts/tech/javascript.png'
 date: '2021-12-03T00:00:00.000Z'
