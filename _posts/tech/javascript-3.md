@@ -1,100 +1,79 @@
 ---
 title: 'Note - 重新認識javascript (3)'
-desc: '一元運算子 / 比較運算子'
+desc: '函式 / 全域變數 / 區域變數'
 type: 'tech'
 coverImage: '/assets/posts/tech/javascript.png'
-date: '2021-12-08T00:00:00.000Z'
+date: '2021-12-10T00:00:00.000Z'
 labels: [
   'javascript',
-  '一元運算子',
-  '正號',
-  '負號',
-  '遞增',
-  '遞減',
-  '比較運算子',
-  '自動轉型',
+  '函式',
+  '全域變數',
+  '區域變數'
 ]
 ---
 
-### 一元運算子
+### 函式
 
-#### 正號 `+` 與負號 `-`
-
-- 如果正號 `+` 與負號 `-` 後面帶的不是數字型態的值，會先用 `Number()` 轉型
+#### 定義函式的方式
+- 函式宣告（Function Declaration）
 ```javascript
-let a = "+1";
-let b = "-1";
-let c = "Bunny";
-
-console.log( +a );      // 1
-console.log( -a );      // -1
-console.log( +b );      // -1
-console.log( -b );      // 1
-console.log( +c );      // NaN
-console.log( -c );      // NaN
+function functionName([arguments]) {
+  // ...
+}
 ```
-- 物件型別會先用 `valueOf()` 取得對應的數值
+- 函式運算式（Function Expressions）
 ```javascript
-+true       // 1
-+false      // 0
-+null       // 0
-+function(value){ return value; }    //NaN
+const functionName = () => {
+  // ...
+}
+```
+- `new Function` （運作效能較差，實務上也較少會這樣做。）
+```javascript
+const functionName = new Function('number', 'return number * number');
 ```
 
-***因此可以用 `+` 來做數字轉型**
-```javascript
-let a = '1';
+#### Scope
 
-console.log(Number(a))  //1
-console.log(+a)         //1
+- 切分變數有效範圍的最小單位是 `"function"`
+- 沒有用 `var` 宣告的變數會是全域變數
+
+#### Hoisting
+
+- 變數提升（Variables Hoisting）：javascript會把宣告的語法移到 `scope的最上層`
+```javascript
+var x = 1;
+
+var doSomeThing = function(y) {
+  console.log(x);   // undefined
+
+  x = 100;
+  return x + y;
+};
+
+console.log( doSomeThing(50) );   // 150
+console.log( x );                 // 1
+```
+- 函數提升：透過 `函式宣告` 方式定義的函式可以在宣告前使用，而 `函式運算式` 定義的的函式會出現錯誤
+```javascript
+printBunny('yuan');    // yuan
+
+function printBunny(bunny) {
+  console.log(bunny)
+}
+
+printRabbit('yuan');    // TypeError: printRabbit is not a function
+
+const printRabbit = function (rabbit) {
+  console.log(rabbit)
+};
 ```
 
-#### 遞增 `++` 與遞減 `--`
+### 全域變數與區域變數
 
-```javascript
-let a = 10;
-
-a++;
-console.log(a);    // 11 : a = a + 1
-
-a--;
-console.log(a);    // 10: a = a - 1
-```
-
-- 運算子的位置在`前面`時，回傳原本的數值；位置在`後面`時，回傳運算後的結果
-```javascript
-let a = 10;
-
-console.log(a++);    // 10
-console.log(++a);    // 12
-```
-
-### 比較運算子
-
-比較兩側數值（純值，物件，運算式，函式回傳的結果），return `true` 或 `false`。
-
-#### `==` & `===`
-
-- `==`： 相等，會替數值做自動轉型
-- `===`： 全等，不會替數值做自動轉型
-
-#### 自動轉型的規則
-
-`==` 兩側資料型態不同時，會進行自動轉型：
-
-- `Boolean` 會轉成數字，`true` --> `1`，`false` --> `0`
-- `數字` 與 `字串` 做比較時，會將字串用 `Number()` 轉型，再進行比較
-- 其中一方是`物件`，而另一方是基本型別時，`物件`  會用 `valueOf()` 取得對應的基本型別，再進行比較
-- `NaN` 無論用 `==` 或 `===` 都不等於 `NaN`
-- 兩個物件做比較時，是在比較兩者是否 `指向同一個物件`
-
-#### `>` & `<`
-
-- `>` / `<` / `>=` / `<=`
-- 遇到不同型別也會 `自動轉型`
-- 其中一個是數字而另一個不是，會嘗試將另一個 `轉成數字` 再比較
-- 兩個都是字串會會照 `字母順序` 比較
-- `物件` 會先用 `valueOf()` 取得對應的數值，如果沒有則會透過 `toString()` 轉型再比較
+- 全域變數： 全域物件/頂層物件，指的是 `window`, node環境裡面叫 `global`
+- 變數有效範圍 (scope) 的最小切分單位是 function (ES6 的 let 與 const 例外)
+- 即使是寫在函式內，沒有 var 的變數會變成「全域變數」
+- 全域變數指的是全域物件 (頂層物件) 的「屬性」
 
 ### 資料來源
-- <a href='https://ithelp.ithome.com.tw/articles/10191254' target="_blank">重新認識 JavaScript: Day 07 「比較」與自動轉型的規則</a>
+- <a href='https://ithelp.ithome.com.tw/articles/10191549' target="_blank">重新認識 JavaScript: Day 10 函式 Functions 的基本概念</a>
