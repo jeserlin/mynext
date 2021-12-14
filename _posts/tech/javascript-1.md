@@ -186,7 +186,7 @@ Array.isArray(undefined);     // false
 
 ```javascript
 typeof  true;         // 'boolean'
-typeof  'Jeserlin';   // 'string'
+typeof  'Bunny';   // 'string'
 typeof  123;          // 'number'
 typeof  NaN;          // 'number'
 typeof  { };          // 'object'
