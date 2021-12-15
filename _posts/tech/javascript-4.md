@@ -6,6 +6,7 @@ coverImage: '/assets/posts/tech/javascript.png'
 date: '2021-12-14T00:00:00.000Z'
 labels: [
   'javascript',
+  'DOM'
 ]
 ---
 
