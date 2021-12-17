@@ -1,14 +1,15 @@
 ---
 title: 'Note - 重新認識javascript (5)'
-desc: '函式 / Callback Function / 立即被呼叫的特殊函式'
+desc: '函式 / Callback Function / 立即被呼叫的特殊函式 / 閉包'
 type: 'tech'
 coverImage: '/assets/posts/tech/javascript.png'
-date: '2021-12-15T00:00:00.000Z'
+date: '2021-12-17T00:00:00.000Z'
 labels: [
   'javascript',
   '函式',
   'Callback Function',
-  '立即被呼叫的特殊函式'
+  '立即被呼叫的特殊函式',
+  '閉包'
 ]
 ---
 
@@ -98,6 +99,35 @@ labels: [
   // 4
   ```
 
+#### 閉包 Closure
+
+```javascript
+function counter(){
+  // 將count包在function內避免暴露在global而造成衝突，同時確保count在呼叫時被修改
+  var count = 0;    
+
+  function innerCounter(){
+    return ++count;
+  }
+
+  return innerCounter;
+}
+
+var countFunc = counter();
+
+console.log( countFunc() );   // 1
+console.log( countFunc() );   // 2
+console.log( countFunc() );   // 3
+```
+
+用ES6可以簡化成：
+```javascript
+var counter = () => {
+  var count = 0;
+  return () => ++count;
+}
+```
 ### 資料來源
 - <a href='https://ithelp.ithome.com.tw/articles/10192368' target="_blank">重新認識 JavaScript: Day 17 函式裡的「參數」</a>
 - <a href='https://ithelp.ithome.com.tw/articles/10192739' target="_blank">重新認識 JavaScript: Day 18 Callback Function 與 IIFE</a>
+- <a href='https://ithelp.ithome.com.tw/articles/10193009' target="_blank">重新認識 JavaScript: Day 19 閉包 Closure</a>
