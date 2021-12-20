@@ -33,6 +33,7 @@ labels: [
 		- boolean
 		- null
 		- undefined
+		- symbol (ES6)
 	- 物件型別 (Object)
 		- array
 		- object
