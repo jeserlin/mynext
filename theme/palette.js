@@ -4,13 +4,13 @@ export default {
     white: '#FFF',
   },
   primary: {
-    light: '#e5d8cb',
-    main: '#DFCFBE',
+    light: '#ece7df',
+    main: '#d7cebe',
     dark: '#9c9085',
   },
   secondary: {
     light: '#ecb8ac',
-    main: '#d68e7e',
+    main: '#9c8686',
     dark: '#a2746a',
   },
   error: {
