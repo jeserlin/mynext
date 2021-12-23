@@ -39,6 +39,10 @@ table th {
     color: #fff;
 }
 
+pre {
+    display: grid;
+}
+
 pre code.hljs {
     display: block;
     overflow-x: auto;

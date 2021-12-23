@@ -71,3 +71,7 @@ const MyComponent = () => (
   </div>
 );
 ```
+
+### Reference
+- <a href='https://reactjs.org/docs/accessibility.html' target="_blank">Accessibility</a>
+- <a href='https://reactjs.org/docs/code-splitting.html' target="_blank">Code-Splitting</a>
