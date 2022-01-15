@@ -1,5 +1,5 @@
 ---
-title: '佛卡夏'
+title: '免揉佛卡夏'
 desc: '免揉佛卡夏'
 type: 'baking'
 coverImage: '/assets/posts/baking/focaccia.png'
