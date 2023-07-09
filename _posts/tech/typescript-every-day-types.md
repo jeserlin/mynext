@@ -5,8 +5,7 @@ type: 'tech'
 coverImage: '/assets/posts/tech/ts_logo.png'
 date: '2023-04-04T00:00:00.000Z'
 labels: [
-    'typescript',
-    'typescript',
+    'typescript'
 ]
 ---
 
