@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-import { Box, Typography, makeStyles } from '@material-ui/core';
-import { ArrowBackIos } from '@material-ui/icons';
+import { Box, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { ArrowBackIos } from '@mui/icons-material';
 
 const propTypes = {
   path: PropTypes.string,

@@ -5,8 +5,9 @@ import ErrorPage from 'next/error';
 import mermaid from 'mermaid';
 import { useRouter } from 'next/router';
 import {
-  Box, Grid, Typography, makeStyles,
-} from '@material-ui/core';
+  Box, Grid, Typography,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';

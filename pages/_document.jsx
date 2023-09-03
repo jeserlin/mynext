@@ -6,7 +6,7 @@ import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';
 import mermaid from 'mermaid';
-import { ServerStyleSheets } from '@material-ui/styles';
+import { ServerStyleSheets } from '@mui/styles';
 
 mermaid.initialize({
   startOnLoad: true,

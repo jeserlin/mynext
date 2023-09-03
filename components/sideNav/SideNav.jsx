@@ -4,8 +4,10 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
-  Drawer, List, ListItem, ListItemText, makeStyles, fade,
-} from '@material-ui/core';
+  Drawer, List, ListItem, ListItemText,
+} from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 
 import { menuList } from 'constants/common';
 import { commonFontFamily2 } from 'theme/typography';
@@ -71,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '&.MuiListItem-button': {
       '&:hover': {
-        backgroundColor: fade(theme.palette.primary.main, 0.1),
+        backgroundColor: alpha(theme.palette.primary.main, 0.1),
       },
     },
   },

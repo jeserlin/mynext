@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import LazyLoad from 'react-lazyload';
-import {
-  Box, Grid, Typography, fade, makeStyles,
-} from '@material-ui/core';
+import { Box, Grid, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 
 import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     padding: theme.spacing(4),
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.primary.main, 0.1),
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -81,7 +81,7 @@ const Baking = ({ posts }) => {
             md={6}
             component={LazyLoad}
             once
-            height={120}
+            height="100%"
             throttle={60}
             offset={60}
           >

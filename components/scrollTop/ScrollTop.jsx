@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {
-  Fab, Zoom, makeStyles, useScrollTrigger,
-} from '@material-ui/core';
+  Fab, Zoom, useScrollTrigger,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const propTypes = {
   window: PropTypes.shape({}),

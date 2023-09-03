@@ -6,9 +6,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import LazyLoad from 'react-lazyload';
 import { getPostsByFolder } from 'lib/api';
-import {
-  Box, Grid, Typography, makeStyles, fade,
-} from '@material-ui/core';
+import { Box, Grid, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 
 import SeoHeader from 'components/seoHeader';
 import { formatDate } from 'lib/convertors';
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     padding: theme.spacing(4),
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.primary.main, 0.1),
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -89,7 +89,7 @@ const Tech = ({ posts }) => {
             md={6}
             component={LazyLoad}
             once
-            height={150}
+            height="100%"
             throttle={80}
             offset={80}
           >

@@ -1,7 +1,8 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles, fade } from '@material-ui/core';
+import { alpha } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 
 const propTypes = {
   content: PropTypes.string,
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& *:not(pre) > code': {
       padding: theme.spacing(0.5),
-      backgroundColor: fade(theme.palette.primary.light, 0.5),
+      backgroundColor: alpha(theme.palette.primary.light, 0.5),
     },
     '& > ul': {
       paddingLeft: theme.spacing(5),

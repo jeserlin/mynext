@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MainLayout from 'layouts/MainLayout';
-import { ThemeProvider } from '@material-ui/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { DefaultSeo } from 'next-seo';
 
 import 'styles/globals.css';

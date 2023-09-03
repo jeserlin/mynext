@@ -1,6 +1,6 @@
 import React from 'react';
 
-import FaceIcon from '@material-ui/icons/Face';
+import FaceIcon from '@mui/icons-material/Face';
 import { ReactComponent as ImgCoding } from 'public/assets/bottomNav/coding.svg';
 import { ReactComponent as ImgCooking } from 'public/assets/bottomNav/cooking.svg';
 import { ReactComponent as ImgBaking } from 'public/assets/bottomNav/baking.svg';

@@ -1,14 +1,15 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import {
-  BottomNavigation, BottomNavigationAction, makeStyles,
-} from '@material-ui/core';
+  BottomNavigation, BottomNavigationAction,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import { menuList } from 'constants/common';
 
 const useStyles = makeStyles((theme) => ({
   actionItem: {
-    '&$selected': {
+    '&.Mui-selected': {
       color: theme.palette.primary.dark,
     },
   },

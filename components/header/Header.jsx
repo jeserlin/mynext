@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { AppBar, Toolbar } from '@material-ui/core';
+import { AppBar, Toolbar } from '@mui/material';
 
 const Header = () => (
   <AppBar>

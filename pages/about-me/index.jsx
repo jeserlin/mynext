@@ -1,9 +1,10 @@
 import React from 'react';
 import SeoHeader from 'components/seoHeader';
 import {
-  Avatar, Box, Divider, Link, Typography, makeStyles,
-} from '@material-ui/core';
-import { EmailOutlined, GitHub, RoomOutlined } from '@material-ui/icons';
+  Avatar, Box, Divider, Link, Typography,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { EmailOutlined, GitHub, RoomOutlined } from '@mui/icons-material';
 
 import { email, githubLink } from 'constants/basicInfo';
 

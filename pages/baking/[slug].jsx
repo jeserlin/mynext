@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Box, Grid, makeStyles } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';

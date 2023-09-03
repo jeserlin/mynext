@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useScrollTrigger from '@mui/material/useScrollTrigger';
+import { makeStyles } from '@mui/styles';
 import {
-  Box, Container, Slide, makeStyles, useTheme,
-} from '@material-ui/core';
+  Box, Container, Slide, useTheme,
+} from '@mui/material';
 
 import Header from 'components/header';
 import SideNav from 'components/sideNav';
