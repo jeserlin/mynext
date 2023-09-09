@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import MainLayout from 'layouts/MainLayout';
 import { ThemeProvider } from '@mui/material/styles';
 import { DefaultSeo } from 'next-seo';
+import { Analytics } from '@vercel/analytics/react';
 
 import 'styles/globals.css';
 import 'styles/codepen-embed.css';
@@ -31,6 +32,7 @@ function MyApp({ Component, pageProps }) {
           <Component {...pageProps} />
         </MainLayout>
       </ThemeProvider>
+      <Analytics />
     </>
   );
 }
