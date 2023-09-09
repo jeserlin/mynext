@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
-  Drawer, List, ListItem, ListItemText,
+  Drawer, List, ListItemButton, ListItemText,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -65,11 +65,10 @@ const useStyles = makeStyles((theme) => ({
     borderRight: `1px solid ${theme.palette.primary.light}`,
   },
   listItem: {
-    '&.MuiListItem-root': {
-      '&.Mui-selected': {
-        color: theme.palette.secondary.main,
-        backgroundColor: 'transparent',
-      },
+    '&.Mui-selected': {
+      color: theme.palette.primary.dark,
+      backgroundColor: 'transparent',
+      textDecoration: `${theme.palette.primary.main} wavy underline`,
     },
     '&.MuiListItem-button': {
       '&:hover': {
@@ -115,8 +114,7 @@ const SideNav = ({ open }) => {
                 key={text}
                 href={path}
               >
-                <ListItem
-                  button
+                <ListItemButton
                   selected={path === `/${parentRoute}`}
                   className={classes.listItem}
                 >
@@ -125,7 +123,7 @@ const SideNav = ({ open }) => {
                     primary={text}
                     component="a"
                   />
-                </ListItem>
+                </ListItemButton>
               </Link>
             ))}
           </List>

@@ -1,23 +1,23 @@
 import React from 'react';
 
 import FaceIcon from '@mui/icons-material/Face';
-import { ReactComponent as ImgCoding } from 'public/assets/bottomNav/coding.svg';
-import { ReactComponent as ImgCooking } from 'public/assets/bottomNav/cooking.svg';
-import { ReactComponent as ImgBaking } from 'public/assets/bottomNav/baking.svg';
+import CodeIcon from '@mui/icons-material/Code';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import CookieOutlinedIcon from '@mui/icons-material/CookieOutlined';
 
 export const menuList = [
   {
-    image: () => (<ImgCoding />),
+    image: () => (<CodeIcon />),
     text: 'Tech',
     path: '/tech',
   },
   {
-    image: () => (<ImgCooking />),
+    image: () => (<RestaurantIcon />),
     text: 'Cooking',
     path: '/cooking',
   },
   {
-    image: () => (<ImgBaking />),
+    image: () => (<CookieOutlinedIcon />),
     text: 'Baking',
     path: '/baking',
   },
