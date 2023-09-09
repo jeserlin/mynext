@@ -22,7 +22,6 @@
         "@mui/styles": "^5.14.7",
         "@next/eslint-plugin-next": "^11.0.0",
         "@sergeymyssak/nextjs-sitemap": "^2.0.3",
-        "@vercel/analytics": "^1.0.2",
         "clsx": "^1.1.1",
         "date-fns": "^2.22.1",
         "gray-matter": "^4.0.3",
