@@ -31,7 +31,11 @@ const useStyles = makeStyles((theme) => ({
   },
   img: {
     width: 'auto',
-    maxHeight: '200px',
+    maxHeight: '150px',
+    transition: 'transform .2s',
+    '&:hover': {
+      transform: 'scale(1.05)',
+    },
   },
 }));
 
@@ -83,7 +87,7 @@ const Books = ({ posts }) => {
 export async function getStaticProps() {
   const posts = getPostsByFolder({
     folder: 'books',
-    fields: ['slug', 'title', 'coverImage', 'author'],
+    fields: ['slug', 'title', 'coverImage', 'author', 'date'],
   });
 
   return {

@@ -25,6 +25,7 @@ const BottomNav = () => {
   const { route } = router;
   const parentRoute = route.split('/')[1];
 
+  const list = menuList.filter(({ path }) => path !== '/about-me');
   const onChangeNav = (event, newValue) => {
     router.push(newValue);
   };
@@ -35,7 +36,7 @@ const BottomNav = () => {
       value={`/${parentRoute}`}
       onChange={onChangeNav}
     >
-      {menuList.map(({ image, text, path }) => (
+      {list.map(({ image, text, path }) => (
         <BottomNavigationAction
           key={text}
           value={path}
