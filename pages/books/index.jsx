@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
-import { Box, Grid, Typography } from '@mui/material';
+import {
+  Box, Chip, Grid, Stack, Typography,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
 
+const All = 'All';
+
 const propTypes = {
+  years: PropTypes.arrayOf(PropTypes.string),
   posts: PropTypes.arrayOf(PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
@@ -16,10 +22,14 @@ const propTypes = {
 };
 
 const defaultProps = {
+  years: [],
   posts: [],
 };
 
 const useStyles = makeStyles((theme) => ({
+  chip: {
+    borderRadius: theme.shape.borderRadius,
+  },
   postTitle: {
     ...theme.typography.subtitle1,
     color: theme.palette.primary.dark,
@@ -39,16 +49,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Books = ({ posts }) => {
+const Books = ({ years, posts }) => {
   const classes = useStyles();
+  const [selectedYear, setSelectedYear] = useState(All);
+
+  const onClickChip = (year) => {
+    setSelectedYear(year);
+  };
+
+  const filteredPosts = () => {
+    if (selectedYear === All) {
+      return posts;
+    }
+    return _.filter(posts, ({ date }) => new Date(date).getFullYear() === selectedYear);
+  };
+
   return (
     <>
       <SeoHeader
         title="Books"
         description="All about books"
       />
+      <Stack direction="row" spacing={2} mb={6}>
+        {years.map((year) => (
+          <Chip
+            classes={{
+              root: classes.chip,
+            }}
+            variant={selectedYear === year ? 'filled' : 'outlined'}
+            color="secondary"
+            size="small"
+            label={year}
+            onClick={() => onClickChip(year)}
+          />
+        ))}
+      </Stack>
       <Grid container alignItems="stretch" spacing={6}>
-        {posts.map(({
+        {filteredPosts().map(({
           slug, coverImage, title, author,
         }) => (
           <Grid
@@ -90,8 +127,17 @@ export async function getStaticProps() {
     fields: ['slug', 'title', 'coverImage', 'author', 'date'],
   });
 
+  const years = _.chain(posts)
+    .reduce((acc, { date }) => {
+      acc.push(new Date(date).getFullYear());
+      return acc;
+    }, [All])
+    .uniq()
+    .value();
+
   return {
     props: {
+      years,
       posts,
     },
   };
