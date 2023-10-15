@@ -3,7 +3,7 @@ title: '滷肉'
 desc: '滷肉'
 type: 'cooking'
 coverImage: '/assets/posts/cooking/braised_pork.png'
-date: '2021-11-325T00:00:07.322Z'
+date: '2021-11-15T00:00:07.322Z'
 ingredient: [
   '梅花豬肉',
   '豆乾',
