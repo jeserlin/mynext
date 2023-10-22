@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& > hr': {
       height: 1,
-      backgroundColor: theme.palette.primary.dark,
+      backgroundColor: theme.palette.primary.light,
       border: 'none',
     },
   },

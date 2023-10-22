@@ -8,6 +8,8 @@ import {
 import { makeStyles } from '@mui/styles';
 
 import SeoHeader from 'components/seoHeader';
+import Modal from 'components/modal';
+import markdownToHtml from 'lib/markdownToHtml';
 import { getPostsByFolder } from 'lib/api';
 
 const All = 'All';
@@ -52,9 +54,23 @@ const useStyles = makeStyles((theme) => ({
 const Books = ({ years, posts }) => {
   const classes = useStyles();
   const [selectedYear, setSelectedYear] = useState(All);
+  const [selectedBook, setSelectedBook] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onClickChip = (year) => {
     setSelectedYear(year);
+  };
+
+  const onSelectBook = async (book) => {
+    const htmlContent = await markdownToHtml(book.content || '');
+    if (!htmlContent) return;
+
+    setSelectedBook({ ...book, content: htmlContent });
+    setIsModalOpen(true);
+  };
+
+  const onCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   const filteredPosts = () => {
@@ -86,7 +102,7 @@ const Books = ({ years, posts }) => {
       </Stack>
       <Grid container alignItems="stretch" spacing={6}>
         {filteredPosts().map(({
-          slug, coverImage, title, author,
+          slug, coverImage, title, author, content,
         }) => (
           <Grid
             key={slug}
@@ -101,7 +117,10 @@ const Books = ({ years, posts }) => {
             offset={60}
           >
             <>
-              <Box mb={2}>
+              <Box
+                mb={2}
+                onClick={() => onSelectBook({ title, content })}
+              >
                 {coverImage && (
                   <img
                     src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
@@ -117,6 +136,12 @@ const Books = ({ years, posts }) => {
           </Grid>
         ))}
       </Grid>
+      <Modal
+        open={isModalOpen}
+        title={selectedBook.title}
+        content={selectedBook.content}
+        onClose={onCloseModal}
+      />
     </>
   );
 };
@@ -124,7 +149,7 @@ const Books = ({ years, posts }) => {
 export async function getStaticProps() {
   const posts = getPostsByFolder({
     folder: 'books',
-    fields: ['slug', 'title', 'coverImage', 'author', 'date'],
+    fields: ['slug', 'title', 'coverImage', 'author', 'date', 'content'],
   });
 
   const years = _.chain(posts)
