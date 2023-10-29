@@ -2,7 +2,7 @@
 title: '香蕉磅蛋糕'
 desc: '香蕉磅蛋糕'
 type: 'baking'
-coverImage: '/assets/posts/baking/banana_pound_cake.png'
+coverImage: 'https://media.publit.io/file/banana-pound-cake.png'
 date: '2023-10-10T00:00:07.322Z'
 ingredient: [
   '香蕉',
