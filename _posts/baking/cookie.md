@@ -2,7 +2,7 @@
 title: '曲奇'
 desc: '曲奇'
 type: 'baking'
-coverImage: '/assets/posts/baking/cookie.png'
+coverImage: 'https://media.publit.io/file/baking/cookie.png'
 date: '2021-08-07T00:00:07.322Z'
 ingredient: [
   '無鹽奶油',

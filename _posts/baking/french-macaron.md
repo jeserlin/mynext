@@ -2,7 +2,7 @@
 title: '法式馬卡龍'
 desc: '法式馬卡龍'
 type: 'baking'
-coverImage: '/assets/posts/baking/french_macaron.png'
+coverImage: 'https://media.publit.io/file/baking/french-macaron.png'
 date: '2021-06-21T00:00:07.322Z'
 ingredient: [
   '蛋白',

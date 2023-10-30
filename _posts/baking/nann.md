@@ -2,7 +2,7 @@
 title: '印度烤餅'
 desc: '印度烤餅'
 type: 'baking'
-coverImage: '/assets/posts/baking/nann.png'
+coverImage: 'https://media.publit.io/file/baking/nann.png'
 date: '2023-10-15T00:00:07.322Z'
 ingredient: [
   '高筋麵粉',

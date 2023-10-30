@@ -2,7 +2,7 @@
 title: '免揉佛卡夏'
 desc: '免揉佛卡夏'
 type: 'baking'
-coverImage: '/assets/posts/baking/focaccia.png'
+coverImage: 'https://media.publit.io/file/baking/focaccia.png'
 date: '2021-06-19T00:00:07.322Z'
 ingredient: [
   '高筋麵粉',

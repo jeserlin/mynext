@@ -2,7 +2,7 @@
 title: '芒果奶酪'
 desc: '芒果奶酪'
 type: 'baking'
-coverImage: '/assets/posts/baking/mango_panna_cotta.png'
+coverImage: 'https://media.publit.io/file/baking/mango-panna-cotta.png'
 date: '2021-07-21T00:00:00.000Z'
 ingredient: [
   '芒果',

@@ -3,7 +3,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Box, Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -50,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       order: 2,
     },
-    '& > * > img': {
+    '& img': {
       borderRadius: theme.spacing(4),
     },
   },
@@ -81,11 +80,10 @@ const BakingPost = (props) => {
           </Grid>
           <Grid item xs={12} sm={4} md={3} className={classes.image}>
             {post.coverImage && (
-              <Image
+              <img
                 src={post.coverImage}
-                layout="responsive"
-                width="100"
-                height="100"
+                alt={post.title}
+                loading="lazy"
               />
             )}
           </Grid>

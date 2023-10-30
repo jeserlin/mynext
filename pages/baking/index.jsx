@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Image from 'next/image';
 import Link from 'next/link';
 import LazyLoad from 'react-lazyload';
 import { Box, Grid, Typography } from '@mui/material';
@@ -35,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
   coverImg: {
     width: '25%',
-    '& > * > img': {
+    '& img': {
       borderRadius: theme.shape.borderRadius,
     },
   },
@@ -90,11 +89,10 @@ const Baking = ({ posts }) => {
                 <Box display="flex" className={classes.post}>
                   <Box className={classes.coverImg}>
                     {coverImage && (
-                      <Image
+                      <img
                         src={coverImage}
-                        layout="responsive"
-                        width="100"
-                        height="100"
+                        alt={title}
+                        loading="lazy"
                       />
                     )}
                   </Box>

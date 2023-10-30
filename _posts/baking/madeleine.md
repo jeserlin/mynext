@@ -2,7 +2,7 @@
 title: '瑪德蓮'
 desc: '橘子瑪德蓮'
 type: 'baking'
-coverImage: '/assets/posts/baking/madeleine.png'
+coverImage: 'https://media.publit.io/file/baking/madeleine.png'
 date: '2021-10-24T00:00:00.322Z'
 ingredient: [
   '無鹽奶油',
