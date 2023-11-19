@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import {
   Box, Chip, Grid, Stack, Typography,
 } from '@mui/material';
@@ -41,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
     ...theme.typography.body2,
     color: theme.palette.primary.dark,
   },
+  imgContainer: {
+    position: 'relative',
+    width: 'fit-content',
+  },
   img: {
     width: 'auto',
     maxHeight: '150px',
@@ -48,6 +53,13 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       transform: 'scale(1.05)',
     },
+  },
+  note: {
+    position: 'absolute',
+    top: 0,
+    right: -5,
+    backgroundColor: theme.palette.primary.light,
+    borderRadius: theme.spacing(1),
   },
 }));
 
@@ -119,6 +131,7 @@ const Books = ({ years, posts }) => {
             <>
               <Box
                 mb={2}
+                className={classes.imgContainer}
                 onClick={() => onSelectBook({ title, content })}
               >
                 {coverImage && (
@@ -129,6 +142,7 @@ const Books = ({ years, posts }) => {
                     className={classes.img}
                   />
                 )}
+                {content && <Box className={classes.note}><EditNoteIcon /></Box>}
               </Box>
               <Typography className={classes.postTitle}>{title}</Typography>
               <Typography className={classes.author}>{author}</Typography>
