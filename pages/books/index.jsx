@@ -7,6 +7,7 @@ import {
   Box, Chip, Grid, Stack, Typography,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import SeoHeader from 'components/seoHeader';
 import Modal from 'components/modal';
@@ -135,11 +136,11 @@ const Books = ({ years, posts }) => {
                 onClick={() => onSelectBook({ title, content })}
               >
                 {coverImage && (
-                  <img
-                    src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
-                    alt={title}
-                    loading="lazy"
+                  <LazyLoadImage
                     className={classes.img}
+                    src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
+                    height={150}
+                    width={110}
                   />
                 )}
                 {content && <Box className={classes.note}><EditNoteIcon /></Box>}
