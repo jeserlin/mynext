@@ -115,7 +115,7 @@ const Baking = ({ posts }) => {
 export async function getStaticProps() {
   const posts = getPostsByFolder({
     folder: 'baking',
-    fields: ['slug', 'title', 'coverImage', 'ingredient'],
+    fields: ['slug', 'date', 'title', 'coverImage', 'ingredient'],
   });
 
   return {

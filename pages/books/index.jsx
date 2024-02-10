@@ -17,7 +17,10 @@ import { getPostsByFolder } from 'lib/api';
 const All = 'All';
 
 const propTypes = {
-  years: PropTypes.arrayOf(PropTypes.string),
+  years: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ])),
   posts: PropTypes.arrayOf(PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
@@ -102,6 +105,7 @@ const Books = ({ years, posts }) => {
       <Stack direction="row" spacing={2} mb={6}>
         {years.map((year) => (
           <Chip
+            key={year}
             classes={{
               root: classes.chip,
             }}
