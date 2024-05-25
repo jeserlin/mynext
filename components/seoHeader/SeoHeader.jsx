@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import PropTypes from 'prop-types';
 // import { NextSeo } from 'next-seo';
@@ -7,6 +8,7 @@ const propTypes = {
   description: PropTypes.string,
 };
 
+// eslint-disable-next-line no-unused-vars
 const SeoHeader = ({ title = '', description = '' }) => (
   <div />
   // <NextSeo

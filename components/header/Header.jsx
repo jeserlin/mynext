@@ -7,8 +7,12 @@ const Header = () => (
     <Toolbar>
       <Image
         src="/yuan.png"
-        width={30}
-        height={26}
+        width="30"
+        height="26"
+        style={{
+          width: 30,
+          height: 26,
+        }}
       />
     </Toolbar>
   </AppBar>

@@ -28,6 +28,10 @@ const NotFound = () => {
         src="/assets/others/myBunnies.png"
         width={200}
         height={200}
+        style={{
+          maxWidth: 200,
+          height: 200,
+        }}
       />
       <Typography
         variant="h6"

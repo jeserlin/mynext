@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -86,9 +87,13 @@ const Cooking = ({ posts = [] }) => {
                   {coverImage && (
                     <Image
                       src={coverImage}
-                      layout="responsive"
                       width="100"
                       height="100"
+                      sizes="100vw"
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                      }}
                     />
                   )}
                 </Box>

@@ -14,6 +14,7 @@ import SeoHeader from 'components/seoHeader';
 import { formatDate } from 'lib/convertors';
 
 const propTypes = {
+  // eslint-disable-next-line react/require-default-props
   posts: PropTypes.arrayOf(PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
@@ -95,9 +96,13 @@ const Tech = ({ posts = [] }) => {
                   {coverImage && (
                     <Image
                       src={coverImage}
-                      layout="responsive"
                       width="100"
                       height="100"
+                      sizes="100vw"
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                      }}
                     />
                   )}
                 </Box>

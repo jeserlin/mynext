@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -78,9 +79,13 @@ const CookingPost = (props) => {
             {post.coverImage && (
               <Image
                 src={post.coverImage}
-                layout="responsive"
                 width="100"
                 height="100"
+                sizes="100vw"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                }}
               />
             )}
           </Grid>

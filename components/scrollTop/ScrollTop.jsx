@@ -7,6 +7,7 @@ import {
 import { makeStyles } from '@mui/styles';
 
 const propTypes = {
+  // eslint-disable-next-line react/require-default-props
   window: PropTypes.shape({}),
 };
 

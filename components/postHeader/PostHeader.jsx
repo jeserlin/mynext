@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Typography } from '@mui/material';
 
 const propTypes = {
+  // eslint-disable-next-line react/require-default-props
   title: PropTypes.string,
 };
 

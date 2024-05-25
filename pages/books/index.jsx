@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React, { useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';

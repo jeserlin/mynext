@@ -19,6 +19,7 @@ import { getPostBySlug, getPostsByFolder } from 'lib/api';
 import { formatDate } from 'lib/convertors';
 
 const propTypes = {
+  // eslint-disable-next-line react/require-default-props
   post: PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,

@@ -13,6 +13,7 @@ import { menuList } from 'constants/common';
 import { commonFontFamily2 } from 'theme/typography';
 
 const propTypes = {
+  // eslint-disable-next-line react/require-default-props
   open: PropTypes.bool,
 };
 

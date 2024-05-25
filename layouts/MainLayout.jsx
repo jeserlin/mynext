@@ -13,6 +13,7 @@ import SideNav from 'components/sideNav';
 import BottomNav from 'components/bottomNav';
 
 const propTypes = {
+  // eslint-disable-next-line react/require-default-props
   children: PropTypes.node,
 };
 
