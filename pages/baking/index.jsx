@@ -18,10 +18,6 @@ const propTypes = {
   })),
 };
 
-const defaultProps = {
-  posts: [],
-};
-
 const useStyles = makeStyles((theme) => ({
   post: {
     cursor: 'pointer',
@@ -60,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Baking = ({ posts }) => {
+const Baking = ({ posts = [] }) => {
   const classes = useStyles();
 
   return (
@@ -85,25 +81,23 @@ const Baking = ({ posts }) => {
             offset={60}
           >
             <Link href={`/baking/${slug}`}>
-              <a>
-                <Box display="flex" className={classes.post}>
-                  <Box className={classes.coverImg}>
-                    {coverImage && (
-                      <img
-                        src={coverImage}
-                        alt={title}
-                        loading="lazy"
-                      />
-                    )}
-                  </Box>
-                  <Box className={classes.postInfo}>
-                    <Typography className={classes.postTitle}>{title}</Typography>
-                    <Typography className={classes.postDesc}>
-                      {`食材: ${ingredient.join(', ')}`}
-                    </Typography>
-                  </Box>
+              <Box display="flex" className={classes.post}>
+                <Box className={classes.coverImg}>
+                  {coverImage && (
+                    <img
+                      src={coverImage}
+                      alt={title}
+                      loading="lazy"
+                    />
+                  )}
                 </Box>
-              </a>
+                <Box className={classes.postInfo}>
+                  <Typography className={classes.postTitle}>{title}</Typography>
+                  <Typography className={classes.postDesc}>
+                    {`食材: ${ingredient.join(', ')}`}
+                  </Typography>
+                </Box>
+              </Box>
             </Link>
           </Grid>
         ))}
@@ -126,6 +120,5 @@ export async function getStaticProps() {
 }
 
 Baking.propTypes = propTypes;
-Baking.defaultProps = defaultProps;
 
 export default Baking;

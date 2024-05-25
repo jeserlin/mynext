@@ -28,11 +28,6 @@ const propTypes = {
   })),
 };
 
-const defaultProps = {
-  years: [],
-  posts: [],
-};
-
 const useStyles = makeStyles((theme) => ({
   chip: {
     borderRadius: theme.shape.borderRadius,
@@ -67,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Books = ({ years, posts }) => {
+const Books = ({ years = [], posts = [] }) => {
   const classes = useStyles();
   const [selectedYear, setSelectedYear] = useState(All);
   const [selectedBook, setSelectedBook] = useState({});
@@ -188,6 +183,5 @@ export async function getStaticProps() {
 }
 
 Books.propTypes = propTypes;
-Books.defaultProps = defaultProps;
 
 export default Books;

@@ -21,10 +21,6 @@ const propTypes = {
   })),
 };
 
-const defaultProps = {
-  posts: [],
-};
-
 const useStyles = makeStyles((theme) => ({
   post: {
     cursor: 'pointer',
@@ -69,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Tech = ({ posts }) => {
+const Tech = ({ posts = [] }) => {
   const classes = useStyles();
 
   return (
@@ -94,27 +90,25 @@ const Tech = ({ posts }) => {
             offset={80}
           >
             <Link href={`/tech/${slug}`}>
-              <a>
-                <Box display="flex" className={classes.post}>
-                  <Box className={classes.coverImg}>
-                    {coverImage && (
-                      <Image
-                        src={coverImage}
-                        layout="responsive"
-                        width="100"
-                        height="100"
-                      />
-                    )}
-                  </Box>
-                  <Box className={classes.postInfo}>
-                    <Typography className={classes.postTitle}>{title}</Typography>
-                    <Typography className={classes.postDesc}>{desc}</Typography>
-                    <Typography className={classes.postDate}>
-                      {`更新時間: ${formatDate(date)}`}
-                    </Typography>
-                  </Box>
+              <Box display="flex" className={classes.post}>
+                <Box className={classes.coverImg}>
+                  {coverImage && (
+                    <Image
+                      src={coverImage}
+                      layout="responsive"
+                      width="100"
+                      height="100"
+                    />
+                  )}
                 </Box>
-              </a>
+                <Box className={classes.postInfo}>
+                  <Typography className={classes.postTitle}>{title}</Typography>
+                  <Typography className={classes.postDesc}>{desc}</Typography>
+                  <Typography className={classes.postDate}>
+                    {`更新時間: ${formatDate(date)}`}
+                  </Typography>
+                </Box>
+              </Box>
             </Link>
           </Grid>
         ))}
@@ -138,6 +132,5 @@ export async function getStaticProps() {
 }
 
 Tech.propTypes = propTypes;
-Tech.defaultProps = defaultProps;
 
 export default Tech;

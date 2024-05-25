@@ -8,10 +8,6 @@ const propTypes = {
   content: PropTypes.string,
 };
 
-const defaultProps = {
-  content: {},
-};
-
 const useStyles = makeStyles((theme) => ({
   markdown: {
     ...theme.typography.body1,
@@ -71,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PostContent = ({ content }) => {
+const PostContent = ({ content = {} }) => {
   const classes = useStyles();
 
   return (
@@ -83,6 +79,5 @@ const PostContent = ({ content }) => {
 };
 
 PostContent.propTypes = propTypes;
-PostContent.defaultProps = defaultProps;
 
 export default PostContent;

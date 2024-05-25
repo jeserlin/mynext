@@ -10,10 +10,6 @@ const propTypes = {
   path: PropTypes.string,
 };
 
-const defaultProps = {
-  path: '/',
-};
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -24,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GoBack = ({ path }) => {
+const GoBack = ({ path = '/' }) => {
   const classes = useStyles();
   const router = useRouter();
 
@@ -42,6 +38,5 @@ const GoBack = ({ path }) => {
 };
 
 GoBack.propTypes = propTypes;
-GoBack.defaultProps = defaultProps;
 
 export default GoBack;

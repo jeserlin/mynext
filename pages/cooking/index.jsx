@@ -18,10 +18,6 @@ const propTypes = {
   })),
 };
 
-const defaultProps = {
-  posts: [],
-};
-
 const useStyles = makeStyles((theme) => ({
   post: {
     cursor: 'pointer',
@@ -60,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Cooking = ({ posts }) => {
+const Cooking = ({ posts = [] }) => {
   const classes = useStyles();
 
   return (
@@ -85,26 +81,24 @@ const Cooking = ({ posts }) => {
             offset={60}
           >
             <Link href={`/cooking/${slug}`}>
-              <a>
-                <Box display="flex" className={classes.post}>
-                  <Box className={classes.coverImg}>
-                    {coverImage && (
-                      <Image
-                        src={coverImage}
-                        layout="responsive"
-                        width="100"
-                        height="100"
-                      />
-                    )}
-                  </Box>
-                  <Box className={classes.postInfo}>
-                    <Typography className={classes.postTitle}>{title}</Typography>
-                    <Typography className={classes.postDesc}>
-                      {`食材: ${ingredient.join(', ')}`}
-                    </Typography>
-                  </Box>
+              <Box display="flex" className={classes.post}>
+                <Box className={classes.coverImg}>
+                  {coverImage && (
+                    <Image
+                      src={coverImage}
+                      layout="responsive"
+                      width="100"
+                      height="100"
+                    />
+                  )}
                 </Box>
-              </a>
+                <Box className={classes.postInfo}>
+                  <Typography className={classes.postTitle}>{title}</Typography>
+                  <Typography className={classes.postDesc}>
+                    {`食材: ${ingredient.join(', ')}`}
+                  </Typography>
+                </Box>
+              </Box>
             </Link>
           </Grid>
         ))}
@@ -127,6 +121,5 @@ export async function getStaticProps() {
 }
 
 Cooking.propTypes = propTypes;
-Cooking.defaultProps = defaultProps;
 
 export default Cooking;

@@ -16,10 +16,6 @@ const propTypes = {
   open: PropTypes.bool,
 };
 
-const defaultProps = {
-  open: true,
-};
-
 const drawerWidth = 223;
 
 const useStyles = makeStyles((theme) => ({
@@ -84,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SideNav = ({ open }) => {
+const SideNav = ({ open = true }) => {
   const classes = useStyles();
 
   const router = useRouter();
@@ -134,6 +130,5 @@ const SideNav = ({ open }) => {
 };
 
 SideNav.propTypes = propTypes;
-SideNav.defaultProps = defaultProps;
 
 export default SideNav;

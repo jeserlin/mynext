@@ -4,28 +4,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MainLayout from 'layouts/MainLayout';
 import { ThemeProvider } from '@mui/material/styles';
-import { DefaultSeo } from 'next-seo';
+// import { DefaultSeo } from 'next-seo';
 
 import 'styles/globals.css';
 import 'styles/codepen-embed.css';
 import 'styles/mermaid.css';
 import theme from 'theme';
 
-import SEO from '../next-seo.config';
-
 const propTypes = {
   Component: PropTypes.func.isRequired,
   pageProps: PropTypes.shape({}),
 };
 
-const defaultProps = {
-  pageProps: {},
-};
-
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps = {} }) {
   return (
     <>
-      <DefaultSeo {...SEO} />
       <ThemeProvider theme={theme}>
         <MainLayout>
           <Component {...pageProps} />
@@ -36,6 +29,5 @@ function MyApp({ Component, pageProps }) {
 }
 
 MyApp.propTypes = propTypes;
-MyApp.defaultProps = defaultProps;
 
 export default MyApp;

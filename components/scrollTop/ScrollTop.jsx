@@ -10,10 +10,6 @@ const propTypes = {
   window: PropTypes.shape({}),
 };
 
-const defaultProps = {
-  window: undefined,
-};
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'none',
@@ -63,6 +59,5 @@ const ScrollTop = ({ window }) => {
 };
 
 ScrollTop.propTypes = propTypes;
-ScrollTop.defaultProps = defaultProps;
 
 export default ScrollTop;

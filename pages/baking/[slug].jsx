@@ -25,10 +25,6 @@ const propTypes = {
   }),
 };
 
-const defaultProps = {
-  post: {},
-};
-
 const useStyles = makeStyles((theme) => ({
   root: {
     [theme.breakpoints.up('sm')]: {
@@ -57,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 const bakingMainPath = '/baking';
 const BakingPost = (props) => {
-  const { post } = props;
+  const { post = {} } = props;
   const classes = useStyles();
 
   const router = useRouter();
@@ -133,6 +129,5 @@ export async function getStaticPaths() {
 }
 
 BakingPost.propTypes = propTypes;
-BakingPost.defaultProps = defaultProps;
 
 export default BakingPost;

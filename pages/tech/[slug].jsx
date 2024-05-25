@@ -28,10 +28,6 @@ const propTypes = {
   }),
 };
 
-const defaultProps = {
-  post: {},
-};
-
 const useStyles = makeStyles((theme) => ({
   root: {
     [theme.breakpoints.up('sm')]: {
@@ -52,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 const techMainPath = '/tech';
 
 const TechPost = (props) => {
-  const { post } = props;
+  const { post = {} } = props;
   const classes = useStyles();
 
   const router = useRouter();
@@ -129,6 +125,5 @@ export async function getStaticPaths() {
 }
 
 TechPost.propTypes = propTypes;
-TechPost.defaultProps = defaultProps;
 
 export default TechPost;

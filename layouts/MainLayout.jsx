@@ -16,10 +16,6 @@ const propTypes = {
   children: PropTypes.node,
 };
 
-const defaultProps = {
-  children: null,
-};
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -44,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MainLayout = ({ children }, props) => {
+const MainLayout = ({ children = null }, props) => {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -78,6 +74,5 @@ const MainLayout = ({ children }, props) => {
 };
 
 MainLayout.propTypes = propTypes;
-MainLayout.defaultProps = defaultProps;
 
 export default MainLayout;

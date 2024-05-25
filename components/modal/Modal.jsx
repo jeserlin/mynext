@@ -18,13 +18,6 @@ const propTypes = {
   onClose: PropTypes.func,
 };
 
-const defaultProps = {
-  open: false,
-  title: '',
-  content: '',
-  onClose: () => { },
-};
-
 const useStyles = makeStyles((theme) => ({
   title: {
     color: theme.palette.primary.dark,
@@ -41,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Modal = ({
-  open, title, content, onClose,
+  open = false, title = '', content = '', onClose = () => {},
 }) => {
   const classes = useStyles();
 
@@ -84,6 +77,5 @@ const Modal = ({
 };
 
 Modal.propTypes = propTypes;
-Modal.defaultProps = defaultProps;
 
 export default Modal;
