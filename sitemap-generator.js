@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { configureSitemap } from '@sergeymyssak/nextjs-sitemap';
 import { getAllPosts } from './lib/api.js';
 

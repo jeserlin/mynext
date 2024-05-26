@@ -1,4 +1,3 @@
-/* eslint-disable react/require-default-props */
 import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import _ from 'lodash';

@@ -34,7 +34,6 @@ const StyledZoom = styled(Zoom)((
 }));
 
 const propTypes = {
-  // eslint-disable-next-line react/require-default-props
   window: PropTypes.shape({}),
 };
 

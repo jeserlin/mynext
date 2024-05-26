@@ -100,7 +100,6 @@ const Root = styled('div')((
 }));
 
 const propTypes = {
-  // eslint-disable-next-line react/require-default-props
   open: PropTypes.bool,
 };
 

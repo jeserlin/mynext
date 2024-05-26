@@ -50,7 +50,6 @@ const Root = styled('div')((
 }));
 
 const propTypes = {
-  // eslint-disable-next-line react/require-default-props
   post: PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
