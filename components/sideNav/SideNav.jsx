@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';

@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import { styled, alpha } from '@mui/material/styles';
@@ -100,6 +101,7 @@ const Cooking = ({ posts = [] }) => (
                 <Box className={classes.coverImg}>
                   {coverImage && (
                   <Image
+                    alt="cover image"
                     src={coverImage}
                     width="100"
                     height="100"

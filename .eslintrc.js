@@ -5,7 +5,7 @@ module.exports = {
   },
   extends: [
     'plugin:react/recommended',
-    'plugin:@next/next/recommended',
+    'next/core-web-vitals',
     'airbnb',
   ],
   parserOptions: {
@@ -19,7 +19,6 @@ module.exports = {
     'react',
   ],
   rules: {
-    'react/prop-types': false,
     'import/extensions': [
       'error',
       'ignorePackages',

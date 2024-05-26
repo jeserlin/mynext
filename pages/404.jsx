@@ -34,6 +34,7 @@ const NotFound = () => (
     className={classes.container}
   >
     <Image
+      alt="404"
       src="/assets/others/myBunnies.png"
       width={200}
       height={200}

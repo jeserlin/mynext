@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { styled } from '@mui/material/styles';

@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect } from 'react';
 import { styled } from '@mui/material/styles';
@@ -64,14 +65,14 @@ const techMainPath = '/tech';
 const TechPost = (props) => {
   const { post = {} } = props;
 
+  useEffect(() => {
+    mermaid.contentLoaded();
+  });
+
   const router = useRouter();
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />;
   }
-
-  useEffect(() => {
-    mermaid.contentLoaded();
-  });
 
   return (
     (

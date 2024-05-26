@@ -1,5 +1,5 @@
 import { configureSitemap } from '@sergeymyssak/nextjs-sitemap';
-import { getAllPosts } from './lib/api.js';
+import { getAllPosts } from './lib/api';
 
 async function fetchDynamicPaths() {
   return getAllPosts().reduce((acc, cur) => {

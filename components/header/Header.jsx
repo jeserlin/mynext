@@ -6,6 +6,7 @@ const Header = () => (
   <AppBar>
     <Toolbar>
       <Image
+        alt="yuan"
         src="/yuan.png"
         width="30"
         height="26"

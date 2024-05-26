@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { styled } from '@mui/material/styles';
@@ -93,6 +94,7 @@ const CookingPost = (props) => {
             <Grid item xs={12} md={4} className={classes.image}>
               {post.coverImage && (
               <Image
+                alt="cover image"
                 src={post.coverImage}
                 width="100"
                 height="100"
