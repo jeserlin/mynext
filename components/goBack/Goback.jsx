@@ -1,18 +1,23 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
-const propTypes = {
-  // eslint-disable-next-line react/require-default-props
-  path: PropTypes.string,
+const PREFIX = 'GoBack';
+
+const classes = {
+  root: `${PREFIX}-root`,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const StyledBox = styled(Box)((
+  {
+    theme,
+  },
+) => ({
+  [`&.${classes.root}`]: {
     display: 'flex',
     alignItems: 'center',
     cursor: 'pointer',
@@ -21,8 +26,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  path: PropTypes.string,
+};
+
 const GoBack = ({ path = '/' }) => {
-  const classes = useStyles();
   const router = useRouter();
 
   const onClickGoBack = (e) => {
@@ -31,10 +40,10 @@ const GoBack = ({ path = '/' }) => {
   };
 
   return (
-    <Box id="back-to-top-anchor" className={classes.root} onClick={onClickGoBack}>
+    <StyledBox id="back-to-top-anchor" className={classes.root} onClick={onClickGoBack}>
       <ArrowBackIcon fontSize="small" />
       <Typography ml={2}>Back</Typography>
-    </Box>
+    </StyledBox>
   );
 };
 

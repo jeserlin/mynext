@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
-import { makeStyles } from '@mui/styles';
 import {
   Box, Container, Slide, useTheme,
 } from '@mui/material';
@@ -12,18 +12,26 @@ import Header from 'components/header';
 import SideNav from 'components/sideNav';
 import BottomNav from 'components/bottomNav';
 
-const propTypes = {
-  // eslint-disable-next-line react/require-default-props
-  children: PropTypes.node,
+const PREFIX = 'MainLayout';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  content: `${PREFIX}-content`,
+  bottomNav: `${PREFIX}-bottomNav`,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const StyledBox = styled(Box)((
+  {
+    theme,
+  },
+) => ({
+  [`& .${classes.root}`]: {
     display: 'flex',
     minHeight: '100vh',
     paddingTop: theme.mixins.toolbar.minHeight,
   },
-  content: {
+
+  [`& .${classes.content}`]: {
     width: '100%',
     padding: theme.spacing(4),
     marginBottom: 56 * 2,
@@ -31,7 +39,8 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(12, 8),
     },
   },
-  bottomNav: {
+
+  [`& .${classes.bottomNav}`]: {
     width: '100%',
     position: 'fixed',
     bottom: 0,
@@ -41,9 +50,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  children: PropTypes.node,
+};
+
 const MainLayout = ({ children = null }, props) => {
   const { window } = props;
-  const classes = useStyles();
+
   const theme = useTheme();
 
   const isUpSm = useMediaQuery(theme.breakpoints.up('sm'));
@@ -55,7 +69,7 @@ const MainLayout = ({ children = null }, props) => {
   });
 
   return (
-    <Box>
+    <StyledBox>
       <Header />
       <Box className={classes.root}>
         <SideNav open={defaultIsOpen} />
@@ -70,7 +84,7 @@ const MainLayout = ({ children = null }, props) => {
           <BottomNav />
         </Box>
       </Slide>
-    </Box>
+    </StyledBox>
   );
 };
 

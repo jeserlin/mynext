@@ -1,26 +1,36 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import {
   BottomNavigation, BottomNavigationAction,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import { menuList } from 'constants/common';
 
-const useStyles = makeStyles((theme) => ({
-  actionItem: {
+const PREFIX = 'BottomNav';
+
+const classes = {
+  actionItem: `${PREFIX}-actionItem`,
+  selected: `${PREFIX}-selected`,
+};
+
+const StyledBottomNavigation = styled(BottomNavigation)((
+  {
+    theme,
+  },
+) => ({
+  [`& .${classes.actionItem}`]: {
     '&.Mui-selected': {
       color: theme.palette.primary.dark,
     },
   },
-  selected: {
+
+  [`& .${classes.selected}`]: {
     color: theme.palette.primary.dark,
   },
 }));
 
 const BottomNav = () => {
-  const classes = useStyles();
-
   const router = useRouter();
   const { route } = router;
   const parentRoute = route.split('/')[1];
@@ -31,7 +41,7 @@ const BottomNav = () => {
   };
 
   return (
-    <BottomNavigation
+    <StyledBottomNavigation
       showLabels
       value={`/${parentRoute}`}
       onChange={onChangeNav}
@@ -48,7 +58,7 @@ const BottomNav = () => {
           }}
         />
       ))}
-    </BottomNavigation>
+    </StyledBottomNavigation>
   );
 };
 

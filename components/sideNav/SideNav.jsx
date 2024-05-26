@@ -1,4 +1,5 @@
 import React from 'react';
+import { alpha, styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -6,28 +7,39 @@ import { useRouter } from 'next/router';
 import {
   Drawer, List, ListItemButton, ListItemText,
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 
 import { menuList } from 'constants/common';
 import { commonFontFamily2 } from 'theme/typography';
 
-const propTypes = {
-  // eslint-disable-next-line react/require-default-props
-  open: PropTypes.bool,
+const PREFIX = 'SideNav';
+
+const classes = {
+  drawer: `${PREFIX}-drawer`,
+  drawerOpen: `${PREFIX}-drawerOpen`,
+  drawerClose: `${PREFIX}-drawerClose`,
+  drawerPaper: `${PREFIX}-drawerPaper`,
+  toolbar: `${PREFIX}-toolbar`,
+  list: `${PREFIX}-list`,
+  listItem: `${PREFIX}-listItem`,
+  listText: `${PREFIX}-listText`,
 };
 
 const drawerWidth = 223;
 
-const useStyles = makeStyles((theme) => ({
-  drawer: {
+const Root = styled('div')((
+  {
+    theme,
+  },
+) => ({
+  [`& .${classes.drawer}`]: {
     overflowY: 'auto',
     flexShrink: 0,
     width: drawerWidth,
     whiteSpace: 'nowrap',
     overflowX: 'hidden',
   },
-  drawerOpen: {
+
+  [`& .${classes.drawerOpen}`]: {
     width: drawerWidth,
     overflowX: 'hidden',
     transition: theme.transitions.create('width', {
@@ -35,7 +47,8 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
-  drawerClose: {
+
+  [`& .${classes.drawerClose}`]: {
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -46,22 +59,26 @@ const useStyles = makeStyles((theme) => ({
       width: drawerWidth,
     },
   },
-  drawerPaper: {
+
+  [`& .${classes.drawerPaper}`]: {
     zIndex: theme.zIndex.appBar - 1,
     borderRight: 0,
     color: theme.palette.primary.dark,
   },
-  toolbar: {
+
+  [`& .${classes.toolbar}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 2),
   },
-  list: {
+
+  [`& .${classes.list}`]: {
     marginTop: 84,
     borderRight: `1px solid ${theme.palette.primary.light}`,
   },
-  listItem: {
+
+  [`& .${classes.listItem}`]: {
     '&.Mui-selected': {
       color: theme.palette.primary.dark,
       backgroundColor: 'transparent',
@@ -73,7 +90,8 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  listText: {
+
+  [`& .${classes.listText}`]: {
     padding: theme.spacing(0, 0, 0, 2),
     '& > span': {
       fontFamily: commonFontFamily2,
@@ -81,52 +99,57 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SideNav = ({ open = true }) => {
-  const classes = useStyles();
+const propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  open: PropTypes.bool,
+};
 
+const SideNav = ({ open = true }) => {
   const router = useRouter();
   const { route } = router;
   const parentRoute = route.split('/')[1];
 
   return (
-    <>
-      <Drawer
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx(classes.drawerPaper, {
+    (
+      <Root>
+        <Drawer
+          className={clsx(classes.drawer, {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          }),
-        }}
-        variant="permanent"
-      >
-        <div className={classes.toolbar} />
-        <div className={classes.list}>
-          <List>
-            {menuList.map(({ text, path }) => (
-              <Link
-                key={text}
-                href={path}
-              >
-                <ListItemButton
-                  selected={path === `/${parentRoute}`}
-                  className={classes.listItem}
+          })}
+          classes={{
+            paper: clsx(classes.drawerPaper, {
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open,
+            }),
+          }}
+          variant="permanent"
+        >
+          <div className={classes.toolbar} />
+          <div className={classes.list}>
+            <List>
+              {menuList.map(({ text, path }) => (
+                <Link
+                  key={text}
+                  href={path}
                 >
-                  <ListItemText
-                    className={classes.listText}
-                    primary={text}
-                    component="a"
-                  />
-                </ListItemButton>
-              </Link>
-            ))}
-          </List>
-        </div>
-      </Drawer>
-    </>
+                  <ListItemButton
+                    selected={path === `/${parentRoute}`}
+                    className={classes.listItem}
+                  >
+                    <ListItemText
+                      className={classes.listText}
+                      primary={text}
+                      component="a"
+                    />
+                  </ListItemButton>
+                </Link>
+              ))}
+            </List>
+          </div>
+        </Drawer>
+      </Root>
+    )
   );
 };
 

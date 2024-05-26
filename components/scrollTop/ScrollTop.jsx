@@ -1,18 +1,24 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {
   Fab, Zoom, useScrollTrigger,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
-const propTypes = {
-  // eslint-disable-next-line react/require-default-props
-  window: PropTypes.shape({}),
+const PREFIX = 'ScrollTop';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  icon: `${PREFIX}-icon`,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
+const StyledZoom = styled(Zoom)((
+  {
+    theme,
+  },
+) => ({
+  [`& .${classes.root}`]: {
     display: 'none',
     position: 'fixed',
     bottom: theme.spacing(2),
@@ -21,14 +27,18 @@ const useStyles = makeStyles((theme) => ({
       display: 'block',
     },
   },
-  icon: {
+
+  [`& .${classes.icon}`]: {
     color: theme.palette.common.white,
   },
 }));
 
-const ScrollTop = ({ window }) => {
-  const classes = useStyles();
+const propTypes = {
+  // eslint-disable-next-line react/require-default-props
+  window: PropTypes.shape({}),
+};
 
+const ScrollTop = ({ window }) => {
   const trigger = useScrollTrigger({
     target: window ? window() : undefined,
     disableHysteresis: true,
@@ -44,7 +54,7 @@ const ScrollTop = ({ window }) => {
   };
 
   return (
-    <Zoom in={trigger}>
+    <StyledZoom in={trigger}>
       <div onClick={handleClick} role="presentation" className={classes.root}>
         <Fab
           color="secondary"
@@ -55,7 +65,7 @@ const ScrollTop = ({ window }) => {
           <KeyboardArrowUpIcon />
         </Fab>
       </div>
-    </Zoom>
+    </StyledZoom>
   );
 };
 

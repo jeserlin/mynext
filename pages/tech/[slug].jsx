@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect } from 'react';
+import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
 import mermaid from 'mermaid';
@@ -7,7 +8,6 @@ import { useRouter } from 'next/router';
 import {
   Box, Grid, Typography,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
 import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';
@@ -17,6 +17,37 @@ import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
 import { getPostBySlug, getPostsByFolder } from 'lib/api';
 import { formatDate } from 'lib/convertors';
+
+const PREFIX = 'TechPost';
+
+const classes = {
+  root: `${PREFIX}-root`,
+  contentBox: `${PREFIX}-contentBox`,
+  content: `${PREFIX}-content`,
+};
+
+const Root = styled('div')((
+  {
+    theme,
+  },
+) => ({
+  [`& .${classes.root}`]: {
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(0, 10),
+    },
+  },
+
+  [`& .${classes.contentBox}`]: {
+    width: '100%',
+  },
+
+  [`& .${classes.content}`]: {
+    order: 2,
+    [theme.breakpoints.up('md')]: {
+      order: 1,
+    },
+  },
+}));
 
 const propTypes = {
   // eslint-disable-next-line react/require-default-props
@@ -29,28 +60,10 @@ const propTypes = {
   }),
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing(0, 10),
-    },
-  },
-  contentBox: {
-    width: '100%',
-  },
-  content: {
-    order: 2,
-    [theme.breakpoints.up('md')]: {
-      order: 1,
-    },
-  },
-}));
-
 const techMainPath = '/tech';
 
 const TechPost = (props) => {
   const { post = {} } = props;
-  const classes = useStyles();
 
   const router = useRouter();
   if (!router.isFallback && !post?.slug) {
@@ -62,30 +75,32 @@ const TechPost = (props) => {
   });
 
   return (
-    <>
-      <SeoHeader
-        title={`${post.title}`}
-        description={post.desc}
-      />
-      <GoBack path={techMainPath} />
-      <Box className={classes.root}>
-        <PostHeader title={post.title} />
-        <Typography
-          variant="caption"
-          color="textSecondary"
-          gutterBottom
-        >
-          {`更新時間: ${formatDate(post.date)}`}
-        </Typography>
-        <Box mb={10} />
-        <Grid container className={classes.contentBox}>
-          <Grid item xs={12} lg={10} xl={8} className={classes.content}>
-            <PostContent content={post.content} />
+    (
+      <Root>
+        <SeoHeader
+          title={`${post.title}`}
+          description={post.desc}
+        />
+        <GoBack path={techMainPath} />
+        <Box className={classes.root}>
+          <PostHeader title={post.title} />
+          <Typography
+            variant="caption"
+            color="textSecondary"
+            gutterBottom
+          >
+            {`更新時間: ${formatDate(post.date)}`}
+          </Typography>
+          <Box mb={10} />
+          <Grid container className={classes.contentBox}>
+            <Grid item xs={12} lg={10} xl={8} className={classes.content}>
+              <PostContent content={post.content} />
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
-      <ScrollTop {...props} />
-    </>
+        </Box>
+        <ScrollTop {...props} />
+      </Root>
+    )
   );
 };
 

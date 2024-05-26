@@ -1,28 +1,44 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import SeoHeader from 'components/seoHeader';
 import {
   Avatar, Box, Divider, Link, Typography,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import { EmailOutlined, GitHub, RoomOutlined } from '@mui/icons-material';
 
 import { email, githubLink } from 'constants/basicInfo';
 
-const useStyles = makeStyles((theme) => ({
-  avatar: {
+const PREFIX = 'AboutMe';
+
+const classes = {
+  avatar: `${PREFIX}-avatar`,
+  job: `${PREFIX}-job`,
+  divider: `${PREFIX}-divider`,
+  list: `${PREFIX}-list`,
+};
+
+const Root = styled('div')((
+  {
+    theme,
+  },
+) => ({
+  [`& .${classes.avatar}`]: {
     ...theme.typography.h3,
     width: 100,
     height: 100,
     color: theme.palette.common.white,
     backgroundColor: theme.palette.primary.dark,
   },
-  job: {
+
+  [`& .${classes.job}`]: {
     color: theme.palette.primary.dark,
   },
-  divider: {
+
+  [`& .${classes.divider}`]: {
     margin: theme.spacing(4, 0),
   },
-  list: {
+
+  [`& .${classes.list}`]: {
     ...theme.typography.body2,
     display: 'flex',
     alignItems: 'center',
@@ -34,11 +50,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AboutMe = () => {
-  const classes = useStyles();
-
-  return (
-    <>
+const AboutMe = () => (
+  (
+    <Root>
       <SeoHeader
         title="About me"
         description="All about Jeserlin"
@@ -90,8 +104,8 @@ const AboutMe = () => {
           </Box>
         </Box>
       </Box>
-    </>
-  );
-};
+    </Root>
+  )
+);
 
 export default AboutMe;

@@ -1,15 +1,14 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
+import { styled, alpha } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 
-const propTypes = {
-  content: PropTypes.string,
-};
-
-const useStyles = makeStyles((theme) => ({
-  markdown: {
+const Root = styled('div')((
+  {
+    theme,
+  },
+) => ({
+  '&': {
     ...theme.typography.body1,
     color: theme.palette.text.primary,
     '& > h3': {
@@ -67,16 +66,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PostContent = ({ content = {} }) => {
-  const classes = useStyles();
-
-  return (
-    <div
-      className={classes.markdown}
-      dangerouslySetInnerHTML={{ __html: content }}
-    />
-  );
+const propTypes = {
+  content: PropTypes.string,
 };
+
+const PostContent = ({ content = {} }) => (
+  <Root
+    dangerouslySetInnerHTML={{ __html: content }}
+  />
+);
 
 PostContent.propTypes = propTypes;
 

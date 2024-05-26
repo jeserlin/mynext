@@ -1,26 +1,32 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
+import { styled, alpha } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import LazyLoad from 'react-lazyload';
 import { Box, Grid, Typography } from '@mui/material';
-import { alpha } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 
 import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
 
-const propTypes = {
-  posts: PropTypes.arrayOf(PropTypes.shape({
-    slug: PropTypes.string,
-    title: PropTypes.string,
-  })),
+const PREFIX = 'Cooking';
+
+const classes = {
+  post: `${PREFIX}-post`,
+  coverImg: `${PREFIX}-coverImg`,
+  postInfo: `${PREFIX}-postInfo`,
+  postTitle: `${PREFIX}-postTitle`,
+  postDesc: `${PREFIX}-postDesc`,
 };
 
-const useStyles = makeStyles((theme) => ({
-  post: {
+const Root = styled('div')((
+  {
+    theme,
+  },
+) => ({
+  [`& .${classes.post}`]: {
     cursor: 'pointer',
     color: theme.palette.text.secondary,
     width: '100%',
@@ -29,13 +35,15 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: theme.shadows[1],
     },
   },
-  coverImg: {
+
+  [`& .${classes.coverImg}`]: {
     width: '25%',
     '& > * > img': {
       borderRadius: theme.shape.borderRadius,
     },
   },
-  postInfo: {
+
+  [`& .${classes.postInfo}`]: {
     width: '75%',
     marginLeft: theme.spacing(2),
     padding: theme.spacing(4),
@@ -45,23 +53,30 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
-  postTitle: {
+
+  [`& .${classes.postTitle}`]: {
     ...theme.typography.subtitle1,
     color: theme.palette.text.primary,
     marginBottom: theme.spacing(4),
   },
-  postDesc: {
+
+  [`& .${classes.postDesc}`]: {
     ...theme.typography.body2,
     color: theme.palette.text.secondary,
     marginBottom: theme.spacing(2),
   },
 }));
 
-const Cooking = ({ posts = [] }) => {
-  const classes = useStyles();
+const propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.shape({
+    slug: PropTypes.string,
+    title: PropTypes.string,
+  })),
+};
 
-  return (
-    <>
+const Cooking = ({ posts = [] }) => (
+  (
+    <Root>
       <SeoHeader
         title="Cooking"
         description="All about cooking"
@@ -85,16 +100,16 @@ const Cooking = ({ posts = [] }) => {
               <Box display="flex" className={classes.post}>
                 <Box className={classes.coverImg}>
                   {coverImage && (
-                    <Image
-                      src={coverImage}
-                      width="100"
-                      height="100"
-                      sizes="100vw"
-                      style={{
-                        width: '100%',
-                        height: 'auto',
-                      }}
-                    />
+                  <Image
+                    src={coverImage}
+                    width="100"
+                    height="100"
+                    sizes="100vw"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                    }}
+                  />
                   )}
                 </Box>
                 <Box className={classes.postInfo}>
@@ -108,9 +123,9 @@ const Cooking = ({ posts = [] }) => {
           </Grid>
         ))}
       </Grid>
-    </>
-  );
-};
+    </Root>
+  )
+);
 
 export async function getStaticProps() {
   const posts = getPostsByFolder({
