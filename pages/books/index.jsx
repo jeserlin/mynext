@@ -66,6 +66,8 @@ const Root = styled('div')((
     right: -5,
     backgroundColor: theme.palette.primary.light,
     borderRadius: theme.spacing(1),
+    color: 'black',
+    height: '28px',
   },
 }));
 
@@ -163,7 +165,11 @@ const Books = ({ years = [], posts = [] }) => {
                     width={110}
                   />
                   )}
-                  {content && <Box className={classes.note}><EditNoteIcon /></Box>}
+                  {content && (
+                    <Box className={classes.note}>
+                      <EditNoteIcon />
+                    </Box>
+                  )}
                 </Box>
                 <Typography className={classes.postTitle}>{title}</Typography>
                 <Typography className={classes.author}>{author}</Typography>
