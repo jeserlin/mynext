@@ -1,110 +1,59 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
 import SeoHeader from 'components/seoHeader';
-import {
-  Avatar, Box, Divider, Link, Typography,
-} from '@mui/material';
 import { EmailOutlined, GitHub, RoomOutlined } from '@mui/icons-material';
 
 import { email, githubLink } from 'constants/basicInfo';
 
-const PREFIX = 'AboutMe';
-
-const classes = {
-  avatar: `${PREFIX}-avatar`,
-  job: `${PREFIX}-job`,
-  divider: `${PREFIX}-divider`,
-  list: `${PREFIX}-list`,
-};
-
-const Root = styled('div')((
-  {
-    theme,
-  },
-) => ({
-  [`& .${classes.avatar}`]: {
-    ...theme.typography.h3,
-    width: 100,
-    height: 100,
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.primary.dark,
-  },
-
-  [`& .${classes.job}`]: {
-    color: theme.palette.primary.dark,
-  },
-
-  [`& .${classes.divider}`]: {
-    margin: theme.spacing(4, 0),
-  },
-
-  [`& .${classes.list}`]: {
-    ...theme.typography.body2,
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: theme.spacing(1),
-    color: theme.palette.text.secondary,
-    '& > *': {
-      marginRight: theme.spacing(2),
-    },
-  },
-}));
-
 const AboutMe = () => (
   (
-    <Root>
+    <div>
       <SeoHeader
         title="About me"
         description="All about Jeserlin"
       />
-      <Box display={{ xs: 'block', md: 'flex' }}>
-        <Box mr={15} mb={4}>
-          <Avatar
-            variant="rounded"
-            className={classes.avatar}
-          >
-            J
-          </Avatar>
-        </Box>
-        <Box width={{ xs: '100%', md: '40%' }}>
-          <Typography
-            variant="h6"
-            color="textSecondary"
-          >
+      <div className="xs:block md:flex">
+        <div className="mr-8 mb-4">
+          <div className="avatar placeholder">
+            <div className="w-24 bg-primary-content text-white rounded-md">
+              <span className="text-2xl">J</span>
+            </div>
+          </div>
+        </div>
+        <div className="xs:w-full md:w-5/12 md:ml-8">
+          <div className="text-lg text-base-300">
             Jeserlin Chiu
-          </Typography>
-          <Typography className={classes.job}>
+          </div>
+          <div className="text-md text-primary-content">
             Front-end developer
-          </Typography>
-          <Divider light className={classes.divider} />
-          <Box className={classes.list}>
+          </div>
+          <div className="divider my-2" />
+          <div className="text-sm text-base-200">
             <RoomOutlined />
-            Taiwan,taipei
-          </Box>
-          <Box className={classes.list}>
+            <span className="ml-2">Taiwan,taipei</span>
+          </div>
+          <div className="text-sm text-base-200">
             <EmailOutlined />
-            <Link
+            <a
               href={`mailto:${email}`}
-              underline="none"
-              color="textSecondary"
+              className="ml-2 no-underline"
             >
               {email}
-            </Link>
-          </Box>
-          <Box className={classes.list}>
+            </a>
+          </div>
+          <div className="text-sm text-base-200">
             <GitHub />
-            <Link
+            <a
               href={githubLink}
-              underline="none"
-              color="textSecondary"
               target="_blank"
+              className="ml-2 no-underline"
+              rel="noreferrer"
             >
               {githubLink}
-            </Link>
-          </Box>
-        </Box>
-      </Box>
-    </Root>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 );
 
