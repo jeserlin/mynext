@@ -10,6 +10,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import 'styles/globals.css';
 import 'styles/codepen-embed.css';
 import 'styles/mermaid.css';
+import 'styles/post-content.css';
+
 import theme from 'theme';
 
 const propTypes = {

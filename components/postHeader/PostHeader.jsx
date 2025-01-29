@@ -1,21 +1,17 @@
 /* eslint-disable react/require-default-props */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, Typography } from '@mui/material';
 
 const propTypes = {
   title: PropTypes.string,
 };
 
 const PostHeader = ({ title = '' }) => (
-  <Box mb={4}>
-    <Typography
-      variant="h1"
-      color="textSecondary"
-    >
+  <div className="mb-4">
+    <h1 className="text-base-200">
       {title}
-    </Typography>
-  </Box>
+    </h1>
+  </div>
 );
 
 PostHeader.propTypes = propTypes;

@@ -1,0 +1,23 @@
+ .content-container {
+  @apply text-base text-base-200 leading-6;
+}
+
+.content-container h3 {
+  @apply text-2xl font-normal leading-[1.33em] text-primary-content;
+}
+
+.content-container h4 {
+  @apply text-[22px] font-normal leading-[1.33em] text-secondary-content;
+}
+
+.content-container h5 {
+  @apply text-xl font-normal leading-[1.33em] text-secondary-content my-4;
+}
+
+.content-container h6 {
+  @apply text-lg font-medium leading-[1.4em] text-secondary-content my-4;
+}
+
+.content-container *:not(pre) > code {
+  @apply px-0.5 py-0.5 bg-[#ece7df] bg-opacity-50;
+}
