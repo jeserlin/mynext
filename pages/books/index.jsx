@@ -52,7 +52,6 @@ const Root = styled('div')((
   },
 
   [`& .${classes.img}`]: {
-    zIndex: 9,
     width: '110px',
     height: '150px',
     maxHeight: '150px',
@@ -63,7 +62,6 @@ const Root = styled('div')((
   },
 
   [`& .${classes.note}`]: {
-    zIndex: 10,
     position: 'absolute',
     top: 0,
     right: -5,
@@ -160,36 +158,35 @@ const Books = ({ years = [], posts = [] }) => {
               height="100%"
               throttle={60}
               offset={60}
+              className="flex !flex-col"
             >
-              <>
-                <Box
-                  mb={2}
-                  className={classes.imgContainer}
-                  onClick={() => onSelectBook({ title, content })}
-                >
-                  {coverImage && (
-                    <div className="relative w-full aspect-[11/15]">
-                      {!loadedImgs[coverImage] && (
-                        <div className="absolute inset-0 bg-gray-100 animate-pulse" />
-                      )}
-                      <LazyLoadImage
-                        className={classes.img}
-                        src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
-                        height={150}
-                        width={110}
-                        onLoad={() => handleImageLoad(coverImage)}
-                      />
-                    </div>
-                  )}
-                  {content && (
-                    <Box className={classes.note}>
-                      <EditNoteIcon />
-                    </Box>
-                  )}
-                </Box>
-                <Typography className={classes.postTitle}>{title}</Typography>
-                <Typography className={classes.author}>{author}</Typography>
-              </>
+              <Box
+                mb={2}
+                className={classes.imgContainer}
+                onClick={() => onSelectBook({ title, content })}
+              >
+                {coverImage && (
+                  <div className="relative w-full aspect-[11/15]">
+                    {!loadedImgs[coverImage] && (
+                      <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+                    )}
+                    <LazyLoadImage
+                      className={classes.img}
+                      src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
+                      height={150}
+                      width={110}
+                      onLoad={() => handleImageLoad(coverImage)}
+                    />
+                  </div>
+                )}
+                {content && (
+                  <Box className={classes.note}>
+                    <EditNoteIcon />
+                  </Box>
+                )}
+              </Box>
+              <Typography className={classes.postTitle}>{title}</Typography>
+              <Typography className={classes.author}>{author}</Typography>
             </Grid>
           ))}
         </Grid>
