@@ -52,7 +52,9 @@ const Root = styled('div')((
   },
 
   [`& .${classes.img}`]: {
-    width: 'auto',
+    zIndex: 9,
+    width: '110px',
+    height: '150px',
     maxHeight: '150px',
     transition: 'transform .2s',
     '&:hover': {
@@ -61,6 +63,7 @@ const Root = styled('div')((
   },
 
   [`& .${classes.note}`]: {
+    zIndex: 10,
     position: 'absolute',
     top: 0,
     right: -5,
@@ -89,6 +92,7 @@ const Books = ({ years = [], posts = [] }) => {
   const [selectedYear, setSelectedYear] = useState(All);
   const [selectedBook, setSelectedBook] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loadedImgs, setLoadedImgs] = useState({});
 
   const onClickChip = (year) => {
     setSelectedYear(year);
@@ -113,6 +117,10 @@ const Books = ({ years = [], posts = [] }) => {
     return _.filter(posts, ({ date }) => new Date(date).getFullYear() === selectedYear);
   };
 
+  const handleImageLoad = (url) => {
+    setLoadedImgs((prev) => ({ ...prev, [url]: true }));
+  };
+
   return (
     (
       <Root>
@@ -135,13 +143,15 @@ const Books = ({ years = [], posts = [] }) => {
             />
           ))}
         </Stack>
-        <Grid container alignItems="stretch" spacing={6}>
+        <Grid container alignItems="center" justifyItems="center" spacing={6}>
           {filteredPosts().map(({
             slug, coverImage, title, author, content,
           }) => (
             <Grid
               key={slug}
               item
+              alignItems="center"
+              justifyItems="center"
               xs={6}
               md={4}
               lg={2}
@@ -158,12 +168,18 @@ const Books = ({ years = [], posts = [] }) => {
                   onClick={() => onSelectBook({ title, content })}
                 >
                   {coverImage && (
-                  <LazyLoadImage
-                    className={classes.img}
-                    src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
-                    height={150}
-                    width={110}
-                  />
+                    <div className="relative w-full aspect-[11/15]">
+                      {!loadedImgs[coverImage] && (
+                        <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+                      )}
+                      <LazyLoadImage
+                        className={classes.img}
+                        src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
+                        height={150}
+                        width={110}
+                        onLoad={() => handleImageLoad(coverImage)}
+                      />
+                    </div>
                   )}
                   {content && (
                     <Box className={classes.note}>
