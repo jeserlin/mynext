@@ -14,8 +14,7 @@ ingredient: [
   '糖'
 ]
 labels: [
-  '涼拌雞絲',
-  '雞絲'
+  'others'
 ]
 ---
 

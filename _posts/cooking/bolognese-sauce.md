@@ -20,7 +20,7 @@ ingredient: [
   '奶油',
 ]
 labels: [
-  '義大利肉醬'
+  'pasta'
 ]
 ---
 

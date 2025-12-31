@@ -13,9 +13,7 @@ ingredient: [
   '糖'
 ]
 labels: [
-  '魚板',
-  '炒魚板',
-  '韓式'
+  'others'
 ]
 ---
 

@@ -18,7 +18,7 @@ ingredient: [
   '薑',
 ]
 labels: [
-  '咖哩'
+  'others'
 ]
 ---
 

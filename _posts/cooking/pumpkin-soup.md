@@ -12,7 +12,7 @@ ingredient: [
   '鮮奶油'
 ]
 labels: [
-  '南瓜濃湯'
+  'soup'
 ]
 ---
 

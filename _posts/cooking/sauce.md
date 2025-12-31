@@ -14,7 +14,7 @@ ingredient: [
   '醬油'
 ]
 labels: [
-  '醬料',
+  'others',
 ]
 ---
 

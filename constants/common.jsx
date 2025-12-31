@@ -9,7 +9,7 @@ import ChromeReaderModeOutlinedIcon from '@mui/icons-material/ChromeReaderModeOu
 export const menuList = [
   {
     image: () => (<CodeIcon />),
-    text: 'Tech',
+    text: 'Learning',
     path: '/tech',
   },
   {

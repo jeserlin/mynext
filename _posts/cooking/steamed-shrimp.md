@@ -14,7 +14,7 @@ ingredient: [
   '香油'
 ]
 labels: [
-  '蝦子',
+  'others',
 ]
 ---
 

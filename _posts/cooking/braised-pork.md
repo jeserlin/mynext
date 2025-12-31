@@ -21,9 +21,7 @@ ingredient: [
   '五香粉',
 ]
 labels: [
-  '滷肉',
-  '豆乾',
-  '鳥蛋',
+  'others'
 ]
 ---
 

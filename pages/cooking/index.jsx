@@ -1,12 +1,15 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import LazyLoad from 'react-lazyload';
-import { Box, Grid, Typography } from '@mui/material';
+import {
+  Box, Chip, Grid, Stack, Typography,
+} from '@mui/material';
 
 import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
@@ -14,6 +17,7 @@ import { getPostsByFolder } from 'lib/api';
 const PREFIX = 'Cooking';
 
 const classes = {
+  chip: `${PREFIX}-chip`,
   post: `${PREFIX}-post`,
   coverImg: `${PREFIX}-coverImg`,
   postInfo: `${PREFIX}-postInfo`,
@@ -26,6 +30,10 @@ const Root = styled('div')((
     theme,
   },
 ) => ({
+  [`& .${classes.chip}`]: {
+    borderRadius: theme.shape.borderRadius,
+  },
+
   [`& .${classes.post}`]: {
     cursor: 'pointer',
     color: theme.palette.text.secondary,
@@ -67,22 +75,56 @@ const Root = styled('div')((
   },
 }));
 
+const All = 'All';
+
 const propTypes = {
+  labelList: PropTypes.arrayOf(PropTypes.string),
   posts: PropTypes.arrayOf(PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
+    coverImage: PropTypes.string,
+    ingredient: PropTypes.arrayOf(PropTypes.string),
+    labels: PropTypes.arrayOf(PropTypes.string),
   })),
 };
 
-const Cooking = ({ posts = [] }) => (
-  (
+const Cooking = ({ labelList = [], posts = [] }) => {
+  const [selectedLabel, setSelectedLabel] = useState(All);
+
+  const onClickChip = (label) => {
+    setSelectedLabel(label);
+  };
+
+  const filteredPosts = () => {
+    if (selectedLabel === All) {
+      return posts;
+    }
+    return _.filter(posts, ({ labels }) => labels?.includes(selectedLabel));
+  };
+
+  return (
     <Root>
       <SeoHeader
         title="Cooking"
         description="All about cooking"
       />
+      <Stack direction="row" spacing={2} mb={6}>
+        {labelList.map((label) => (
+          <Chip
+            key={label}
+            classes={{
+              root: classes.chip,
+            }}
+            variant={selectedLabel === label ? 'filled' : 'outlined'}
+            color="secondary"
+            size="small"
+            label={label}
+            onClick={() => onClickChip(label)}
+          />
+        ))}
+      </Stack>
       <Grid container alignItems="stretch" spacing={6}>
-        {posts.map(({
+        {filteredPosts().map(({
           slug, title, coverImage, ingredient,
         }) => (
           <Grid
@@ -100,17 +142,17 @@ const Cooking = ({ posts = [] }) => (
               <Box display="flex" className={classes.post}>
                 <Box className={classes.coverImg}>
                   {coverImage && (
-                  <Image
-                    alt="cover image"
-                    src={coverImage}
-                    width="100"
-                    height="100"
-                    sizes="100vw"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                    }}
-                  />
+                    <Image
+                      alt="cover image"
+                      src={coverImage}
+                      width="100"
+                      height="100"
+                      sizes="100vw"
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                      }}
+                    />
                   )}
                 </Box>
                 <Box className={classes.postInfo}>
@@ -125,8 +167,8 @@ const Cooking = ({ posts = [] }) => (
         ))}
       </Grid>
     </Root>
-  )
-);
+  );
+};
 
 export async function getStaticProps() {
   const posts = getPostsByFolder({
@@ -134,8 +176,19 @@ export async function getStaticProps() {
     fields: ['slug', 'title', 'labels', 'coverImage', 'ingredient'],
   });
 
+  const labelList = _.chain(posts)
+    .reduce((acc, { labels }) => {
+      acc.push(...labels);
+      return acc;
+    }, [])
+    .uniq()
+    .partition((label) => label.toLowerCase() !== 'others')
+    .thru(([nonOthers, others]) => [All, ..._.sortBy(nonOthers), ...others])
+    .value();
+
   return {
     props: {
+      labelList,
       posts,
     },
   };

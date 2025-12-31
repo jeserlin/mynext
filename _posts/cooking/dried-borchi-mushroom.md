@@ -11,7 +11,7 @@ ingredient: [
   '乾酪起司'
 ]
 labels: [
-  '牛肝菌義大利麵'
+  'pasta'
 ]
 ---
 

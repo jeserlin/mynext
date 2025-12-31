@@ -10,7 +10,7 @@ ingredient: [
   '乾辣椒'
 ]
 labels: [
-  '雞肉',
+  'others',
 ]
 ---
 

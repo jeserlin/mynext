@@ -13,8 +13,7 @@ ingredient: [
   '鹽'
 ]
 labels: [
-  '鳳梨紅茶果醬',
-  '果醬',
+  'others',
 ]
 ---
 
