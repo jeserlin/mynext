@@ -39,6 +39,11 @@ const Root = styled('div')((
     ...theme.typography.subtitle1,
     color: theme.palette.primary.dark,
     marginBottom: theme.spacing(1),
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 
   [`& .${classes.author}`]: {
@@ -141,6 +146,7 @@ const Books = ({ years = [], posts = [] }) => {
             />
           ))}
         </Stack>
+        <div className="text-sm mb-4">{`Total: ${filteredPosts().length}`}</div>
         <Grid container alignItems="center" justifyItems="center" spacing={6}>
           {filteredPosts().map(({
             slug, coverImage, title, author, content,
