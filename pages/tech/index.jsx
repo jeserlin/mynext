@@ -6,7 +6,6 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Image from 'next/image';
-import LazyLoad from 'react-lazyload';
 import { getPostsByFolder } from 'lib/api';
 import { Box, Grid, Typography } from '@mui/material';
 
@@ -101,11 +100,6 @@ const Tech = ({ posts = [] }) => (
             item
             xs={12}
             md={6}
-            component={LazyLoad}
-            once
-            height="100%"
-            throttle={80}
-            offset={80}
           >
             <Link href={`/tech/${slug}`}>
               <Box display="flex" className={classes.post}>

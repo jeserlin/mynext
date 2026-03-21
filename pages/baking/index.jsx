@@ -4,7 +4,6 @@ import React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import LazyLoad from 'react-lazyload';
 import { Box, Grid, Typography } from '@mui/material';
 
 import SeoHeader from 'components/seoHeader';
@@ -90,11 +89,6 @@ const Baking = ({ posts = [] }) => (
             item
             xs={12}
             md={6}
-            component={LazyLoad}
-            once
-            height="100%"
-            throttle={60}
-            offset={60}
           >
             <Link href={`/baking/${slug}`}>
               <Box display="flex" className={classes.post}>

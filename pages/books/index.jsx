@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import LazyLoad from 'react-lazyload';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import {
   Box, Chip, Grid, Stack, Typography,
@@ -159,11 +158,6 @@ const Books = ({ years = [], posts = [] }) => {
               xs={6}
               md={4}
               lg={2}
-              component={LazyLoad}
-              once
-              height="100%"
-              throttle={60}
-              offset={60}
               className="flex !flex-col"
             >
               <Box

@@ -6,7 +6,6 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import Link from 'next/link';
-import LazyLoad from 'react-lazyload';
 import {
   Box, Chip, Grid, Stack, Typography,
 } from '@mui/material';
@@ -132,11 +131,6 @@ const Cooking = ({ labelList = [], posts = [] }) => {
             item
             xs={12}
             md={6}
-            component={LazyLoad}
-            once
-            height="100%"
-            throttle={60}
-            offset={60}
           >
             <Link href={`/cooking/${slug}`}>
               <Box display="flex" className={classes.post}>
