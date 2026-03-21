@@ -130,7 +130,7 @@ const Books = ({ years = [], posts = [] }) => {
           title="Books"
           description="All about books"
         />
-        <Stack direction="row" spacing={2} mb={6}>
+        <Stack direction="row" spacing={2} mb={6} sx={{ overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
           {years.map((year) => (
             <Chip
               key={year}
