@@ -6,7 +6,17 @@ module.exports = {
     './components/**/*.{js,jsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        base: '16px',
+      },
+      colors: {
+        'text-primary': '#383838',
+      },
+      backgroundColor: {
+        'custom-light': 'rgba(215, 206, 190, 0.1)',
+      },
+    },
   },
   plugins: [
     require('@tailwindcss/typography'),
