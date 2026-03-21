@@ -55,8 +55,7 @@ const propTypes = {
   children: PropTypes.node,
 };
 
-const MainLayout = ({ children = null }, props) => {
-  const { window } = props;
+const MainLayout = ({ children = null, window }) => {
 
   const theme = useTheme();
 
