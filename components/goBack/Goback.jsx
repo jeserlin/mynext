@@ -1,9 +1,7 @@
-/* eslint-disable react/require-default-props */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
-
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { ArrowLeft } from 'lucide-react';
 
 const propTypes = {
   path: PropTypes.string,
@@ -24,7 +22,7 @@ const GoBack = ({ path = '/' }) => {
       onClick={onClickGoBack}
       aria-hidden="true"
     >
-      <ArrowBackIcon fontSize="small" />
+      <ArrowLeft size={20} />
       <div className="ml-2">Back</div>
     </div>
   );

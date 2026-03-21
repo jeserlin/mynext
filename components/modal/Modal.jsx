@@ -8,7 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import { X } from 'lucide-react';
 
 import PostContent from 'components/postContent';
 
@@ -72,7 +72,7 @@ const Modal = ({
           root: classes.closeBtn,
         }}
       >
-        <CloseIcon />
+        <X size={20} />
       </IconButton>
     </DialogTitle>
     <DialogContent dividers>

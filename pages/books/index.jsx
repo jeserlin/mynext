@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import { NotebookPen } from 'lucide-react';
 import {
   Box, Chip, Grid, Stack, Typography,
 } from '@mui/material';
@@ -72,7 +72,7 @@ const Root = styled('div')((
     backgroundColor: theme.palette.primary.light,
     borderRadius: theme.spacing(1),
     color: 'black',
-    height: '28px',
+    padding: '4px',
   },
 }));
 
@@ -181,7 +181,7 @@ const Books = ({ years = [], posts = [] }) => {
                 )}
                 {content && (
                   <Box className={classes.note}>
-                    <EditNoteIcon />
+                    <NotebookPen size={20} />
                   </Box>
                 )}
               </Box>

@@ -16,7 +16,6 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
-        "@mui/icons-material": "^5.14.8",
         "@mui/joy": "^5.0.0-beta.4",
         "@mui/material": "^5.14.8",
         "@sergeymyssak/nextjs-sitemap": "^2.0.3",
@@ -26,6 +25,7 @@
         "gray-matter": "^4.0.3",
         "highlight.js": "^11.2.0",
         "lodash": "^4.17.21",
+        "lucide-react": "^0.469.0",
         "markdown-it": "^12.2.0",
         "mermaid": "^8.11.4",
         "next": "^16.2.0",

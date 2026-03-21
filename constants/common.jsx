@@ -1,34 +1,32 @@
 import React from 'react';
 
-import FaceIcon from '@mui/icons-material/Face';
-import CodeIcon from '@mui/icons-material/Code';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import CookieOutlinedIcon from '@mui/icons-material/CookieOutlined';
-import ChromeReaderModeOutlinedIcon from '@mui/icons-material/ChromeReaderModeOutlined';
+import {
+  User, Code, UtensilsCrossed, Cookie, BookOpen,
+} from 'lucide-react';
 
 export const menuList = [
   {
-    image: () => (<CodeIcon />),
+    image: () => (<Code size={20} />),
     text: 'Learning',
     path: '/tech',
   },
   {
-    image: () => (<RestaurantIcon />),
+    image: () => (<UtensilsCrossed size={20} />),
     text: 'Cooking',
     path: '/cooking',
   },
   {
-    image: () => (<CookieOutlinedIcon />),
+    image: () => (<Cookie size={20} />),
     text: 'Baking',
     path: '/baking',
   },
   {
-    image: () => (<ChromeReaderModeOutlinedIcon />),
+    image: () => (<BookOpen size={20} />),
     text: 'Books',
     path: '/books',
   },
   {
-    image: () => (<FaceIcon />),
+    image: () => (<User size={20} />),
     text: 'About me',
     path: '/about-me',
   },

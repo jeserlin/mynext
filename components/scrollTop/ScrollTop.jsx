@@ -1,71 +1,51 @@
 /* eslint-disable react/require-default-props */
-import React from 'react';
-import { styled } from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import {
-  Fab, Zoom, useScrollTrigger,
-} from '@mui/material';
-
-const PREFIX = 'ScrollTop';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  icon: `${PREFIX}-icon`,
-};
-
-const StyledZoom = styled(Zoom)((
-  {
-    theme,
-  },
-) => ({
-  [`& .${classes.root}`]: {
-    display: 'none',
-    position: 'fixed',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
-  },
-
-  [`& .${classes.icon}`]: {
-    color: theme.palette.common.white,
-  },
-}));
+import { ArrowUp } from 'lucide-react';
 
 const propTypes = {
   window: PropTypes.shape({}),
 };
 
-const ScrollTop = ({ window }) => {
-  const trigger = useScrollTrigger({
-    target: window ? window() : undefined,
-    disableHysteresis: true,
-    threshold: 100,
-  });
+const ScrollTop = ({ window: windowProp }) => {
+  const [visible, setVisible] = useState(false);
 
-  const handleClick = (event) => {
-    const anchor = (event.target.ownerDocument || document).querySelector('#back-to-top-anchor');
+  useEffect(() => {
+    const handleScroll = () => {
+      const target = windowProp ? windowProp() : window;
+      if (target.scrollY > 100) {
+        setVisible(true);
+      } else {
+        setVisible(false);
+      }
+    };
 
+    const target = windowProp ? windowProp() : window;
+    target.addEventListener('scroll', handleScroll);
+
+    return () => {
+      target.removeEventListener('scroll', handleScroll);
+    };
+  }, [windowProp]);
+
+  const handleClick = () => {
+    const anchor = document.querySelector('#back-to-top-anchor');
     if (anchor) {
       anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
   return (
-    <StyledZoom in={trigger}>
-      <div onClick={handleClick} role="presentation" className={classes.root}>
-        <Fab
-          color="secondary"
-          size="small"
-          className={classes.icon}
-          aria-label="scroll back to top"
-        >
-          <KeyboardArrowUpIcon />
-        </Fab>
-      </div>
-    </StyledZoom>
+    <button
+      type="button"
+      onClick={handleClick}
+      className={`flex fixed bottom-4 right-4 btn btn-secondary btn-sm btn-circle transition-opacity duration-300 ${
+        visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
+      aria-label="scroll back to top"
+    >
+      <ArrowUp size={20} className="text-white" />
+    </button>
   );
 };
 
