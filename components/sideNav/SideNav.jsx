@@ -62,7 +62,7 @@ const Root = styled('div')((
   },
 
   [`& .${classes.drawerPaper}`]: {
-    zIndex: theme.zIndex.appBar - 1,
+    zIndex: 0,
     borderRight: 0,
     color: theme.palette.primary.dark,
   },

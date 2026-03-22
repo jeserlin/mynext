@@ -29,7 +29,6 @@ const StyledBox = styled(Box)((
   [`& .${classes.root}`]: {
     display: 'flex',
     minHeight: '100vh',
-    paddingTop: theme.mixins.toolbar.minHeight,
   },
 
   [`& .${classes.content}`]: {
