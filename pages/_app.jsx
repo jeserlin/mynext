@@ -4,15 +4,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MainLayout from 'layouts/MainLayout';
-import { ThemeProvider } from '@mui/material/styles';
 // import { DefaultSeo } from 'next-seo';
 
 import 'styles/globals.css';
 import 'styles/codepen-embed.css';
 import 'styles/mermaid.css';
 import 'styles/post-content.css';
-
-import theme from 'theme';
 
 const propTypes = {
   Component: PropTypes.func.isRequired,
@@ -21,13 +18,9 @@ const propTypes = {
 
 function MyApp({ Component, pageProps = {} }) {
   return (
-    <>
-      <ThemeProvider theme={theme}>
-        <MainLayout>
-          <Component {...pageProps} />
-        </MainLayout>
-      </ThemeProvider>
-    </>
+    <MainLayout>
+      <Component {...pageProps} />
+    </MainLayout>
   );
 }
 

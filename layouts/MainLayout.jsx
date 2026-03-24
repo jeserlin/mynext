@@ -1,88 +1,65 @@
 /* eslint-disable react/require-default-props */
-/* eslint-disable react/prop-types */
-import React from 'react';
-import { styled } from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import useScrollTrigger from '@mui/material/useScrollTrigger';
-import {
-  Box, Container, Slide, useTheme,
-} from '@mui/material';
 
 import Header from 'components/header';
 import SideNav from 'components/sideNav';
 import BottomNav from 'components/bottomNav';
 
-const PREFIX = 'MainLayout';
-
-const classes = {
-  root: `${PREFIX}-root`,
-  content: `${PREFIX}-content`,
-  bottomNav: `${PREFIX}-bottomNav`,
-};
-
-const StyledBox = styled(Box)((
-  {
-    theme,
-  },
-) => ({
-  [`& .${classes.root}`]: {
-    display: 'flex',
-    minHeight: '100vh',
-  },
-
-  [`& .${classes.content}`]: {
-    width: '100%',
-    padding: theme.spacing(4),
-    marginBottom: 56 * 2,
-    [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing(12, 8),
-    },
-  },
-
-  [`& .${classes.bottomNav}`]: {
-    width: '100%',
-    position: 'fixed',
-    bottom: 0,
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
-  },
-}));
-
 const propTypes = {
   children: PropTypes.node,
 };
 
-const MainLayout = ({ children = null, window }) => {
+const MainLayout = ({ children = null }) => {
+  const [showBottomNav, setShowBottomNav] = useState(true);
+  const lastScrollYRef = React.useRef(0);
+  const ticking = React.useRef(false);
 
-  const theme = useTheme();
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const difference = Math.abs(currentScrollY - lastScrollYRef.current);
 
-  const isUpSm = useMediaQuery(theme.breakpoints.up('sm'));
-  const defaultIsOpen = !!isUpSm;
+          // Only update if scrolled more than 5px to avoid tiny movements
+          if (difference > 5) {
+            // Scrolling down - hide nav
+            if (currentScrollY > lastScrollYRef.current && currentScrollY > 50) {
+              setShowBottomNav(false);
+            }
+            // Scrolling up - show nav
+            else if (currentScrollY < lastScrollYRef.current) {
+              setShowBottomNav(true);
+            }
 
-  const trigger = useScrollTrigger({
-    target: window ? window() : undefined,
-    threshold: 0,
-  });
+            lastScrollYRef.current = currentScrollY;
+          }
+
+          ticking.current = false;
+        });
+
+        ticking.current = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <StyledBox>
+    <div>
       <Header />
-      <Box className={classes.root}>
-        <SideNav open={defaultIsOpen} />
-        <main className={classes.content}>
-          <Container>
+      <div className="flex min-h-screen">
+        <SideNav />
+        <main className="w-full px-4 pb-36 sm:pb-10 sm:px-10" style={{ paddingTop: '96px', paddingBottom: '100px' }}>
+          <div className="max-w-7xl mx-auto">
             {children}
-          </Container>
+          </div>
         </main>
-      </Box>
-      <Slide direction="up" in={!trigger}>
-        <Box className={classes.bottomNav}>
-          <BottomNav />
-        </Box>
-      </Slide>
-    </StyledBox>
+      </div>
+      <BottomNav showBottomNav={showBottomNav} />
+    </div>
   );
 };
 

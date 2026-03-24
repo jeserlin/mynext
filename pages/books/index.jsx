@@ -1,80 +1,14 @@
 /* eslint-disable react/require-default-props */
 import React, { useState } from 'react';
-import { styled } from '@mui/material/styles';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { NotebookPen } from 'lucide-react';
-import {
-  Box, Chip, Grid, Stack, Typography,
-} from '@mui/material';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import SeoHeader from 'components/seoHeader';
 import Modal from 'components/modal';
 import markdownToHtml from 'lib/markdownToHtml';
 import { getPostsByFolder } from 'lib/api';
-
-const PREFIX = 'Books';
-
-const classes = {
-  chip: `${PREFIX}-chip`,
-  postTitle: `${PREFIX}-postTitle`,
-  author: `${PREFIX}-author`,
-  imgContainer: `${PREFIX}-imgContainer`,
-  img: `${PREFIX}-img`,
-  note: `${PREFIX}-note`,
-};
-
-const Root = styled('div')((
-  {
-    theme,
-  },
-) => ({
-  [`& .${classes.chip}`]: {
-    borderRadius: theme.shape.borderRadius,
-  },
-
-  [`& .${classes.postTitle}`]: {
-    ...theme.typography.subtitle1,
-    color: theme.palette.primary.dark,
-    marginBottom: theme.spacing(1),
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
-
-  [`& .${classes.author}`]: {
-    ...theme.typography.body2,
-    color: theme.palette.primary.dark,
-  },
-
-  [`& .${classes.imgContainer}`]: {
-    position: 'relative',
-    width: 'fit-content',
-  },
-
-  [`& .${classes.img}`]: {
-    width: '110px',
-    height: '150px',
-    maxHeight: '150px',
-    transition: 'transform .2s',
-    '&:hover': {
-      transform: 'scale(1.05)',
-    },
-  },
-
-  [`& .${classes.note}`]: {
-    position: 'absolute',
-    top: 0,
-    right: -5,
-    backgroundColor: theme.palette.primary.light,
-    borderRadius: theme.spacing(1),
-    color: 'black',
-    padding: '4px',
-  },
-}));
 
 const All = 'All';
 
@@ -124,80 +58,74 @@ const Books = ({ years = [], posts = [] }) => {
   };
 
   return (
-    (
-      <Root>
-        <SeoHeader
-          title="Books"
-          description="All about books"
-        />
-        <Stack direction="row" spacing={2} mb={6} sx={{ overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
-          {years.map((year) => (
-            <Chip
-              key={year}
-              classes={{
-                root: classes.chip,
-              }}
-              variant={selectedYear === year ? 'filled' : 'outlined'}
-              color="secondary"
-              size="small"
-              label={year}
-              onClick={() => onClickChip(year)}
-            />
-          ))}
-        </Stack>
-        <div className="text-sm mb-4">{`Total: ${filteredPosts().length}`}</div>
-        <Grid container alignItems="center" justifyItems="center" spacing={6}>
-          {filteredPosts().map(({
-            slug, coverImage, title, author, content,
-          }) => (
-            <Grid
-              key={slug}
-              item
-              alignItems="center"
-              justifyItems="center"
-              xs={6}
-              md={4}
-              lg={2}
-              className="flex !flex-col"
+    <div>
+      <SeoHeader
+        title="Books"
+        description="All about books"
+      />
+      <div className="flex flex-row gap-2 mb-6 overflow-y-auto scrollbar-none" style={{ scrollbarWidth: 'none' }}>
+        {years.map((year) => (
+          <button
+            type="button"
+            key={year}
+            className={`btn btn-sm btn-secondary rounded-lg hover:!text-white ${selectedYear === year
+                ? 'text-white'
+                : 'btn-outline'
+              }`}
+            onClick={() => onClickChip(year)}
+          >
+            {year}
+          </button>
+        ))}
+      </div>
+      <div className="text-sm text-primary-content mb-4">{`Total: ${filteredPosts().length}`}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        {filteredPosts().map(({
+          slug, coverImage, title, author, content,
+        }) => (
+          <div
+            key={slug}
+            className="flex flex-col items-center"
+          >
+            <div
+              className="relative w-fit mb-2 cursor-pointer"
+              onClick={() => onSelectBook({ title, content })}
+              onKeyDown={(e) => e.key === 'Enter' && onSelectBook({ title, content })}
+              role="button"
+              tabIndex={0}
             >
-              <Box
-                mb={2}
-                className={classes.imgContainer}
-                onClick={() => onSelectBook({ title, content })}
-              >
-                {coverImage && (
-                  <div className="relative w-full aspect-[11/15]">
-                    {!loadedImgs[coverImage] && (
-                      <div className="absolute inset-0 bg-gray-100 animate-pulse" />
-                    )}
-                    <LazyLoadImage
-                      className={classes.img}
-                      src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
-                      height={150}
-                      width={110}
-                      onLoad={() => handleImageLoad(coverImage)}
-                    />
-                  </div>
-                )}
-                {content && (
-                  <Box className={classes.note}>
-                    <NotebookPen size={20} />
-                  </Box>
-                )}
-              </Box>
-              <Typography className={classes.postTitle}>{title}</Typography>
-              <Typography className={classes.author}>{author}</Typography>
-            </Grid>
-          ))}
-        </Grid>
-        <Modal
-          open={isModalOpen}
-          title={selectedBook.title}
-          content={selectedBook.content}
-          onClose={onCloseModal}
-        />
-      </Root>
-    )
+              {coverImage && (
+                <div className="relative w-full aspect-[11/15]">
+                  {!loadedImgs[coverImage] && (
+                    <div className="absolute inset-0 bg-base-200 animate-pulse" />
+                  )}
+                  <LazyLoadImage
+                    className="w-[110px] h-[150px] max-h-[150px] transition-transform duration-200 hover:scale-105"
+                    src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
+                    height={150}
+                    width={110}
+                    onLoad={() => handleImageLoad(coverImage)}
+                  />
+                </div>
+              )}
+              {content && (
+                <div className="absolute top-0 -right-1 bg-[#ece7df] rounded-lg text-black p-1">
+                  <NotebookPen size={20} />
+                </div>
+              )}
+            </div>
+            <div className="text-sm font-bold text-primary-content mb-1 text-center">{title}</div>
+            <div className="text-sm text-primary-content">{author}</div>
+          </div>
+        ))}
+      </div>
+      <Modal
+        open={isModalOpen}
+        title={selectedBook.title}
+        content={selectedBook.content}
+        onClose={onCloseModal}
+      />
+    </div>
   );
 };
 
