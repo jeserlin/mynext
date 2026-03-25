@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';
@@ -19,17 +20,26 @@ const propTypes = {
     desc: PropTypes.string,
     content: PropTypes.string,
     coverImage: PropTypes.string,
+    gallery: PropTypes.arrayOf(PropTypes.string),
   }),
 };
 
 const cookingMainPath = '/cooking';
 const CookingPost = (props) => {
   const { post = {} } = props;
+  const [loadedImgs, setLoadedImgs] = useState({});
+
+  const handleImageLoad = (image) => {
+    setLoadedImgs((prev) => ({ ...prev, [image]: true }));
+  };
 
   const router = useRouter();
   if (!router.isFallback && !post?.slug) {
     return <ErrorPage statusCode={404} />;
   }
+
+  const images = [post.coverImage, ...post.gallery];
+  const hasGallery = images.length > 0;
 
   return (
     <div>
@@ -45,20 +55,70 @@ const CookingPost = (props) => {
             <PostContent content={post.content} />
           </div>
           <div className="w-full md:w-1/3 order-1 md:order-2">
-            {post.coverImage && (
-              <Image
-                alt="cover image"
-                src={post.coverImage}
-                width="100"
-                height="100"
-                sizes="100vw"
-                className="rounded-3xl"
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                }}
-              />
-            )}
+            {hasGallery && images.length === 1 ? (
+              <div className="relative">
+                {!loadedImgs[images[0]] && (
+                  <div className="absolute inset-0 skeleton rounded-3xl" />
+                )}
+                <LazyLoadImage
+                  className="rounded-3xl w-full h-auto"
+                  src={images[0]}
+                  alt={post.title}
+                  onLoad={() => handleImageLoad(images[0])}
+                />
+              </div>
+            ) : hasGallery && images.length > 1 ? (
+              <div className="carousel w-full rounded-box group">
+                {images.map((image, index) => {
+                  const prevIndex = index === 0 ? images.length - 1 : index - 1;
+                  const nextIndex = index === images.length - 1 ? 0 : index + 1;
+
+                  return (
+                    <div key={index} id={`slide${index}`} className="carousel-item relative w-full">
+                      {!loadedImgs[image] && (
+                        <div className="absolute inset-0 skeleton rounded-box" />
+                      )}
+                      <LazyLoadImage
+                        className="w-full rounded-box"
+                        src={image}
+                        alt={`${post.title} - ${index + 1}`}
+                        onLoad={() => handleImageLoad(image)}
+                      />
+                      <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between opacity-0 group-hover:opacity-100 transition-opacity">
+                        <a
+                          href={`#slide${prevIndex}`}
+                          className="btn btn-circle"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            document.getElementById(`slide${prevIndex}`)?.scrollIntoView({
+                              behavior: 'smooth',
+                              block: 'nearest',
+                              inline: 'start'
+                            });
+                          }}
+                        >
+                          <ChevronLeft size={24} />
+                        </a>
+                        <a
+                          href={`#slide${nextIndex}`}
+                          className="btn btn-circle"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            document.getElementById(`slide${nextIndex}`)?.scrollIntoView({
+                              behavior: 'smooth',
+                              block: 'nearest',
+                              inline: 'start'
+                            });
+                          }}
+                        >
+                          <ChevronRight size={24} />
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
@@ -76,6 +136,7 @@ export async function getStaticProps({ params }) {
     'content',
     'ogImage',
     'coverImage',
+    'gallery',
   ]);
   const content = await markdownToHtml(post.content || '');
 

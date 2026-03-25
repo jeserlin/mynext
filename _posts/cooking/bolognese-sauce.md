@@ -3,6 +3,9 @@ title: '義大利經典肉醬'
 desc: '義大利經典肉醬'
 type: 'cooking'
 coverImage: '/assets/posts/cooking/bolognese_sauce.png'
+gallery: [
+  'https://media.publit.io/file/cooking/bolognese-sauce-2.png'
+]
 date: '2023-09-15T00:00:07.322Z'
 ingredient: [
   '牛絞肉',
