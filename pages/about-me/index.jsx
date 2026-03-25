@@ -20,7 +20,7 @@ const AboutMe = () => (
           </div>
         </div>
         <div className="xs:w-full md:w-5/12 md:ml-8">
-          <div className="text-lg text-base-300">
+          <div className="text-lg text-gray-darkest ">
             Jeserlin Chiu
           </div>
           <div className="text-md text-primary-content">
@@ -28,13 +28,13 @@ const AboutMe = () => (
           </div>
           <div className="divider my-2" />
           <div className="flex flex-col gap-2">
-            <div className="text-sm text-base-200 flex items-center">
+            <div className="text-sm text-gray-darker  flex items-center">
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-content">
                 <MapPin size={16} className="text-white" />
               </div>
               <span className="ml-2">Taiwan,taipei</span>
             </div>
-            <div className="text-sm text-base-200 flex items-center">
+            <div className="text-sm text-gray-darker  flex items-center">
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-content">
                 <Mail size={16} className="text-white" />
               </div>
@@ -45,7 +45,7 @@ const AboutMe = () => (
                 {email}
               </a>
             </div>
-            <div className="text-sm text-base-200 flex items-center">
+            <div className="text-sm text-gray-darker  flex items-center">
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-content">
                 <Github size={16} className="text-white" />
               </div>

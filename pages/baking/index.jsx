@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
@@ -13,7 +14,14 @@ const propTypes = {
   })),
 };
 
-const Baking = ({ posts = [] }) => (
+const Baking = ({ posts = [] }) => {
+  const [loadedImgs, setLoadedImgs] = useState({});
+
+  const handleImageLoad = (coverImage) => {
+    setLoadedImgs((prev) => ({ ...prev, [coverImage]: true }));
+  };
+
+  return (
   <div>
     <SeoHeader
       title="Baking"
@@ -25,14 +33,19 @@ const Baking = ({ posts = [] }) => (
       }) => (
         <Link key={slug} href={`/baking/${slug}`}>
           <div className="flex w-full cursor-pointer">
-            <div className="w-1/4">
+            <div className="w-1/4 relative">
               {coverImage && (
-                <img
-                  src={coverImage}
-                  alt={title}
-                  loading="lazy"
-                  className="rounded-lg"
-                />
+                <>
+                  {!loadedImgs[coverImage] && (
+                    <div className="absolute inset-0 skeleton rounded-lg" />
+                  )}
+                  <LazyLoadImage
+                    className="rounded-lg w-full h-auto"
+                    src={coverImage}
+                    alt={title}
+                    onLoad={() => handleImageLoad(coverImage)}
+                  />
+                </>
               )}
             </div>
             <div className="flex flex-col items-start transition-shadow  w-3/4 ml-4 p-4 rounded-lg bg-custom-light duration-300 hover:shadow-lg">
@@ -48,7 +61,8 @@ const Baking = ({ posts = [] }) => (
       ))}
     </div>
   </div>
-);
+  );
+};
 
 export async function getStaticProps() {
   const posts = getPostsByFolder({

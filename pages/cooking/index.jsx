@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import Image from 'next/image';
 import Link from 'next/link';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
@@ -22,6 +22,11 @@ const propTypes = {
 
 const Cooking = ({ labelList = [], posts = [] }) => {
   const [selectedLabel, setSelectedLabel] = useState(All);
+  const [loadedImgs, setLoadedImgs] = useState({});
+
+  const handleImageLoad = (coverImage) => {
+    setLoadedImgs((prev) => ({ ...prev, [coverImage]: true }));
+  };
 
   const onClickChip = (label) => {
     setSelectedLabel(label);
@@ -62,20 +67,19 @@ const Cooking = ({ labelList = [], posts = [] }) => {
         }) => (
           <Link key={slug} href={`/cooking/${slug}`}>
             <div className="flex w-full cursor-pointer">
-              <div className="w-1/4">
+              <div className="w-1/4 relative">
                 {coverImage && (
-                  <Image
-                    alt="cover image"
-                    src={coverImage}
-                    width="100"
-                    height="100"
-                    sizes="100vw"
-                    className="rounded-lg"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                    }}
-                  />
+                  <>
+                    {!loadedImgs[coverImage] && (
+                      <div className="absolute inset-0 skeleton rounded-lg" />
+                    )}
+                    <LazyLoadImage
+                      className="rounded-lg w-full h-auto"
+                      src={coverImage}
+                      alt={title}
+                      onLoad={() => handleImageLoad(coverImage)}
+                    />
+                  </>
                 )}
               </div>
               <div className="flex flex-col items-start  w-3/4 ml-4 p-4 rounded-lg bg-custom-light transition-shadow duration-300 hover:shadow-lg">

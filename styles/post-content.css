@@ -1,5 +1,5 @@
  .content-container {
-  @apply text-base text-base-200 leading-6;
+  @apply text-base text-gray-darker leading-6;
 }
 
 .content-container h3 {

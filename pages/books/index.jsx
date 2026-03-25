@@ -97,7 +97,7 @@ const Books = ({ years = [], posts = [] }) => {
               {coverImage && (
                 <div className="relative w-full aspect-[11/15]">
                   {!loadedImgs[coverImage] && (
-                    <div className="absolute inset-0 bg-base-200 animate-pulse" />
+                    <div className="absolute inset-0 skeleton" />
                   )}
                   <LazyLoadImage
                     className="w-[110px] h-[150px] max-h-[150px] transition-transform duration-200 hover:scale-105"

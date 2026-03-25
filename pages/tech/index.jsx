@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import Image from 'next/image';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { getPostsByFolder } from 'lib/api';
 
 import SeoHeader from 'components/seoHeader';
@@ -16,7 +16,14 @@ const propTypes = {
   })),
 };
 
-const Tech = ({ posts = [] }) => (
+const Tech = ({ posts = [] }) => {
+  const [loadedImgs, setLoadedImgs] = useState({});
+
+  const handleImageLoad = (coverImage) => {
+    setLoadedImgs((prev) => ({ ...prev, [coverImage]: true }));
+  };
+
+  return (
   <div>
     <SeoHeader
       title="Tech"
@@ -28,20 +35,19 @@ const Tech = ({ posts = [] }) => (
       }) => (
         <Link key={slug} href={`/tech/${slug}`}>
           <div className="flex w-full cursor-pointer">
-            <div className="w-1/4">
+            <div className="w-1/4 relative">
               {coverImage && (
-                <Image
-                  alt="cover image"
-                  src={coverImage}
-                  width="100"
-                  height="100"
-                  sizes="100vw"
-                  className="rounded-lg"
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                  }}
-                />
+                <>
+                  {!loadedImgs[coverImage] && (
+                    <div className="absolute inset-0 skeleton rounded-lg" />
+                  )}
+                  <LazyLoadImage
+                    className="rounded-lg w-full h-auto"
+                    src={coverImage}
+                    alt={title}
+                    onLoad={() => handleImageLoad(coverImage)}
+                  />
+                </>
               )}
             </div>
             <div className="w-3/4 ml-4 p-4 rounded-lg bg-custom-light flex flex-col justify-between items-start transition-shadow duration-300 hover:shadow-lg">
@@ -60,7 +66,8 @@ const Tech = ({ posts = [] }) => (
       ))}
     </div>
   </div>
-);
+  );
+};
 
 export async function getStaticProps() {
   const posts = getPostsByFolder({

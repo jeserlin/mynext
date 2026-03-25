@@ -8,7 +8,7 @@ const propTypes = {
 
 const PostHeader = ({ title = '' }) => (
   <div className="mb-4">
-    <h1 className="text-base-200">
+    <h1 className="text-gray-darker">
       {title}
     </h1>
   </div>
