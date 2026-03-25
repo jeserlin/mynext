@@ -38,7 +38,9 @@ const CookingPost = (props) => {
     return <ErrorPage statusCode={404} />;
   }
 
-  const images = [post.coverImage, ...post.gallery];
+  const images = post.gallery && post.gallery.length > 0
+    ? [post.coverImage, ...post.gallery]
+    : post.coverImage ? [post.coverImage] : [];
   const hasGallery = images.length > 0;
 
   return (
