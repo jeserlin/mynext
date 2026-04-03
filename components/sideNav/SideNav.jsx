@@ -22,7 +22,7 @@ const SideNav = () => {
             height="24"
             style={{ width: 28, height: 24 }}
           />
-          <span className="text-base-content font-semibold text-lg tracking-tight">Jeserlin</span>
+          <span className="text-primary-content font-normal text-xl" style={{ fontFamily: '"Gloria Hallelujah", cursive', WebkitTextStroke: '0.3px' }}>Jeserlin</span>
         </div>
 
         {/* Nav items */}

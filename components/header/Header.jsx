@@ -23,7 +23,7 @@ const Header = () => {
             height="21"
             style={{ width: 24, height: 21 }}
           />
-          <span className="text-base-content font-semibold text-base tracking-tight">Jeserlin</span>
+          <span className="text-primary-content font-normal text-lg" style={{ fontFamily: '"Gloria Hallelujah", cursive', WebkitTextStroke: '0.3px' }}>Jeserlin</span>
         </div>
         <button
           type="button"

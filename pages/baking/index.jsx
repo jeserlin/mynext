@@ -33,19 +33,19 @@ const Baking = ({ posts = [] }) => {
       }) => (
         <Link key={slug} href={`/baking/${slug}`}>
           <div className="flex w-full cursor-pointer">
-            <div className="w-1/4 relative">
+            <div className="w-1/4 flex-shrink-0">
               {coverImage && (
-                <>
+                <div className="relative aspect-square">
                   {!loadedImgs[coverImage] && (
                     <div className="absolute inset-0 skeleton rounded-lg" />
                   )}
                   <LazyLoadImage
-                    className="rounded-lg w-full h-auto"
+                    className={`rounded-lg w-full h-full object-cover ${!loadedImgs[coverImage] ? 'invisible' : ''}`}
                     src={coverImage}
                     alt={title}
                     onLoad={() => handleImageLoad(coverImage)}
                   />
-                </>
+                </div>
               )}
             </div>
             <div className="flex flex-col items-start transition-shadow  w-3/4 ml-4 p-4 rounded-lg bg-custom-light duration-300 hover:shadow-lg">

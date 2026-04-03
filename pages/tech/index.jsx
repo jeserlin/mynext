@@ -35,19 +35,19 @@ const Tech = ({ posts = [] }) => {
       }) => (
         <Link key={slug} href={`/tech/${slug}`}>
           <div className="flex w-full cursor-pointer">
-            <div className="w-1/4 relative">
+            <div className="w-1/4 flex-shrink-0">
               {coverImage && (
-                <>
+                <div className="relative aspect-square">
                   {!loadedImgs[coverImage] && (
                     <div className="absolute inset-0 skeleton rounded-lg" />
                   )}
                   <LazyLoadImage
-                    className="rounded-lg w-full h-auto"
+                    className={`rounded-lg w-full h-full object-cover ${!loadedImgs[coverImage] ? 'invisible' : ''}`}
                     src={coverImage}
                     alt={title}
                     onLoad={() => handleImageLoad(coverImage)}
                   />
-                </>
+                </div>
               )}
             </div>
             <div className="w-3/4 ml-4 p-4 rounded-lg bg-custom-light flex flex-col justify-between items-start transition-shadow duration-300 hover:shadow-lg">
