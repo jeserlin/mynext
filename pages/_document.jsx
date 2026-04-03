@@ -30,7 +30,7 @@ class MyDocument extends Document {
           <meta name="msapplication-TileColor" content="#e5d8cb" />
           <meta name="theme-color" content="#ffffff" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
-          <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Open+Sans&display=swap" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
           <script async src="https://www.googletagmanager.com/gtag/js?id=G-PQJDQCSC9J" />
           <script
             dangerouslySetInnerHTML={{
