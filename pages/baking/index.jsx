@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import SeoHeader from 'components/seoHeader';
-import { getPostsByFolder } from 'lib/api';
+import { getRecipesByType } from 'lib/recipes';
 
 const propTypes = {
   posts: PropTypes.arrayOf(PropTypes.shape({
@@ -65,8 +65,8 @@ const Baking = ({ posts = [] }) => {
 };
 
 export async function getStaticProps() {
-  const posts = getPostsByFolder({
-    folder: 'baking',
+  const posts = await getRecipesByType({
+    type: 'baking',
     fields: ['slug', 'date', 'title', 'coverImage', 'ingredient'],
   });
 

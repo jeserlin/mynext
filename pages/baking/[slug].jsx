@@ -10,7 +10,7 @@ import ScrollTop from 'components/scrollTop';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
-import { getPostBySlug, getPostsByFolder } from 'lib/api';
+import { getRecipeBySlug, getRecipesByType } from 'lib/recipes';
 import { authorName } from 'constants/basicInfo';
 import siteSeo from 'next-seo.config.js';
 
@@ -86,7 +86,10 @@ const BakingPost = (props) => {
 };
 
 export async function getStaticProps({ params }) {
-  const post = getPostBySlug('baking', params.slug, [
+  const post = await getRecipeBySlug({
+    type: 'baking',
+    slug: params.slug,
+    fields: [
     'title',
     'desc',
     'date',
@@ -95,7 +98,8 @@ export async function getStaticProps({ params }) {
     'ogImage',
     'coverImage',
     'ingredient',
-  ]);
+  ],
+  });
   const content = await markdownToHtml(post.content || '');
 
   return {
@@ -109,8 +113,8 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const posts = getPostsByFolder({
-    folder: 'baking',
+  const posts = await getRecipesByType({
+    type: 'baking',
     fields: ['slug'],
   });
 
