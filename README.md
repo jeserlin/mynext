@@ -14,6 +14,37 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+If `node` or `npm` is missing in your shell, load the repo's expected Node version first:
+
+```bash
+export PATH="$HOME/.nvm/versions/node/v22.14.0/bin:$PATH"
+```
+
+## Adding A New Recipe
+
+This project stores recipes as markdown files in `_posts/cooking` and `_posts/baking`.
+
+Create a new recipe draft with:
+
+```bash
+npm run new-recipe -- cooking "麻婆豆腐"
+```
+
+or
+
+```bash
+npm run new-recipe -- baking "Basque Cheesecake"
+```
+
+That command creates a ready-to-edit markdown file with the correct frontmatter and suggests the matching image path in `public/assets/posts/...`.
+
+Recommended workflow:
+
+1. Run the scaffold command.
+2. Add your cover image to `public/assets/posts/cooking/` or `public/assets/posts/baking/`.
+3. Fill in the generated markdown file's `ingredient`, `labels`, and steps.
+4. Run `npm run dev` and open `http://localhost:3000/cooking` or `http://localhost:3000/baking` to check the result.
+
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
 [API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
