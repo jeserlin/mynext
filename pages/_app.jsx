@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { GoogleAnalytics } from '@next/third-parties/google';
+import Script from 'next/script';
 import MainLayout from 'layouts/MainLayout';
 // import { DefaultSeo } from 'next-seo';
 
@@ -20,7 +20,18 @@ function MyApp({ Component, pageProps = {} }) {
       <MainLayout>
         <Component {...pageProps} />
       </MainLayout>
-      <GoogleAnalytics gaId="G-PQJDQCSC9J" />
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-PQJDQCSC9J"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PQJDQCSC9J');
+        `}
+      </Script>
     </>
   );
 }
