@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import siteSeo from 'next-seo.config';
+import siteSeo from 'next-seo.config.js';
 
 const propTypes = {
   title: PropTypes.string,

@@ -1,4 +1,4 @@
-export default {
+const siteSeo = {
   defaultTitle: 'Jeserlin',
   titleTemplate: '%s | Jeserlin',
   description: 'This is Jeserlin\'s blog',
@@ -23,3 +23,5 @@ export default {
     cardType: 'summary_large_image',
   },
 };
+
+export default siteSeo;

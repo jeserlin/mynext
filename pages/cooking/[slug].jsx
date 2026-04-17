@@ -13,7 +13,7 @@ import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
 import { getPostBySlug, getPostsByFolder } from 'lib/api';
 import { authorName } from 'constants/basicInfo';
-import siteSeo from 'next-seo.config';
+import siteSeo from 'next-seo.config.js';
 
 const propTypes = {
   post: PropTypes.shape({
