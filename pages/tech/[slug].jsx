@@ -12,6 +12,8 @@ import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
 import { getPostBySlug, getPostsByFolder } from 'lib/api';
 import { formatDate } from 'lib/convertors';
+import { authorName } from 'constants/basicInfo';
+import siteSeo from 'next-seo.config';
 
 const propTypes = {
   post: PropTypes.shape({
@@ -24,6 +26,7 @@ const propTypes = {
 };
 
 const techMainPath = '/tech';
+const siteUrl = siteSeo.openGraph.url.replace(/\/$/, '');
 
 const TechPost = (props) => {
   const { post = {} } = props;
@@ -42,6 +45,30 @@ const TechPost = (props) => {
       <SeoHeader
         title={`${post.title}`}
         description={post.desc}
+        path={`/tech/${post.slug}`}
+        type="article"
+        publishedTime={post.date}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: post.title,
+          description: post.desc,
+          datePublished: post.date,
+          dateModified: post.date,
+          mainEntityOfPage: `${siteUrl}/tech/${post.slug}`,
+          author: {
+            '@type': 'Person',
+            name: authorName,
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: siteSeo.defaultTitle,
+            logo: {
+              '@type': 'ImageObject',
+              url: `${siteUrl}/yuan.png`,
+            },
+          },
+        }}
       />
       <GoBack path={techMainPath} />
       <div className="sm:px-10">

@@ -12,6 +12,8 @@ import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import markdownToHtml from 'lib/markdownToHtml';
 import { getPostBySlug, getPostsByFolder } from 'lib/api';
+import { authorName } from 'constants/basicInfo';
+import siteSeo from 'next-seo.config';
 
 const propTypes = {
   post: PropTypes.shape({
@@ -21,10 +23,12 @@ const propTypes = {
     content: PropTypes.string,
     coverImage: PropTypes.string,
     gallery: PropTypes.arrayOf(PropTypes.string),
+    ingredient: PropTypes.arrayOf(PropTypes.string),
   }),
 };
 
 const cookingMainPath = '/cooking';
+const siteUrl = siteSeo.openGraph.url.replace(/\/$/, '');
 const CookingPost = (props) => {
   const { post = {} } = props;
   const [loadedImgs, setLoadedImgs] = useState({});
@@ -48,6 +52,24 @@ const CookingPost = (props) => {
       <SeoHeader
         title={`${post.title}`}
         description={post.desc}
+        image={post.coverImage}
+        path={`/cooking/${post.slug}`}
+        type="article"
+        publishedTime={post.date}
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Recipe',
+          name: post.title,
+          description: post.desc,
+          image: post.coverImage ? [`${siteUrl}${post.coverImage}`] : undefined,
+          datePublished: post.date,
+          author: {
+            '@type': 'Person',
+            name: authorName,
+          },
+          recipeCategory: 'Cooking',
+          recipeIngredient: post.ingredient || [],
+        }}
       />
       <GoBack path={cookingMainPath} />
       <div className="sm:px-10">
@@ -139,6 +161,7 @@ export async function getStaticProps({ params }) {
     'ogImage',
     'coverImage',
     'gallery',
+    'ingredient',
   ]);
   const content = await markdownToHtml(post.content || '');
 
