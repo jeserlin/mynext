@@ -31,5 +31,3 @@ export const menuList = [
     path: '/about-me',
   },
 ];
-
-export default {};

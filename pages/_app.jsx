@@ -1,8 +1,6 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import MainLayout from 'layouts/MainLayout';
 // import { DefaultSeo } from 'next-seo';
 
@@ -18,9 +16,12 @@ const propTypes = {
 
 function MyApp({ Component, pageProps = {} }) {
   return (
-    <MainLayout>
-      <Component {...pageProps} />
-    </MainLayout>
+    <>
+      <MainLayout>
+        <Component {...pageProps} />
+      </MainLayout>
+      <GoogleAnalytics gaId="G-PQJDQCSC9J" />
+    </>
   );
 }
 

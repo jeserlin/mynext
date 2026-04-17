@@ -1,9 +1,7 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import SeoHeader from 'components/seoHeader';
@@ -48,10 +46,12 @@ const BakingPost = (props) => {
           </div>
           <div className="w-full md:w-1/3 order-1 md:order-2">
             {post.coverImage && (
-              <img
+              <Image
                 src={post.coverImage}
                 alt={post.title}
-                loading="lazy"
+                width={800}
+                height={800}
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="rounded-3xl w-full h-auto"
               />
             )}

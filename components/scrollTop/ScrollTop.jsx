@@ -1,4 +1,3 @@
-/* eslint-disable react/require-default-props */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ArrowUp } from 'lucide-react';
