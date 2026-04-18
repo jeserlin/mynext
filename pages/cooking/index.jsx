@@ -119,6 +119,7 @@ export async function getStaticProps() {
       labelList,
       posts,
     },
+    revalidate: 60,
   };
 }
 
