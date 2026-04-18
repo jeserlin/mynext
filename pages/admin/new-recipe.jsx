@@ -268,6 +268,18 @@ const NewRecipeAdmin = () => {
         throw new Error(data.error || 'Unable to save recipe');
       }
 
+      const revalidatePaths = [`/${form.type}`, `/${form.type}/${data.slug}`];
+      const revalidateResponse = await fetch('/api/admin/revalidate', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ paths: revalidatePaths }),
+      });
+
+      if (!revalidateResponse.ok) {
+        const revalidateData = await revalidateResponse.json();
+        throw new Error(revalidateData.error || 'Recipe saved, but revalidation failed');
+      }
+
       setStatus(`Recipe saved to Notion: ${data.slug}`);
       setForm({
         ...initialForm,
