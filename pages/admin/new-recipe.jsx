@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 import SeoHeader from 'components/seoHeader';
 import { adminHeaderName } from 'lib/admin';
@@ -84,8 +85,13 @@ const compressImage = async (file) => {
   });
 };
 
-const fieldClassName = 'w-full rounded-lg border border-[#d8d0c3] bg-white px-4 py-3 text-sm outline-none transition focus:border-primary';
-const actionButtonClassName = 'rounded-lg border-0 bg-[#8f746c] px-6 text-white hover:bg-[#7e655d] disabled:bg-[#c8b7b2] disabled:text-white';
+const fieldClassName = 'block w-full min-w-0 max-w-full rounded-lg border border-[#d8d0c3] bg-white px-4 py-3 text-sm outline-none transition focus:border-primary';
+const actionButtonClassName = 'rounded-lg border-0 bg-[#8f746c] px-6 text-sm text-white hover:bg-[#7e655d] disabled:bg-[#c8b7b2] disabled:text-white';
+const dropdownButtonClassName = 'btn flex w-full min-w-0 max-w-full list-none items-center justify-between rounded-lg border border-[#d8d0c3] bg-white px-4 text-sm font-normal text-text-primary shadow-none hover:border-[#d8d0c3] hover:bg-white [&::-webkit-details-marker]:hidden';
+const dropdownOptionClassName = 'block w-full rounded-lg px-4 py-3 text-left text-sm text-text-primary transition';
+const dropdownOptionInactiveClassName = '!bg-white hover:!bg-white focus:!bg-white active:!bg-white';
+const dropdownOptionActiveClassName = '!bg-[#8f746c] !text-white hover:!bg-[#8f746c] focus:!bg-[#8f746c] active:!bg-[#8f746c]';
+const fileInputClassName = 'file-input block h-12 w-full rounded-lg border border-[#d8d0c3] bg-white text-sm text-text-primary shadow-none file:h-full file:border-0 file:border-r file:border-[#d8d0c3] file:bg-[#f7f1e8] file:px-5 file:text-sm file:font-medium file:normal-case file:text-[#6f6258] focus:border-[#cdbfa9] focus:outline-none';
 
 const NewRecipeAdmin = () => {
   const [adminSecret, setAdminSecret] = useState('');
@@ -97,6 +103,8 @@ const NewRecipeAdmin = () => {
   const [isUploadingGallery, setIsUploadingGallery] = useState(false);
   const [slugTouched, setSlugTouched] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+  const typeDropdownRef = useRef(null);
 
   useEffect(() => {
     const storedSecret = window.localStorage.getItem('mynext-admin-secret') || '';
@@ -104,6 +112,26 @@ const NewRecipeAdmin = () => {
       setAdminSecret(storedSecret);
     }
   }, []);
+
+  useEffect(() => {
+    if (!isTypeDropdownOpen) {
+      return undefined;
+    }
+
+    const closeDropdown = (event) => {
+      if (typeDropdownRef.current?.contains(event.target)) {
+        return;
+      }
+
+      setIsTypeDropdownOpen(false);
+    };
+
+    document.addEventListener('click', closeDropdown);
+
+    return () => {
+      document.removeEventListener('click', closeDropdown);
+    };
+  }, [isTypeDropdownOpen]);
 
   useEffect(() => {
     if (!slugTouched) {
@@ -295,13 +323,27 @@ const NewRecipeAdmin = () => {
 
   return (
     <div className="mx-auto max-w-3xl">
+      {(status || error) && (
+        <div className="toast toast-top top-4 z-50">
+          {status && (
+            <div className="alert border-0 bg-[#edf8ef] text-[#2f6b3c] shadow-lg">
+              <span>{status}</span>
+            </div>
+          )}
+          {error && (
+            <div className="alert border-0 bg-[#fff1ef] text-[#9f3a2d] shadow-lg">
+              <span>{error}</span>
+            </div>
+          )}
+        </div>
+      )}
       <SeoHeader
         title="New Recipe"
         description="Private recipe publishing tool"
         path="/admin/new-recipe"
       />
       <div className="mb-8 rounded-lg border border-[#e5ddd0] bg-[#faf6ef] p-5">
-        <div className="mb-2 text-lg font-semibold text-primary-content">Private Recipe Publisher</div>
+        <div className="mb-2 text-xl font-semibold text-primary-content">Private Recipe Publisher</div>
         <p className="mb-4 text-sm text-primary-content/70">
           Upload images to Publit.io and save markdown recipes to Notion from one page.
         </p>
@@ -342,16 +384,46 @@ const NewRecipeAdmin = () => {
           </label>
           <label className="flex flex-col gap-2">
             <span className="text-sm font-medium text-primary-content">Type</span>
-            <select className={fieldClassName} value={form.type} onChange={updateField('type')}>
-              <option value="cooking">Cooking</option>
-              <option value="baking">Baking</option>
-            </select>
+            <div className="relative w-full" ref={typeDropdownRef}>
+              <button
+                type="button"
+                className={dropdownButtonClassName}
+                onClick={() => setIsTypeDropdownOpen((current) => !current)}
+              >
+                <span className="flex-1 text-left">{form.type === 'baking' ? 'Baking' : 'Cooking'}</span>
+                <ChevronDown size={18} className="text-primary-content/60" />
+              </button>
+              {isTypeDropdownOpen && (
+                <div className="absolute left-0 top-full z-10 mt-2 w-full rounded-lg border border-[#d8d0c3] bg-white p-2 shadow-lg">
+                  <button
+                    type="button"
+                    className={`${dropdownOptionClassName} ${form.type === 'cooking' ? dropdownOptionActiveClassName : dropdownOptionInactiveClassName}`}
+                    onClick={() => {
+                      setForm((current) => ({ ...current, type: 'cooking' }));
+                      setIsTypeDropdownOpen(false);
+                    }}
+                  >
+                    Cooking
+                  </button>
+                  <button
+                    type="button"
+                    className={`${dropdownOptionClassName} ${form.type === 'baking' ? dropdownOptionActiveClassName : dropdownOptionInactiveClassName}`}
+                    onClick={() => {
+                      setForm((current) => ({ ...current, type: 'baking' }));
+                      setIsTypeDropdownOpen(false);
+                    }}
+                  >
+                    Baking
+                  </button>
+                </div>
+              )}
+            </div>
           </label>
           <label className="flex flex-col gap-2">
             <span className="text-sm font-medium text-primary-content">Publish Date</span>
             <input
               type="date"
-              className={fieldClassName}
+              className={`${fieldClassName} appearance-none`}
               value={form.date}
               onChange={updateField('date')}
             />
@@ -390,7 +462,7 @@ const NewRecipeAdmin = () => {
             <div className="mb-3 text-xs text-primary-content/60">
               Upload from phone and the page will store the returned Publit.io URL.
             </div>
-            <input type="file" accept="image/*" onChange={onUploadCover} />
+            <input type="file" accept="image/*" className={fileInputClassName} onChange={onUploadCover} />
             {isUploadingCover && <div className="mt-3 text-sm text-primary-content/70">{uploadStatus || 'Uploading cover image...'}</div>}
             {form.coverImage && (
               <div className="mt-4">
@@ -406,7 +478,7 @@ const NewRecipeAdmin = () => {
             <div className="mb-3 text-xs text-primary-content/60">
               Upload one or more extra images. They will be appended as newline-separated URLs.
             </div>
-            <input type="file" accept="image/*" multiple onChange={onUploadGallery} />
+            <input type="file" accept="image/*" multiple className={fileInputClassName} onChange={onUploadGallery} />
             {isUploadingGallery && <div className="mt-3 text-sm text-primary-content/70">{uploadStatus || 'Uploading gallery images...'}</div>}
             <textarea
               className={`${fieldClassName} mt-4 min-h-36`}
@@ -431,9 +503,6 @@ const NewRecipeAdmin = () => {
           <input type="checkbox" checked={form.published} onChange={updateField('published')} />
           Publish immediately
         </label>
-
-        {status && <div className="rounded-lg bg-[#edf8ef] px-4 py-3 text-sm text-[#2f6b3c]">{status}</div>}
-        {error && <div className="rounded-lg bg-[#fff1ef] px-4 py-3 text-sm text-[#9f3a2d]">{error}</div>}
 
         <button
           type="submit"
