@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 import SeoHeader from 'components/seoHeader';
@@ -22,6 +22,7 @@ const defaultMarkdownTemplate = `### 材料
 `;
 
 const initialForm = {
+  pageId: '',
   title: '',
   slug: '',
   type: 'cooking',
@@ -33,6 +34,11 @@ const initialForm = {
   contentMarkdown: defaultMarkdownTemplate,
   published: true,
   date: new Date().toISOString().slice(0, 10),
+};
+
+const initialEditLookup = {
+  type: 'cooking',
+  search: '',
 };
 
 const slugify = (value = '') => value
@@ -95,7 +101,11 @@ const fileInputClassName = 'file-input block h-12 w-full rounded-lg border borde
 
 const NewRecipeAdmin = () => {
   const [adminSecret, setAdminSecret] = useState('');
+  const [hasSavedSecret, setHasSavedSecret] = useState(false);
   const [form, setForm] = useState(initialForm);
+  const [editLookup, setEditLookup] = useState(initialEditLookup);
+  const [adminRecipes, setAdminRecipes] = useState([]);
+  const [loadedRecipeRef, setLoadedRecipeRef] = useState({ type: '', slug: '' });
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -104,12 +114,15 @@ const NewRecipeAdmin = () => {
   const [slugTouched, setSlugTouched] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+  const [isLoadingRecipe, setIsLoadingRecipe] = useState(false);
+  const [isLoadingRecipeList, setIsLoadingRecipeList] = useState(false);
   const typeDropdownRef = useRef(null);
 
   useEffect(() => {
     const storedSecret = window.localStorage.getItem('mynext-admin-secret') || '';
     if (storedSecret) {
       setAdminSecret(storedSecret);
+      setHasSavedSecret(true);
     }
   }, []);
 
@@ -144,16 +157,149 @@ const NewRecipeAdmin = () => {
     [adminHeaderName]: adminSecret,
   }), [adminSecret]);
 
+  const filteredAdminRecipes = useMemo(() => {
+    const query = editLookup.search.trim().toLowerCase();
+
+    return adminRecipes.filter((recipe) => {
+      if (recipe.type !== editLookup.type) {
+        return false;
+      }
+
+      if (!query) {
+        return true;
+      }
+
+      return [recipe.title, recipe.slug]
+        .filter(Boolean)
+        .some((value) => value.toLowerCase().includes(query));
+    });
+  }, [adminRecipes, editLookup.search, editLookup.type]);
+
   const updateField = (field) => (event) => {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     setForm((current) => ({ ...current, [field]: value }));
   };
 
+  const updateEditLookup = (field) => (event) => {
+    const value = event.target.value;
+    setEditLookup((current) => ({ ...current, [field]: value }));
+  };
+
+  const loadRecipeList = useCallback(async (type) => {
+    if (!adminSecret || !hasSavedSecret) {
+      setAdminRecipes([]);
+      return;
+    }
+
+    setIsLoadingRecipeList(true);
+
+    try {
+      const query = new URLSearchParams({ type }).toString();
+      const response = await fetch(`/api/admin/recipes?${query}`, {
+        method: 'GET',
+        headers: {
+          [adminHeaderName]: adminSecret,
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Unable to load recipes');
+      }
+
+      setAdminRecipes(data.recipes || []);
+    } catch (loadError) {
+      setAdminRecipes([]);
+      setError(loadError.message);
+    } finally {
+      setIsLoadingRecipeList(false);
+    }
+  }, [adminSecret, hasSavedSecret]);
+
   const persistSecret = () => {
     window.localStorage.setItem('mynext-admin-secret', adminSecret);
+    setHasSavedSecret(true);
     setStatus('Admin secret saved on this device.');
     setError('');
   };
+
+  const resetToCreateMode = () => {
+    setForm((current) => ({
+      ...initialForm,
+      type: current.type || 'cooking',
+    }));
+    setEditLookup((current) => ({
+      ...current,
+      search: '',
+      type: current.type || 'cooking',
+    }));
+    setLoadedRecipeRef({ type: '', slug: '' });
+    setSlugTouched(false);
+    setStatus('Switched to create mode.');
+    setError('');
+  };
+
+  const loadRecipeForEditing = async ({ type, slug }) => {
+    setIsLoadingRecipe(true);
+    setStatus('');
+    setError('');
+
+    try {
+      const query = new URLSearchParams({
+        type,
+        slug: slug.trim(),
+      }).toString();
+
+      const response = await fetch(`/api/admin/recipe?${query}`, {
+        method: 'GET',
+        headers: {
+          [adminHeaderName]: adminSecret,
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Unable to load recipe');
+      }
+
+      setForm({
+        pageId: data.id,
+        title: data.title || '',
+        slug: data.slug || '',
+        type: data.type || type,
+        desc: data.desc || '',
+        ingredients: (data.ingredient || []).join('\n'),
+        labels: (data.labels || []).join('\n'),
+        coverImage: data.coverImage || '',
+        gallery: (data.gallery || []).join('\n'),
+        contentMarkdown: data.content || defaultMarkdownTemplate,
+        published: Boolean(data.published),
+        date: (data.date || new Date().toISOString()).slice(0, 10),
+      });
+      setLoadedRecipeRef({
+        type: data.type || type,
+        slug: data.slug || slug.trim(),
+      });
+      setEditLookup({
+        type: data.type || type,
+        search: '',
+      });
+      setSlugTouched(true);
+      setStatus(`Loaded ${data.slug} for editing.`);
+    } catch (loadError) {
+      setError(loadError.message);
+    } finally {
+      setIsLoadingRecipe(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!adminSecret || !hasSavedSecret) {
+      return;
+    }
+
+    loadRecipeList(editLookup.type);
+  }, [adminSecret, editLookup.type, hasSavedSecret, loadRecipeList]);
 
   const uploadSingleImage = async (file, publicId) => {
     setUploadStatus('Preparing image...');
@@ -288,7 +434,11 @@ const NewRecipeAdmin = () => {
       const response = await fetch('/api/admin/save-recipe', {
         method: 'POST',
         headers,
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          previousType: loadedRecipeRef.type,
+          previousSlug: loadedRecipeRef.slug,
+        }),
       });
 
       const data = await response.json();
@@ -296,24 +446,22 @@ const NewRecipeAdmin = () => {
         throw new Error(data.error || 'Unable to save recipe');
       }
 
-      const revalidatePaths = [`/${form.type}`, `/${form.type}/${data.slug}`];
-      const revalidateResponse = await fetch('/api/admin/revalidate', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ paths: revalidatePaths }),
-      });
-
-      if (!revalidateResponse.ok) {
-        const revalidateData = await revalidateResponse.json();
-        throw new Error(revalidateData.error || 'Recipe saved, but revalidation failed');
-      }
-
-      setStatus(`Recipe saved to Notion: ${data.slug}`);
+      setStatus(data.revalidationError
+        ? `Recipe saved to Notion, but production refresh failed: ${data.revalidationError}`
+        : form.pageId
+          ? `Recipe updated in Notion: ${data.slug}`
+          : `Recipe saved to Notion: ${data.slug}`);
       setForm({
         ...initialForm,
         type: form.type,
       });
+      setEditLookup({
+        type: form.type,
+        search: '',
+      });
+      setLoadedRecipeRef({ type: '', slug: '' });
       setSlugTouched(false);
+      await loadRecipeList(form.type);
     } catch (saveError) {
       setError(saveError.message);
     } finally {
@@ -365,7 +513,88 @@ const NewRecipeAdmin = () => {
         </div>
       </div>
 
+      <div className="mb-8 rounded-lg border border-[#e5ddd0] bg-white p-5">
+        <div className="mb-2 text-xl font-semibold text-primary-content">Edit Existing</div>
+        <p className="mb-4 text-sm text-primary-content/70">
+          Browse your Notion recipes, search by title or slug, and tap one to load it into the editor.
+        </p>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[160px_1fr_auto]">
+          <div className="relative w-full">
+            <button
+              type="button"
+              className={dropdownButtonClassName}
+              onClick={() => {
+                setEditLookup((current) => ({
+                  ...current,
+                  type: current.type === 'baking' ? 'cooking' : 'baking',
+                  search: '',
+                }));
+                setLoadedRecipeRef({ type: '', slug: '' });
+              }}
+            >
+              <span className="flex-1 text-left">{editLookup.type === 'baking' ? 'Baking' : 'Cooking'}</span>
+              <ChevronDown size={18} className="text-primary-content/60" />
+            </button>
+          </div>
+          <input
+            className={fieldClassName}
+            placeholder="Search by title or slug"
+            value={editLookup.search}
+            onChange={updateEditLookup('search')}
+          />
+          <button
+            type="button"
+            className="btn rounded-lg border border-[#d8d0c3] bg-white px-5 text-sm font-normal text-text-primary shadow-none hover:border-[#d8d0c3] hover:bg-white"
+            onClick={resetToCreateMode}
+          >
+            New
+          </button>
+        </div>
+        <div className="mt-4 rounded-lg border border-[#ece3d6] bg-[#fcfaf6] p-2">
+          {isLoadingRecipeList ? (
+            <div className="px-3 py-8 text-center text-sm text-primary-content/60">Loading recipes...</div>
+          ) : filteredAdminRecipes.length ? (
+            <div className="flex max-h-72 flex-col gap-2 overflow-y-auto">
+              {filteredAdminRecipes.map((recipe) => {
+                const isLoaded = loadedRecipeRef.slug === recipe.slug && loadedRecipeRef.type === recipe.type;
+
+                return (
+                  <button
+                    key={recipe.id}
+                    type="button"
+                    className={`rounded-lg border px-4 py-3 text-left text-sm transition ${
+                      isLoaded
+                        ? 'border-[#8f746c] bg-[#f3e9e4]'
+                        : 'border-[#ece3d6] bg-white'
+                    }`}
+                    disabled={isLoadingRecipe}
+                    onClick={() => loadRecipeForEditing({ type: recipe.type, slug: recipe.slug })}
+                  >
+                    <div className="font-medium text-primary-content">{recipe.title || recipe.slug}</div>
+                    <div className="mt-1 text-xs text-primary-content/60">
+                      {recipe.slug}
+                      {recipe.published ? ' · Published' : ' · Draft'}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="px-3 py-8 text-center text-sm text-primary-content/60">
+              {editLookup.search.trim()
+                ? 'No recipes match that search yet.'
+                : `No ${editLookup.type} recipes found in Notion yet.`}
+            </div>
+          )}
+        </div>
+      </div>
+
       <form className="flex flex-col gap-5" onSubmit={onSubmit}>
+        <div className="rounded-lg border border-[#e5ddd0] bg-[#faf6ef] px-4 py-3 text-sm text-primary-content">
+          {form.pageId
+            ? `Edit mode: updating ${loadedRecipeRef.slug || form.slug}`
+            : 'Create mode: saving a new Notion recipe'}
+        </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-2">
             <span className="text-sm font-medium text-primary-content">Title</span>

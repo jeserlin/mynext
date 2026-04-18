@@ -1,6 +1,11 @@
 import { adminHeaderName, isAdminAuthorized } from 'lib/admin';
 import { getPostSlugs } from 'lib/api';
-import { createRecipeInNotion, recipeSlugExistsInNotion } from 'lib/notion';
+import {
+  createRecipeInNotion,
+  getRecipeBySlugForAdminFromNotion,
+  recipeSlugExistsInNotion,
+  updateRecipeInNotion,
+} from 'lib/notion';
 
 const allowedTypes = new Set(['cooking', 'baking']);
 
@@ -17,6 +22,16 @@ const parseLineList = (value = '') => value
   .map((item) => item.trim())
   .filter(Boolean);
 
+const getRevalidatePaths = ({ type, slug, previousPath }) => {
+  const paths = [`/${type}`, `/${type}/${slug}`];
+
+  if (previousPath && !paths.includes(previousPath)) {
+    paths.push(previousPath);
+  }
+
+  return [...new Set(paths.filter(Boolean))];
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -30,7 +45,10 @@ export default async function handler(req, res) {
     const {
       title = '',
       slug = '',
+      pageId = '',
       type = '',
+      previousType = '',
+      previousSlug = '',
       desc = '',
       ingredients = '',
       labels = '',
@@ -53,18 +71,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Markdown content is required' });
     }
 
-    const slugExists = await recipeSlugExistsInNotion(normalizedType, normalizedSlug);
-    if (slugExists) {
-      return res.status(409).json({ error: 'A recipe with this slug already exists in Notion' });
-    }
-
-    const markdownSlugExists = getPostSlugs(normalizedType)
-      .some((item) => item.replace(/\.md$/, '') === normalizedSlug);
-    if (markdownSlugExists) {
-      return res.status(409).json({ error: 'A markdown recipe with this slug already exists' });
-    }
-
-    const recipe = await createRecipeInNotion({
+    const recipePayload = {
       title: normalizedTitle,
       slug: normalizedSlug,
       type: normalizedType,
@@ -76,9 +83,66 @@ export default async function handler(req, res) {
       contentMarkdown: contentMarkdown.trim(),
       published,
       date: date || new Date().toISOString(),
+    };
+
+    let recipe = null;
+    let previousPath = null;
+
+    if (pageId) {
+      const existingRecipe = await getRecipeBySlugForAdminFromNotion(normalizedType, normalizedSlug);
+
+      if (existingRecipe && existingRecipe.id !== pageId) {
+        return res.status(409).json({ error: 'Another Notion recipe already uses this slug' });
+      }
+
+      const markdownSlugExists = getPostSlugs(normalizedType)
+        .some((item) => item.replace(/\.md$/, '') === normalizedSlug);
+      if (markdownSlugExists && !(previousType === normalizedType && previousSlug === normalizedSlug)) {
+        return res.status(409).json({ error: 'A markdown recipe with this slug already exists' });
+      }
+
+      recipe = await updateRecipeInNotion(pageId, recipePayload);
+      if (previousType && previousSlug) {
+        previousPath = `/${previousType}/${previousSlug}`;
+      }
+    } else {
+      const slugExists = await recipeSlugExistsInNotion(normalizedType, normalizedSlug);
+      if (slugExists) {
+        return res.status(409).json({ error: 'A recipe with this slug already exists in Notion' });
+      }
+
+      const markdownSlugExists = getPostSlugs(normalizedType)
+        .some((item) => item.replace(/\.md$/, '') === normalizedSlug);
+      if (markdownSlugExists) {
+        return res.status(409).json({ error: 'A markdown recipe with this slug already exists' });
+      }
+
+      recipe = await createRecipeInNotion(recipePayload);
+    }
+
+    const revalidatedPaths = getRevalidatePaths({
+      type: normalizedType,
+      slug: recipe.slug,
+      previousPath,
     });
 
-    return res.status(200).json(recipe);
+    let revalidationError = '';
+
+    for (const path of revalidatedPaths) {
+      try {
+        await res.revalidate(path);
+      } catch (error) {
+        revalidationError = error.message || 'Revalidation failed';
+        break;
+      }
+    }
+
+    return res.status(200).json({
+      ...recipe,
+      previousPath,
+      revalidatedPaths,
+      revalidationError,
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Unable to save recipe' });
   }
