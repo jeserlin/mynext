@@ -1,4 +1,9 @@
 import { adminHeaderName, isAdminAuthorized } from 'lib/admin';
+import {
+  formatValidationError,
+  parseLineList,
+  saveRecipeSchema,
+} from 'lib/adminRecipeValidation';
 import { getPostSlugs } from 'lib/api';
 import {
   createRecipeInNotion,
@@ -6,21 +11,6 @@ import {
   recipeSlugExistsInNotion,
   updateRecipeInNotion,
 } from 'lib/notion';
-
-const allowedTypes = new Set(['cooking', 'baking']);
-
-const slugify = (value = '') => value
-  .toLowerCase()
-  .normalize('NFKD')
-  .replace(/[\u0300-\u036f]/g, '')
-  .replace(/[^a-z0-9]+/g, '-')
-  .replace(/^-+|-+$/g, '')
-  .replace(/-{2,}/g, '-');
-
-const parseLineList = (value = '') => value
-  .split('\n')
-  .map((item) => item.trim())
-  .filter(Boolean);
 
 const getRevalidatePaths = ({ type, slug, previousPath }) => {
   const paths = [`/${type}`, `/${type}/${slug}`];
@@ -42,62 +32,58 @@ export default async function handler(req, res) {
   }
 
   try {
+    const validationResult = saveRecipeSchema.safeParse(req.body || {});
+
+    if (!validationResult.success) {
+      return res.status(400).json({
+        error: formatValidationError(validationResult.error),
+      });
+    }
+
     const {
-      title = '',
-      slug = '',
-      pageId = '',
-      type = '',
-      previousType = '',
-      previousSlug = '',
-      desc = '',
-      ingredients = '',
-      labels = '',
-      coverImage = '',
-      gallery = '',
-      contentMarkdown = '',
-      published = false,
-      date = '',
-    } = req.body || {};
-
-    const normalizedType = type.trim().toLowerCase();
-    const normalizedTitle = title.trim();
-    const normalizedSlug = slugify(slug || title);
-
-    if (!normalizedTitle || !normalizedSlug || !allowedTypes.has(normalizedType)) {
-      return res.status(400).json({ error: 'Title, slug, and type are required' });
-    }
-
-    if (!contentMarkdown.trim()) {
-      return res.status(400).json({ error: 'Markdown content is required' });
-    }
+      title,
+      slug,
+      pageId,
+      type,
+      previousType,
+      previousSlug,
+      desc,
+      ingredients,
+      labels,
+      coverImage,
+      gallery,
+      contentMarkdown,
+      published,
+      date,
+    } = validationResult.data;
 
     const recipePayload = {
-      title: normalizedTitle,
-      slug: normalizedSlug,
-      type: normalizedType,
-      desc: desc.trim(),
+      title,
+      slug,
+      type,
+      desc,
       ingredient: parseLineList(ingredients),
       labels: parseLineList(labels),
-      coverImage: coverImage.trim(),
+      coverImage,
       gallery: parseLineList(gallery),
-      contentMarkdown: contentMarkdown.trim(),
+      contentMarkdown,
       published,
-      date: date || new Date().toISOString(),
+      date,
     };
 
     let recipe = null;
     let previousPath = null;
 
     if (pageId) {
-      const existingRecipe = await getRecipeBySlugForAdminFromNotion(normalizedType, normalizedSlug);
+      const existingRecipe = await getRecipeBySlugForAdminFromNotion(type, slug);
 
       if (existingRecipe && existingRecipe.id !== pageId) {
         return res.status(409).json({ error: 'Another Notion recipe already uses this slug' });
       }
 
-      const markdownSlugExists = getPostSlugs(normalizedType)
-        .some((item) => item.replace(/\.md$/, '') === normalizedSlug);
-      if (markdownSlugExists && !(previousType === normalizedType && previousSlug === normalizedSlug)) {
+      const markdownSlugExists = getPostSlugs(type)
+        .some((item) => item.replace(/\.md$/, '') === slug);
+      if (markdownSlugExists && !(previousType === type && previousSlug === slug)) {
         return res.status(409).json({ error: 'A markdown recipe with this slug already exists' });
       }
 
@@ -106,13 +92,13 @@ export default async function handler(req, res) {
         previousPath = `/${previousType}/${previousSlug}`;
       }
     } else {
-      const slugExists = await recipeSlugExistsInNotion(normalizedType, normalizedSlug);
+      const slugExists = await recipeSlugExistsInNotion(type, slug);
       if (slugExists) {
         return res.status(409).json({ error: 'A recipe with this slug already exists in Notion' });
       }
 
-      const markdownSlugExists = getPostSlugs(normalizedType)
-        .some((item) => item.replace(/\.md$/, '') === normalizedSlug);
+      const markdownSlugExists = getPostSlugs(type)
+        .some((item) => item.replace(/\.md$/, '') === slug);
       if (markdownSlugExists) {
         return res.status(409).json({ error: 'A markdown recipe with this slug already exists' });
       }
@@ -121,7 +107,7 @@ export default async function handler(req, res) {
     }
 
     const revalidatedPaths = getRevalidatePaths({
-      type: normalizedType,
+      type,
       slug: recipe.slug,
       previousPath,
     });
