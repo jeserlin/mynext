@@ -1,15 +1,10 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+const Home = () => null;
 
-const Home = () => {
-  const router = useRouter();
-  const homePage = '/tech';
-
-  useEffect(() => {
-    router.push(homePage);
-  }, [router]);
-
-  return null;
-};
+export const getServerSideProps = () => ({
+  redirect: {
+    destination: '/tech',
+    permanent: false,
+  },
+});
 
 export default Home;
