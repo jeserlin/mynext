@@ -1,24 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import siteSeo from 'next-seo.config.js';
 
-const propTypes = {
-  title: PropTypes.string,
-  description: PropTypes.string,
-  image: PropTypes.string,
-  path: PropTypes.string,
-  type: PropTypes.oneOf(['website', 'article']),
-  publishedTime: PropTypes.string,
-  jsonLd: PropTypes.oneOfType([
-    PropTypes.shape({}),
-    PropTypes.arrayOf(PropTypes.shape({})),
-  ]),
-};
+export type JsonLdValue =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | JsonLdValue[]
+  | { [key: string]: JsonLdValue };
 
-const absoluteUrl = (url, siteUrl) => {
+export interface SeoHeaderProps {
+  title?: string;
+  description?: string;
+  image?: string;
+  path?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  jsonLd?: JsonLdValue | JsonLdValue[];
+}
+
+const absoluteUrl = (url: string, siteUrl: string) => {
   if (!url) return '';
   if (/^https?:\/\//.test(url)) return url;
   return `${siteUrl}${url.startsWith('/') ? url : `/${url}`}`;
@@ -31,12 +35,15 @@ const SeoHeader = ({
   path = '',
   type = 'website',
   publishedTime = '',
-  jsonLd = null,
-}) => {
+  jsonLd,
+}: SeoHeaderProps) => {
   const router = useRouter();
-  const normalizedPath = (path || router.asPath || '/').split(/[?#]/)[0] || '/';
+  const routePath = (path || router.asPath || '/').split(/[?#]/)[0] || '/';
+  const normalizedPath = routePath === '/'
+    ? ''
+    : routePath.startsWith('/') ? routePath : `/${routePath}`;
   const siteUrl = siteSeo.openGraph.url.replace(/\/$/, '');
-  const canonicalUrl = `${siteUrl}${normalizedPath === '/' ? '' : normalizedPath}`;
+  const canonicalUrl = `${siteUrl}${normalizedPath}`;
   const pageTitle = title ? `${title} | ${siteSeo.defaultTitle}` : siteSeo.defaultTitle;
   const metaDescription = description || siteSeo.description;
   const defaultImage = siteSeo.openGraph.images?.[0]?.url || '';
@@ -77,7 +84,5 @@ const SeoHeader = ({
     </Head>
   );
 };
-
-SeoHeader.propTypes = propTypes;
 
 export default SeoHeader;
