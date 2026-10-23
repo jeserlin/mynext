@@ -11,6 +11,10 @@
 # next.js
 /.next/
 /out/
+*.tsbuildinfo
+
+# storybook
+/storybook-static/
 
 # production
 /build
@@ -32,6 +36,3 @@ yarn-error.log*
 
 # vercel
 .vercel
-
-# sitemap
-# public/sitemap.xml

@@ -6,6 +6,7 @@ module.exports = [
     ignores: [
       '.claude/**',
       'jsconfig.json',
+      'tsconfig.json',
       'package.json',
       'package-lock.json',
     ],
@@ -26,6 +27,8 @@ module.exports = [
         {
           js: 'never',
           jsx: 'never',
+          ts: 'never',
+          tsx: 'never',
         },
       ],
     },
