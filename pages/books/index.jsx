@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { NotebookPen } from 'lucide-react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -49,7 +48,7 @@ const Books = ({ years = [], posts = [] }) => {
     if (selectedYear === All) {
       return posts;
     }
-    return _.filter(posts, ({ date }) => new Date(date).getFullYear() === selectedYear);
+    return posts.filter(({ date }) => new Date(date).getFullYear() === selectedYear);
   };
 
   const handleImageLoad = (url) => {
@@ -134,13 +133,10 @@ export async function getStaticProps() {
     fields: ['slug', 'title', 'coverImage', 'author', 'date', 'content'],
   });
 
-  const years = _.chain(posts)
-    .reduce((acc, { date }) => {
-      acc.push(new Date(date).getFullYear());
-      return acc;
-    }, [All])
-    .uniq()
-    .value();
+  const years = [
+    All,
+    ...new Set(posts.map(({ date }) => new Date(date).getFullYear())),
+  ];
 
   return {
     props: {

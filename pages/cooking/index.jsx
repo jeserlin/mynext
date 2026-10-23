@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -36,7 +35,7 @@ const Cooking = ({ labelList = [], posts = [] }) => {
     if (selectedLabel === All) {
       return posts;
     }
-    return _.filter(posts, ({ labels }) => labels?.includes(selectedLabel));
+    return posts.filter(({ labels }) => labels?.includes(selectedLabel));
   };
 
   return (
@@ -104,15 +103,12 @@ export async function getStaticProps() {
     fields: ['slug', 'title', 'labels', 'coverImage', 'ingredient'],
   });
 
-  const labelList = _.chain(posts)
-    .reduce((acc, { labels }) => {
-      acc.push(...labels);
-      return acc;
-    }, [])
-    .uniq()
-    .partition((label) => label.toLowerCase() !== 'others')
-    .thru(([nonOthers, others]) => [All, ..._.sortBy(nonOthers), ...others])
-    .value();
+  const uniqueLabels = [...new Set(posts.flatMap(({ labels }) => labels))];
+  const nonOthers = uniqueLabels
+    .filter((label) => label.toLowerCase() !== 'others')
+    .sort();
+  const others = uniqueLabels.filter((label) => label.toLowerCase() === 'others');
+  const labelList = [All, ...nonOthers, ...others];
 
   return {
     props: {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
@@ -75,7 +74,9 @@ export async function getStaticProps() {
     fields: ['slug', 'title', 'coverImage', 'desc', 'date'],
   });
 
-  const sortedPosts = _.sortBy(posts, ['date']).reverse();
+  const sortedPosts = posts.sort((post1, post2) => (
+    post1.date > post2.date ? -1 : 1
+  ));
   return {
     props: {
       posts: sortedPosts,
