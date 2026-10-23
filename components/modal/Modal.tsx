@@ -1,19 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { X } from 'lucide-react';
 
 import PostContent from 'components/postContent';
 
-const propTypes = {
-  open: PropTypes.bool,
-  title: PropTypes.string,
-  content: PropTypes.string,
-  onClose: PropTypes.func,
-};
+export interface ModalProps {
+  open?: boolean;
+  title?: string;
+  content?: string;
+  onClose?: () => void;
+}
 
 const Modal = ({
-  open = false, title = '', content = '', onClose = () => {},
-}) => (
+  open = false,
+  title = '',
+  content = '',
+  onClose = () => {},
+}: ModalProps) => (
   <dialog className={`modal ${open ? 'modal-open' : ''}`}>
     <div className="modal-box max-w-xl max-h-[80vh] bg-white p-0 rounded-[4px] [&_hr]:border-[#e5e7eb]">
       <div className="flex items-center justify-between px-4">
@@ -37,7 +38,5 @@ const Modal = ({
     </form>
   </dialog>
 );
-
-Modal.propTypes = propTypes;
 
 export default Modal;
