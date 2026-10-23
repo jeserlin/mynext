@@ -158,7 +158,7 @@ const RecipePostPage = ({
           </div>
         </div>
       </div>
-      <ScrollTop post={post} />
+      <ScrollTop />
     </div>
   );
 };

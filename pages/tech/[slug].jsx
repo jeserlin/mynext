@@ -90,7 +90,7 @@ const TechPost = (props) => {
           </div>
         </div>
       </div>
-      <ScrollTop {...props} />
+      <ScrollTop />
     </div>
   );
 };
