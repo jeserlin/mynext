@@ -14,11 +14,9 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint . --ext .js,.jsx,.json ",
-        "new-recipe": "node scripts/new-recipe.js",
-        "generate-sitemap": "node sitemap-generator.js"
+        "new-recipe": "node scripts/new-recipe.js"
     },
     "dependencies": {
-        "@sergeymyssak/nextjs-sitemap": "^2.0.3",
         "clsx": "^2.1.1",
         "date-fns": "^4.4.0",
         "gray-matter": "^4.0.3",
