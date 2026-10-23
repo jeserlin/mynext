@@ -2,11 +2,6 @@ import React from 'react';
 import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';
-import mermaid from 'mermaid';
-
-mermaid.initialize({
-  startOnLoad: true,
-});
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {

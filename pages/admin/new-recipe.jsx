@@ -121,6 +121,8 @@ const NewRecipeAdmin = () => {
   useEffect(() => {
     const storedSecret = window.localStorage.getItem('mynext-admin-secret') || '';
     if (storedSecret) {
+      // Restore client-only storage after hydration.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAdminSecret(storedSecret);
       setHasSavedSecret(true);
     }
@@ -145,12 +147,6 @@ const NewRecipeAdmin = () => {
       document.removeEventListener('click', closeDropdown);
     };
   }, [isTypeDropdownOpen]);
-
-  useEffect(() => {
-    if (!slugTouched) {
-      setForm((current) => ({ ...current, slug: slugify(current.title) }));
-    }
-  }, [form.title, slugTouched]);
 
   const headers = useMemo(() => ({
     'Content-Type': 'application/json',
@@ -177,7 +173,11 @@ const NewRecipeAdmin = () => {
 
   const updateField = (field) => (event) => {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    setForm((current) => ({ ...current, [field]: value }));
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+      ...(!slugTouched && field === 'title' ? { slug: slugify(value) } : {}),
+    }));
   };
 
   const updateEditLookup = (field) => (event) => {
@@ -298,6 +298,8 @@ const NewRecipeAdmin = () => {
       return;
     }
 
+    // Fetch when the saved credentials or selected recipe type changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadRecipeList(editLookup.type);
   }, [adminSecret, editLookup.type, hasSavedSecret, loadRecipeList]);
 

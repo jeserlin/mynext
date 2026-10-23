@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
-import mermaid from 'mermaid';
 import { useRouter } from 'next/router';
 
 import SeoHeader from 'components/seoHeader';
@@ -32,8 +31,17 @@ const TechPost = (props) => {
   const { post = {} } = props;
 
   useEffect(() => {
-    mermaid.contentLoaded();
-  });
+    const renderDiagrams = async () => {
+      const { default: mermaid } = await import('mermaid');
+      mermaid.initialize({ startOnLoad: false });
+      await mermaid.run({
+        querySelector: '.mermaid',
+        suppressErrors: true,
+      });
+    };
+
+    renderDiagrams();
+  }, [post.slug]);
 
   const router = useRouter();
   if (!router.isFallback && !post?.slug) {
