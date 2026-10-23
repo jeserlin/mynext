@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ErrorPage from 'next/error';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import SeoHeader from 'components/seoHeader';
@@ -90,10 +90,13 @@ const RecipePostPage = ({
                 {!loadedImgs[images[0]] && (
                   <div className="absolute inset-0 skeleton rounded-3xl" />
                 )}
-                <LazyLoadImage
+                <Image
                   className="rounded-3xl w-full h-auto"
                   src={images[0]}
                   alt={post.title}
+                  width={1200}
+                  height={900}
+                  sizes="(min-width: 768px) 33vw, 100vw"
                   onLoad={() => handleImageLoad(images[0])}
                 />
               </div>
@@ -108,10 +111,13 @@ const RecipePostPage = ({
                       {!loadedImgs[image] && (
                         <div className="absolute inset-0 skeleton rounded-box" />
                       )}
-                      <LazyLoadImage
-                        className="w-full rounded-box"
+                      <Image
+                        className="w-full h-auto rounded-box"
                         src={image}
                         alt={`${post.title} - ${index + 1}`}
+                        width={1200}
+                        height={900}
+                        sizes="(min-width: 768px) 33vw, 100vw"
                         onLoad={() => handleImageLoad(image)}
                       />
                       <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between opacity-0 transition-opacity group-hover:opacity-100">

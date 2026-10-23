@@ -5,6 +5,10 @@ module.exports = {
         protocol: 'https',
         hostname: 'media.publit.io',
       },
+      {
+        protocol: 'https',
+        hostname: 'webcdn2.ebook.hyread.com.tw',
+      },
     ],
   },
 };

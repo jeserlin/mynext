@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Image from 'next/image';
 import Link from 'next/link';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import SeoHeader from 'components/seoHeader';
 import { getRecipesByType } from 'lib/recipes';
@@ -39,8 +39,10 @@ const Baking = ({ posts = [] }) => {
                   {!loadedImgs[coverImage] && (
                     <div className="absolute inset-0 skeleton rounded-lg" />
                   )}
-                  <LazyLoadImage
-                    className={`rounded-lg w-full h-full object-cover ${!loadedImgs[coverImage] ? 'invisible' : ''}`}
+                  <Image
+                    fill
+                    sizes="(min-width: 768px) 12.5vw, 25vw"
+                    className={`rounded-lg object-cover ${!loadedImgs[coverImage] ? 'invisible' : ''}`}
                     src={coverImage}
                     alt={title}
                     onLoad={() => handleImageLoad(coverImage)}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Image from 'next/image';
 import { NotebookPen } from 'lucide-react';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import SeoHeader from 'components/seoHeader';
 import Modal from 'components/modal';
@@ -97,9 +97,10 @@ const Books = ({ years = [], posts = [] }) => {
                   {!loadedImgs[coverImage] && (
                     <div className="absolute inset-0 skeleton" />
                   )}
-                  <LazyLoadImage
+                  <Image
                     className="w-[110px] h-[150px] max-h-[150px] transition-transform duration-200 hover:scale-105"
                     src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
+                    alt={title}
                     height={150}
                     width={110}
                     onLoad={() => handleImageLoad(coverImage)}
