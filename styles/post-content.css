@@ -1,4 +1,6 @@
- .content-container {
+@reference "./globals.css";
+
+.content-container {
   @apply text-base text-gray-darker leading-6;
 }
 
@@ -19,5 +21,5 @@
 }
 
 .content-container *:not(pre) > code {
-  @apply px-0.5 py-0.5 bg-[#ece7df] bg-opacity-50;
+  @apply px-0.5 py-0.5 bg-[#ece7df]/50;
 }

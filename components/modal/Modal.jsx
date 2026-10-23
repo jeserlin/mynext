@@ -15,7 +15,7 @@ const Modal = ({
   open = false, title = '', content = '', onClose = () => {},
 }) => (
   <dialog className={`modal ${open ? 'modal-open' : ''}`}>
-    <div className="modal-box max-w-xl max-h-[80vh] bg-white p-0 rounded-[4px]">
+    <div className="modal-box max-w-xl max-h-[80vh] bg-white p-0 rounded-[4px] [&_hr]:border-[#e5e7eb]">
       <div className="flex items-center justify-between px-4">
         <h3 className="font-bold text-lg text-secondary leading-none">{title}</h3>
         <button
