@@ -1,35 +1,33 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import ErrorPage from 'next/error';
 import { useRouter } from 'next/router';
+import type { ParsedUrlQuery } from 'querystring';
 
-import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';
-import ScrollTop from 'components/scrollTop';
-import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
-import markdownToHtml from 'lib/markdownToHtml';
+import PostHeader from 'components/postHeader';
+import ScrollTop from 'components/scrollTop';
+import SeoHeader from 'components/seoHeader';
+import { authorName } from 'constants/basicInfo';
 import { getPostBySlug, getPostsByFolder } from 'lib/api';
 import { formatDate } from 'lib/convertors';
-import { authorName } from 'constants/basicInfo';
+import markdownToHtml from 'lib/markdownToHtml';
+import type { PostDetail, PostSummary } from 'types/post';
 import siteSeo from 'next-seo.config.js';
 
-const propTypes = {
-  post: PropTypes.shape({
-    slug: PropTypes.string,
-    title: PropTypes.string,
-    desc: PropTypes.string,
-    date: PropTypes.string,
-    content: PropTypes.string,
-  }),
-};
+interface TechPostParams extends ParsedUrlQuery {
+  slug: string;
+}
+
+interface TechPostProps {
+  post: PostDetail;
+}
 
 const techMainPath = '/tech';
 const siteUrl = siteSeo.openGraph.url.replace(/\/$/, '');
 
-const TechPost = (props) => {
-  const { post = {} } = props;
-
+const TechPost = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
   useEffect(() => {
     const renderDiagrams = async () => {
       const { default: mermaid } = await import('mermaid');
@@ -40,18 +38,18 @@ const TechPost = (props) => {
       });
     };
 
-    renderDiagrams();
+    void renderDiagrams();
   }, [post.slug]);
 
   const router = useRouter();
-  if (!router.isFallback && !post?.slug) {
+  if (!router.isFallback && !post.slug) {
     return <ErrorPage statusCode={404} />;
   }
 
   return (
     <div>
       <SeoHeader
-        title={`${post.title}`}
+        title={post.title}
         description={post.desc}
         path={`/tech/${post.slug}`}
         type="article"
@@ -95,14 +93,14 @@ const TechPost = (props) => {
   );
 };
 
-export async function getStaticProps({ params }) {
-  const post = getPostBySlug('tech', params.slug, [
+export const getStaticProps: GetStaticProps<TechPostProps, TechPostParams> = async ({ params }) => {
+  const post = getPostBySlug('tech', params!.slug, [
     'title',
     'desc',
     'date',
     'slug',
     'content',
-  ]);
+  ]) as PostDetail;
   const content = await markdownToHtml(post.content || '');
 
   return {
@@ -113,24 +111,18 @@ export async function getStaticProps({ params }) {
       },
     },
   };
-}
+};
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths<TechPostParams> = async () => {
   const posts = getPostsByFolder({
     folder: 'tech',
     fields: ['slug'],
-  });
+  }) as PostSummary[];
 
   return {
-    paths: posts.map((post) => ({
-      params: {
-        slug: post.slug,
-      },
-    })),
+    paths: posts.map(({ slug }) => ({ params: { slug } })),
     fallback: false,
   };
-}
-
-TechPost.propTypes = propTypes;
+};
 
 export default TechPost;

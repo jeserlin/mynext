@@ -5,3 +5,7 @@ export interface PostSummary {
   desc?: string;
   date?: string;
 }
+
+export interface PostDetail extends Partial<PostSummary> {
+  content?: string;
+}
