@@ -1,38 +1,28 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react';
+import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import Image from 'next/image';
 import { NotebookPen } from 'lucide-react';
 
-import SeoHeader from 'components/seoHeader';
 import Modal from 'components/modal';
-import markdownToHtml from 'lib/markdownToHtml';
+import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
+import markdownToHtml from 'lib/markdownToHtml';
+import type { BookNote, BookPost } from 'types/book';
 
 const All = 'All';
 
-const propTypes = {
-  years: PropTypes.arrayOf(PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ])),
-  posts: PropTypes.arrayOf(PropTypes.shape({
-    slug: PropTypes.string,
-    title: PropTypes.string,
-    coverImage: PropTypes.string,
-  })),
-};
+interface BooksProps {
+  years: Array<string | number>;
+  posts: BookPost[];
+}
 
-const Books = ({ years = [], posts = [] }) => {
-  const [selectedYear, setSelectedYear] = useState(All);
-  const [selectedBook, setSelectedBook] = useState({});
+const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const [selectedYear, setSelectedYear] = useState<string | number>(All);
+  const [selectedBook, setSelectedBook] = useState<BookNote | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loadedImgs, setLoadedImgs] = useState({});
+  const [loadedImgs, setLoadedImgs] = useState<Record<string, boolean>>({});
 
-  const onClickChip = (year) => {
-    setSelectedYear(year);
-  };
-
-  const onSelectBook = async (book) => {
+  const onSelectBook = async (book: BookNote) => {
     const htmlContent = await markdownToHtml(book.content || '');
     if (!htmlContent) return;
 
@@ -44,14 +34,11 @@ const Books = ({ years = [], posts = [] }) => {
     setIsModalOpen(false);
   };
 
-  const filteredPosts = () => {
-    if (selectedYear === All) {
-      return posts;
-    }
-    return posts.filter(({ date }) => new Date(date).getFullYear() === selectedYear);
-  };
+  const filteredPosts = selectedYear === All
+    ? posts
+    : posts.filter(({ date }) => new Date(date).getFullYear() === selectedYear);
 
-  const handleImageLoad = (url) => {
+  const handleImageLoad = (url: string) => {
     setLoadedImgs((prev) => ({ ...prev, [url]: true }));
   };
 
@@ -67,18 +54,18 @@ const Books = ({ years = [], posts = [] }) => {
             type="button"
             key={year}
             className={`btn btn-sm btn-secondary rounded-lg hover:!text-white ${selectedYear === year
-                ? 'text-white'
-                : 'btn-outline'
-              }`}
-            onClick={() => onClickChip(year)}
+              ? 'text-white'
+              : 'btn-outline'
+            }`}
+            onClick={() => setSelectedYear(year)}
           >
             {year}
           </button>
         ))}
       </div>
-      <div className="text-sm text-primary-content mb-4">{`Total: ${filteredPosts().length}`}</div>
+      <div className="text-sm text-primary-content mb-4">{`Total: ${filteredPosts.length}`}</div>
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        {filteredPosts().map(({
+        {filteredPosts.map(({
           slug, coverImage, title, author, content,
         }) => (
           <div
@@ -87,8 +74,10 @@ const Books = ({ years = [], posts = [] }) => {
           >
             <div
               className="relative w-fit mb-2 cursor-pointer"
-              onClick={() => onSelectBook({ title, content })}
-              onKeyDown={(e) => e.key === 'Enter' && onSelectBook({ title, content })}
+              onClick={() => void onSelectBook({ title, content })}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') void onSelectBook({ title, content });
+              }}
               role="button"
               tabIndex={0}
             >
@@ -120,19 +109,19 @@ const Books = ({ years = [], posts = [] }) => {
       </div>
       <Modal
         open={isModalOpen}
-        title={selectedBook.title}
-        content={selectedBook.content}
+        title={selectedBook?.title}
+        content={selectedBook?.content}
         onClose={onCloseModal}
       />
     </div>
   );
 };
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps<BooksProps> = async () => {
   const posts = getPostsByFolder({
     folder: 'books',
     fields: ['slug', 'title', 'coverImage', 'author', 'date', 'content'],
-  });
+  }) as BookPost[];
 
   const years = [
     All,
@@ -145,8 +134,6 @@ export async function getStaticProps() {
       posts,
     },
   };
-}
-
-Books.propTypes = propTypes;
+};
 
 export default Books;
