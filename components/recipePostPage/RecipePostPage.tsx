@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react';
 import ErrorPage from 'next/error';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -11,23 +10,15 @@ import ScrollTop from 'components/scrollTop';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import { authorName } from 'constants/basicInfo';
+import type { RecipePost, RecipeType } from 'types/recipe';
 import siteSeo from 'next-seo.config.js';
 
-const propTypes = {
-  mainPath: PropTypes.string.isRequired,
-  post: PropTypes.shape({
-    slug: PropTypes.string,
-    title: PropTypes.string,
-    desc: PropTypes.string,
-    date: PropTypes.string,
-    content: PropTypes.string,
-    coverImage: PropTypes.string,
-    gallery: PropTypes.arrayOf(PropTypes.string),
-    ingredient: PropTypes.arrayOf(PropTypes.string),
-  }),
-  recipeCategory: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['baking', 'cooking']).isRequired,
-};
+export interface RecipePostPageProps {
+  mainPath: string;
+  post?: RecipePost;
+  recipeCategory: string;
+  type: RecipeType;
+}
 
 const siteUrl = siteSeo.openGraph.url.replace(/\/$/, '');
 
@@ -36,27 +27,27 @@ const RecipePostPage = ({
   post = {},
   recipeCategory,
   type,
-}) => {
-  const [loadedImgs, setLoadedImgs] = useState({});
+}: RecipePostPageProps) => {
+  const [loadedImgs, setLoadedImgs] = useState<Record<string, boolean>>({});
   const router = useRouter();
 
-  if (!router.isFallback && !post?.slug) {
+  if (!router.isFallback && !post.slug) {
     return <ErrorPage statusCode={404} />;
   }
 
   const images = post.gallery && post.gallery.length > 0
-    ? [post.coverImage, ...post.gallery].filter(Boolean)
+    ? [post.coverImage, ...post.gallery].filter((image): image is string => Boolean(image))
     : post.coverImage ? [post.coverImage] : [];
   const hasGallery = images.length > 0;
 
-  const handleImageLoad = (image) => {
+  const handleImageLoad = (image: string) => {
     setLoadedImgs((prev) => ({ ...prev, [image]: true }));
   };
 
   return (
     <div>
       <SeoHeader
-        title={`${post.title}`}
+        title={post.title}
         description={post.desc}
         image={post.coverImage}
         path={`/${type}/${post.slug}`}
@@ -93,7 +84,7 @@ const RecipePostPage = ({
                 <Image
                   className="rounded-3xl w-full h-auto"
                   src={images[0]}
-                  alt={post.title}
+                  alt={post.title || ''}
                   width={1200}
                   height={900}
                   sizes="(min-width: 768px) 33vw, 100vw"
@@ -114,7 +105,7 @@ const RecipePostPage = ({
                       <Image
                         className="w-full h-auto rounded-box"
                         src={image}
-                        alt={`${post.title} - ${index + 1}`}
+                        alt={`${post.title || ''} - ${index + 1}`}
                         width={1200}
                         height={900}
                         sizes="(min-width: 768px) 33vw, 100vw"
@@ -162,7 +153,5 @@ const RecipePostPage = ({
     </div>
   );
 };
-
-RecipePostPage.propTypes = propTypes;
 
 export default RecipePostPage;
