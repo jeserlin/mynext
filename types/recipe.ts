@@ -1,4 +1,11 @@
+import type { PostSummary } from 'types/post';
+
 export type RecipeType = 'baking' | 'cooking';
+
+export interface RecipeSummary extends PostSummary {
+  ingredient: string[];
+  labels?: string[];
+}
 
 export interface RecipePost {
   slug?: string;

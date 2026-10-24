@@ -1,42 +1,33 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react';
+import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import SeoHeader from 'components/seoHeader';
 import { getRecipesByType } from 'lib/recipes';
+import type { RecipeSummary } from 'types/recipe';
 
 const All = 'All';
 
-const propTypes = {
-  labelList: PropTypes.arrayOf(PropTypes.string),
-  posts: PropTypes.arrayOf(PropTypes.shape({
-    slug: PropTypes.string,
-    title: PropTypes.string,
-    coverImage: PropTypes.string,
-    ingredient: PropTypes.arrayOf(PropTypes.string),
-    labels: PropTypes.arrayOf(PropTypes.string),
-  })),
-};
+interface CookingProps {
+  labelList: string[];
+  posts: RecipeSummary[];
+}
 
-const Cooking = ({ labelList = [], posts = [] }) => {
+const Cooking = ({
+  labelList,
+  posts,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [selectedLabel, setSelectedLabel] = useState(All);
-  const [loadedImgs, setLoadedImgs] = useState({});
+  const [loadedImgs, setLoadedImgs] = useState<Record<string, boolean>>({});
 
-  const handleImageLoad = (coverImage) => {
+  const handleImageLoad = (coverImage: string) => {
     setLoadedImgs((prev) => ({ ...prev, [coverImage]: true }));
   };
 
-  const onClickChip = (label) => {
-    setSelectedLabel(label);
-  };
-
-  const filteredPosts = () => {
-    if (selectedLabel === All) {
-      return posts;
-    }
-    return posts.filter(({ labels }) => labels?.includes(selectedLabel));
-  };
+  const filteredPosts = selectedLabel === All
+    ? posts
+    : posts.filter(({ labels }) => labels?.includes(selectedLabel));
 
   return (
     <div>
@@ -54,14 +45,14 @@ const Cooking = ({ labelList = [], posts = [] }) => {
                 ? 'text-white'
                 : 'btn-outline'
             }`}
-            onClick={() => onClickChip(label)}
+            onClick={() => setSelectedLabel(label)}
           >
             {label}
           </button>
         ))}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filteredPosts().map(({
+        {filteredPosts.map(({
           slug, title, coverImage, ingredient,
         }) => (
           <Link key={slug} href={`/cooking/${slug}`}>
@@ -99,13 +90,13 @@ const Cooking = ({ labelList = [], posts = [] }) => {
   );
 };
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps<CookingProps> = async () => {
   const posts = await getRecipesByType({
     type: 'cooking',
     fields: ['slug', 'title', 'labels', 'coverImage', 'ingredient'],
-  });
+  }) as RecipeSummary[];
 
-  const uniqueLabels = [...new Set(posts.flatMap(({ labels }) => labels))];
+  const uniqueLabels = [...new Set(posts.flatMap(({ labels }) => labels || []))];
   const nonOthers = uniqueLabels
     .filter((label) => label.toLowerCase() !== 'others')
     .sort();
@@ -119,8 +110,6 @@ export async function getStaticProps() {
     },
     revalidate: 60,
   };
-}
-
-Cooking.propTypes = propTypes;
+};
 
 export default Cooking;
