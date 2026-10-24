@@ -41,10 +41,11 @@ const allowedStyles = {
   },
 };
 
-export default async function markdownToHtml(markdown) {
-  const md = new MarkdownIt({
+export default async function markdownToHtml(markdown: string): Promise<string> {
+  let md: InstanceType<typeof MarkdownIt>;
+  md = new MarkdownIt({
     html: true,
-    highlight(str, lang) {
+    highlight(str: string, lang: string): string {
       if (lang && hljs.getLanguage(lang)) {
         return `<pre><code class="hljs language-${lang}">${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code>
         </pre>`;
@@ -65,7 +66,9 @@ export default async function markdownToHtml(markdown) {
     allowedStyles,
     allowedTags,
     allowProtocolRelative: true,
-    exclusiveFilter: (frame) => frame.tag === 'iframe' && !frame.attribs.src,
+    exclusiveFilter: (frame: sanitizeHtml.IFrame) => (
+      frame.tag === 'iframe' && !frame.attribs.src
+    ),
     transformTags: {
       a: sanitizeHtml.simpleTransform('a', {
         rel: 'noopener noreferrer',
