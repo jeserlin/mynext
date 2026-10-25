@@ -1,9 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 import SeoHeader from 'components/seoHeader';
 import { adminHeaderName } from 'lib/admin';
+import { getErrorMessage } from 'lib/errors';
 import { publitBaseUrl } from 'lib/publit';
+import type { PublitSignedQuery } from 'lib/publit';
+import type { NotionRecipe, RecipeType } from 'types/recipe';
 
 const defaultMarkdownTemplate = `### 材料
 
@@ -21,7 +27,61 @@ const defaultMarkdownTemplate = `### 材料
 2. 第二步
 `;
 
-const initialForm = {
+interface RecipeForm {
+  pageId: string;
+  title: string;
+  slug: string;
+  type: RecipeType;
+  desc: string;
+  ingredients: string;
+  labels: string;
+  coverImage: string;
+  gallery: string;
+  contentMarkdown: string;
+  published: boolean;
+  date: string;
+}
+
+interface EditLookup {
+  type: RecipeType;
+  search: string;
+}
+
+interface LoadedRecipeRef {
+  type: RecipeType | '';
+  slug: string;
+}
+
+interface AdminRecipe extends Omit<NotionRecipe, 'slug' | 'type'> {
+  slug: string;
+  type: RecipeType;
+}
+
+interface ErrorResponse {
+  error?: string;
+}
+
+interface RecipeListResponse extends ErrorResponse {
+  recipes?: AdminRecipe[];
+}
+
+interface RecipeDetailResponse extends ErrorResponse, Partial<NotionRecipe> {}
+
+interface SaveRecipeResponse extends ErrorResponse {
+  slug?: string;
+  revalidationError?: string;
+}
+
+interface PublitUploadResponse extends ErrorResponse {
+  success?: boolean;
+  message?: string;
+  url_preview?: string;
+  url_download?: string;
+  url_thumbnail?: string;
+  url?: string;
+}
+
+const initialForm: RecipeForm = {
   pageId: '',
   title: '',
   slug: '',
@@ -36,12 +96,12 @@ const initialForm = {
   date: new Date().toISOString().slice(0, 10),
 };
 
-const initialEditLookup = {
+const initialEditLookup: EditLookup = {
   type: 'cooking',
   search: '',
 };
 
-const slugify = (value = '') => value
+const slugify = (value = ''): string => value
   .toLowerCase()
   .normalize('NFKD')
   .replace(/[\u0300-\u036f]/g, '')
@@ -51,19 +111,25 @@ const slugify = (value = '') => value
 
 const maxUploadSizeWithoutCompression = 4 * 1024 * 1024;
 
-const readFileAsDataUrl = (file) => new Promise((resolve, reject) => {
+const readFileAsDataUrl = (file: File): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
-  reader.onload = () => resolve(reader.result);
+  reader.onload = () => {
+    if (typeof reader.result === 'string') {
+      resolve(reader.result);
+      return;
+    }
+    reject(new Error('Could not read image file'));
+  };
   reader.onerror = reject;
   reader.readAsDataURL(file);
 });
 
-const getUploadFileName = (file) => {
+const getUploadFileName = (file: File): string => {
   const baseName = file.name.replace(/\.[^.]+$/, '');
   return `${baseName || 'recipe-image'}.jpg`;
 };
 
-const compressImage = async (file) => {
+const compressImage = async (file: File): Promise<Blob> => {
   const dataUrl = await readFileAsDataUrl(file);
 
   return new Promise((resolve, reject) => {
@@ -76,6 +142,10 @@ const compressImage = async (file) => {
       canvas.height = Math.round(image.height * ratio);
 
       const context = canvas.getContext('2d');
+      if (!context) {
+        reject(new Error('Could not prepare image for upload'));
+        return;
+      }
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
       canvas.toBlob((blob) => {
@@ -102,10 +172,10 @@ const fileInputClassName = 'file-input block h-12 w-full rounded-lg border borde
 const NewRecipeAdmin = () => {
   const [adminSecret, setAdminSecret] = useState('');
   const [hasSavedSecret, setHasSavedSecret] = useState(false);
-  const [form, setForm] = useState(initialForm);
-  const [editLookup, setEditLookup] = useState(initialEditLookup);
-  const [adminRecipes, setAdminRecipes] = useState([]);
-  const [loadedRecipeRef, setLoadedRecipeRef] = useState({ type: '', slug: '' });
+  const [form, setForm] = useState<RecipeForm>(initialForm);
+  const [editLookup, setEditLookup] = useState<EditLookup>(initialEditLookup);
+  const [adminRecipes, setAdminRecipes] = useState<AdminRecipe[]>([]);
+  const [loadedRecipeRef, setLoadedRecipeRef] = useState<LoadedRecipeRef>({ type: '', slug: '' });
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -113,10 +183,12 @@ const NewRecipeAdmin = () => {
   const [isUploadingGallery, setIsUploadingGallery] = useState(false);
   const [slugTouched, setSlugTouched] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
+  const [isEditTypeDropdownOpen, setIsEditTypeDropdownOpen] = useState(false);
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
   const [isLoadingRecipe, setIsLoadingRecipe] = useState(false);
   const [isLoadingRecipeList, setIsLoadingRecipeList] = useState(false);
-  const typeDropdownRef = useRef(null);
+  const editTypeDropdownRef = useRef<HTMLDivElement>(null);
+  const typeDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const storedSecret = window.localStorage.getItem('mynext-admin-secret') || '';
@@ -133,8 +205,8 @@ const NewRecipeAdmin = () => {
       return undefined;
     }
 
-    const closeDropdown = (event) => {
-      if (typeDropdownRef.current?.contains(event.target)) {
+    const closeDropdown = (event: MouseEvent) => {
+      if (typeDropdownRef.current?.contains(event.target as Node)) {
         return;
       }
 
@@ -147,6 +219,26 @@ const NewRecipeAdmin = () => {
       document.removeEventListener('click', closeDropdown);
     };
   }, [isTypeDropdownOpen]);
+
+  useEffect(() => {
+    if (!isEditTypeDropdownOpen) {
+      return undefined;
+    }
+
+    const closeDropdown = (event: MouseEvent) => {
+      if (editTypeDropdownRef.current?.contains(event.target as Node)) {
+        return;
+      }
+
+      setIsEditTypeDropdownOpen(false);
+    };
+
+    document.addEventListener('click', closeDropdown);
+
+    return () => {
+      document.removeEventListener('click', closeDropdown);
+    };
+  }, [isEditTypeDropdownOpen]);
 
   const headers = useMemo(() => ({
     'Content-Type': 'application/json',
@@ -166,26 +258,34 @@ const NewRecipeAdmin = () => {
       }
 
       return [recipe.title, recipe.slug]
-        .filter(Boolean)
+        .filter((value): value is string => Boolean(value))
         .some((value) => value.toLowerCase().includes(query));
     });
   }, [adminRecipes, editLookup.search, editLookup.type]);
 
-  const updateField = (field) => (event) => {
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+  const updateField = (field: keyof RecipeForm) => (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const value = event.target instanceof HTMLInputElement && event.target.type === 'checkbox'
+      ? event.target.checked
+      : event.target.value;
     setForm((current) => ({
       ...current,
       [field]: value,
-      ...(!slugTouched && field === 'title' ? { slug: slugify(value) } : {}),
-    }));
+      ...(!slugTouched && field === 'title'
+        ? { slug: slugify(typeof value === 'string' ? value : '') }
+        : {}),
+    } as RecipeForm));
   };
 
-  const updateEditLookup = (field) => (event) => {
+  const updateEditLookup = (field: keyof EditLookup) => (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
     const value = event.target.value;
-    setEditLookup((current) => ({ ...current, [field]: value }));
+    setEditLookup((current) => ({ ...current, [field]: value } as EditLookup));
   };
 
-  const loadRecipeList = useCallback(async (type) => {
+  const loadRecipeList = useCallback(async (type: RecipeType) => {
     if (!adminSecret || !hasSavedSecret) {
       setAdminRecipes([]);
       return;
@@ -202,7 +302,7 @@ const NewRecipeAdmin = () => {
         },
       });
 
-      const data = await response.json();
+      const data = await response.json() as RecipeListResponse;
       if (!response.ok) {
         throw new Error(data.error || 'Unable to load recipes');
       }
@@ -210,7 +310,7 @@ const NewRecipeAdmin = () => {
       setAdminRecipes(data.recipes || []);
     } catch (loadError) {
       setAdminRecipes([]);
-      setError(loadError.message);
+      setError(getErrorMessage(loadError, 'Unable to load recipes'));
     } finally {
       setIsLoadingRecipeList(false);
     }
@@ -239,7 +339,10 @@ const NewRecipeAdmin = () => {
     setError('');
   };
 
-  const loadRecipeForEditing = async ({ type, slug }) => {
+  const loadRecipeForEditing = async ({
+    type,
+    slug,
+  }: Pick<AdminRecipe, 'type' | 'slug'>) => {
     setIsLoadingRecipe(true);
     setStatus('');
     setError('');
@@ -257,16 +360,19 @@ const NewRecipeAdmin = () => {
         },
       });
 
-      const data = await response.json();
+      const data = await response.json() as RecipeDetailResponse;
       if (!response.ok) {
         throw new Error(data.error || 'Unable to load recipe');
       }
 
+      const recipeType = data.type === 'baking' || data.type === 'cooking'
+        ? data.type
+        : type;
       setForm({
-        pageId: data.id,
+        pageId: data.id || '',
         title: data.title || '',
         slug: data.slug || '',
-        type: data.type || type,
+        type: recipeType,
         desc: data.desc || '',
         ingredients: (data.ingredient || []).join('\n'),
         labels: (data.labels || []).join('\n'),
@@ -277,17 +383,17 @@ const NewRecipeAdmin = () => {
         date: (data.date || new Date().toISOString()).slice(0, 10),
       });
       setLoadedRecipeRef({
-        type: data.type || type,
+        type: recipeType,
         slug: data.slug || slug.trim(),
       });
       setEditLookup({
-        type: data.type || type,
+        type: recipeType,
         search: '',
       });
       setSlugTouched(true);
       setStatus(`Loaded ${data.slug} for editing.`);
     } catch (loadError) {
-      setError(loadError.message);
+      setError(getErrorMessage(loadError, 'Unable to load recipe'));
     } finally {
       setIsLoadingRecipe(false);
     }
@@ -303,7 +409,7 @@ const NewRecipeAdmin = () => {
     loadRecipeList(editLookup.type);
   }, [adminSecret, editLookup.type, hasSavedSecret, loadRecipeList]);
 
-  const uploadSingleImage = async (file, publicId) => {
+  const uploadSingleImage = async (file: File, publicId: string): Promise<string> => {
     setUploadStatus('Preparing image...');
     const uploadFile = file.size > maxUploadSizeWithoutCompression
       ? await compressImage(file)
@@ -315,7 +421,7 @@ const NewRecipeAdmin = () => {
       headers,
     });
 
-    const signatureData = await signatureResponse.json();
+    const signatureData = await signatureResponse.json() as PublitSignedQuery & ErrorResponse;
     if (!signatureResponse.ok) {
       throw new Error(signatureData.error || 'Unable to sign image upload');
     }
@@ -326,7 +432,7 @@ const NewRecipeAdmin = () => {
     formData.append('folder', form.type);
     const query = new URLSearchParams(signatureData).toString();
 
-    const data = await new Promise((resolve, reject) => {
+    const data = await new Promise<PublitUploadResponse>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', `${publitBaseUrl}/files/create?${query}`);
       xhr.setRequestHeader('Accept', 'application/json');
@@ -342,15 +448,22 @@ const NewRecipeAdmin = () => {
       };
 
       xhr.onload = () => {
-        let responseData = null;
+        let responseData: PublitUploadResponse | null = null;
 
         try {
-          responseData = xhr.responseText ? JSON.parse(xhr.responseText) : null;
-        } catch (error) {
+          responseData = xhr.responseText
+            ? JSON.parse(xhr.responseText) as PublitUploadResponse
+            : null;
+        } catch {
           responseData = null;
         }
 
-        if (xhr.status >= 200 && xhr.status < 300 && responseData?.success !== false) {
+        if (
+          xhr.status >= 200
+          && xhr.status < 300
+          && responseData
+          && responseData.success !== false
+        ) {
           resolve(responseData);
           return;
         }
@@ -372,7 +485,7 @@ const NewRecipeAdmin = () => {
     return data.url_preview || data.url_download || data.url_thumbnail || data.url || '';
   };
 
-  const onUploadCover = async (event) => {
+  const onUploadCover = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -386,7 +499,7 @@ const NewRecipeAdmin = () => {
       setForm((current) => ({ ...current, coverImage: url }));
       setStatus('Cover image uploaded.');
     } catch (uploadError) {
-      setError(uploadError.message);
+      setError(getErrorMessage(uploadError, 'Unable to upload cover image'));
     } finally {
       setIsUploadingCover(false);
       setUploadStatus('');
@@ -394,7 +507,7 @@ const NewRecipeAdmin = () => {
     }
   };
 
-  const onUploadGallery = async (event) => {
+  const onUploadGallery = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     if (!files.length) return;
 
@@ -404,7 +517,7 @@ const NewRecipeAdmin = () => {
     setUploadStatus('');
 
     try {
-      const uploadedUrls = [];
+      const uploadedUrls: string[] = [];
       for (const [index, file] of files.entries()) {
         const publicId = `${form.slug || slugify(form.title)}-gallery-${Date.now()}-${index + 1}`;
         const url = await uploadSingleImage(file, publicId);
@@ -417,7 +530,7 @@ const NewRecipeAdmin = () => {
       }));
       setStatus('Gallery image(s) uploaded.');
     } catch (uploadError) {
-      setError(uploadError.message);
+      setError(getErrorMessage(uploadError, 'Unable to upload gallery images'));
     } finally {
       setIsUploadingGallery(false);
       setUploadStatus('');
@@ -425,7 +538,7 @@ const NewRecipeAdmin = () => {
     }
   };
 
-  const onSubmit = async (event) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setIsSaving(true);
@@ -443,7 +556,7 @@ const NewRecipeAdmin = () => {
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as SaveRecipeResponse;
       if (!response.ok) {
         throw new Error(data.error || 'Unable to save recipe');
       }
@@ -465,7 +578,7 @@ const NewRecipeAdmin = () => {
       setSlugTouched(false);
       await loadRecipeList(form.type);
     } catch (saveError) {
-      setError(saveError.message);
+      setError(getErrorMessage(saveError, 'Unable to save recipe'));
     } finally {
       setIsSaving(false);
     }
@@ -521,22 +634,41 @@ const NewRecipeAdmin = () => {
           Browse your Notion recipes, search by title or slug, and tap one to load it into the editor.
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-[160px_1fr_auto]">
-          <div className="relative w-full">
+          <div className="relative w-full" ref={editTypeDropdownRef}>
             <button
               type="button"
               className={dropdownButtonClassName}
-              onClick={() => {
-                setEditLookup((current) => ({
-                  ...current,
-                  type: current.type === 'baking' ? 'cooking' : 'baking',
-                  search: '',
-                }));
-                setLoadedRecipeRef({ type: '', slug: '' });
-              }}
+              aria-expanded={isEditTypeDropdownOpen}
+              aria-haspopup="listbox"
+              onClick={() => setIsEditTypeDropdownOpen((current) => !current)}
             >
               <span className="flex-1 text-left">{editLookup.type === 'baking' ? 'Baking' : 'Cooking'}</span>
               <ChevronDown size={18} className="text-primary-content/60" />
             </button>
+            {isEditTypeDropdownOpen && (
+              <div
+                className="absolute left-0 top-full z-10 mt-2 w-full rounded-lg border border-[#d8d0c3] bg-white p-2 shadow-lg"
+                role="listbox"
+                aria-label="Recipe type"
+              >
+                {(['cooking', 'baking'] as RecipeType[]).map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    className={`${dropdownOptionClassName} ${editLookup.type === type ? dropdownOptionActiveClassName : dropdownOptionInactiveClassName}`}
+                    role="option"
+                    aria-selected={editLookup.type === type}
+                    onClick={() => {
+                      setEditLookup((current) => ({ ...current, type, search: '' }));
+                      setLoadedRecipeRef({ type: '', slug: '' });
+                      setIsEditTypeDropdownOpen(false);
+                    }}
+                  >
+                    {type === 'baking' ? 'Baking' : 'Cooking'}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <input
             className={fieldClassName}
