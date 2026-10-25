@@ -1,11 +1,13 @@
 import { z } from 'zod';
 
+import type { RecipeType } from 'types/recipe';
+
 const maxMarkdownLength = 100000;
 const maxListLines = 80;
 
-export const allowedRecipeTypes = new Set(['cooking', 'baking']);
+export const allowedRecipeTypes = new Set<RecipeType>(['cooking', 'baking']);
 
-export const slugify = (value = '') => value
+export const slugify = (value = ''): string => value
   .toLowerCase()
   .normalize('NFKD')
   .replace(/[\u0300-\u036f]/g, '')
@@ -13,34 +15,34 @@ export const slugify = (value = '') => value
   .replace(/^-+|-+$/g, '')
   .replace(/-{2,}/g, '-');
 
-export const parseLineList = (value = '') => value
+export const parseLineList = (value = ''): string[] => value
   .split('\n')
   .map((item) => item.trim())
   .filter(Boolean);
 
-const trimString = (maxLength) => z.string()
+const trimString = (maxLength: number) => z.string()
   .max(maxLength)
   .transform((value) => value.trim());
 
-const optionalTrimString = (maxLength) => z.string()
+const optionalTrimString = (maxLength: number) => z.string()
   .max(maxLength)
   .default('')
   .transform((value) => value.trim());
 
 const recipeTypeSchema = z.string()
   .transform((value) => value.trim().toLowerCase())
-  .refine((value) => allowedRecipeTypes.has(value), {
+  .refine((value): value is RecipeType => allowedRecipeTypes.has(value as RecipeType), {
     message: 'Type must be cooking or baking',
   });
 
 const optionalRecipeTypeSchema = z.string()
   .default('')
   .transform((value) => value.trim().toLowerCase())
-  .refine((value) => !value || allowedRecipeTypes.has(value), {
+  .refine((value) => !value || allowedRecipeTypes.has(value as RecipeType), {
     message: 'Previous type must be cooking or baking',
   });
 
-const isValidDate = (value) => {
+const isValidDate = (value: string): boolean => {
   if (!value) return true;
 
   const dateOnlyMatch = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -55,24 +57,22 @@ const isValidDate = (value) => {
     );
   }
 
-  if (!Number.isNaN(Date.parse(value))) return true;
-
-  return false;
+  return !Number.isNaN(Date.parse(value));
 };
 
-const isSafeImagePath = (value) => {
+const isSafeImagePath = (value: string): boolean => {
   if (!value) return true;
   if (value.startsWith('/') && !value.startsWith('//')) return true;
 
   try {
     const url = new URL(value.startsWith('//') ? `https:${value}` : value);
     return ['http:', 'https:'].includes(url.protocol);
-  } catch (error) {
+  } catch {
     return false;
   }
 };
 
-const lineListSchema = (maxLineLength, fieldName) => z.string()
+const lineListSchema = (maxLineLength: number, fieldName: string) => z.string()
   .max(maxLineLength * maxListLines)
   .default('')
   .superRefine((value, context) => {
@@ -146,7 +146,9 @@ const rawRecipeSchema = z.object({
 });
 
 export const saveRecipeSchema = rawRecipeSchema;
+export type SaveRecipeInput = z.input<typeof saveRecipeSchema>;
+export type SaveRecipe = z.output<typeof saveRecipeSchema>;
 
-export const formatValidationError = (error) => (
-  error.issues?.map((issue) => issue.message).join('; ') || 'Invalid request body'
+export const formatValidationError = (error: z.ZodError): string => (
+  error.issues.map((issue) => issue.message).join('; ') || 'Invalid request body'
 );

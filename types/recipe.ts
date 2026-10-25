@@ -19,3 +19,23 @@ export interface RecipePost {
   ingredient?: string[];
   labels?: string[];
 }
+
+export interface NotionRecipe extends RecipePost {
+  id: string;
+  type: string;
+  published: boolean;
+}
+
+export interface NotionRecipeInput {
+  title: string;
+  slug: string;
+  type: RecipeType;
+  desc: string;
+  ingredient: string[];
+  labels: string[];
+  coverImage: string;
+  gallery: string[];
+  contentMarkdown: string;
+  published: boolean;
+  date: string;
+}

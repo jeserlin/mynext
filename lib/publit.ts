@@ -2,11 +2,48 @@ import crypto from 'crypto';
 
 export const publitBaseUrl = 'https://api.publit.io/v1';
 
-export const publitEnabled = () => (
+export const publitEnabled = (): boolean => (
   Boolean(process.env.PUBLIT_API_KEY) && Boolean(process.env.PUBLIT_API_SECRET)
 );
 
-const createPublitSignature = ({ timestamp, nonce }) => {
+interface PublitSignatureInput {
+  timestamp: string;
+  nonce: string;
+}
+
+export interface PublitSignedQuery {
+  [key: string]: string;
+  api_key: string;
+  api_timestamp: string;
+  api_nonce: string;
+  api_signature: string;
+}
+
+interface PublitUploadOptions {
+  buffer: ArrayBuffer;
+  fileName: string;
+  mimeType: string;
+  publicId?: string;
+  folder?: string;
+}
+
+interface PublitResponse {
+  success?: boolean;
+  message?: string;
+  error?: string;
+  id?: string;
+  url_preview?: string;
+  url_download?: string;
+  url_thumbnail?: string;
+  url?: string;
+}
+
+export interface PublitUploadResult {
+  id?: string;
+  url: string;
+}
+
+const createPublitSignature = ({ timestamp, nonce }: PublitSignatureInput) => {
   const hash = crypto.createHash('sha1');
   hash.update(`${timestamp}${nonce}${process.env.PUBLIT_API_SECRET}`);
   return hash.digest('hex');
@@ -14,7 +51,7 @@ const createPublitSignature = ({ timestamp, nonce }) => {
 
 const createPublitNonce = () => Math.floor(10000000 + (Math.random() * 90000000)).toString();
 
-export const createPublitSignedQuery = () => {
+export const createPublitSignedQuery = (): PublitSignedQuery => {
   if (!publitEnabled()) {
     throw new Error('Publit.io is not configured');
   }
@@ -24,7 +61,7 @@ export const createPublitSignedQuery = () => {
   const api_signature = createPublitSignature({ timestamp: api_timestamp, nonce: api_nonce });
 
   return {
-    api_key: process.env.PUBLIT_API_KEY,
+    api_key: process.env.PUBLIT_API_KEY!,
     api_timestamp,
     api_nonce,
     api_signature,
@@ -37,9 +74,8 @@ export const uploadImageToPublit = async ({
   mimeType,
   publicId,
   folder,
-}) => {
+}: PublitUploadOptions): Promise<PublitUploadResult> => {
   const query = new URLSearchParams(createPublitSignedQuery());
-
   const formData = new FormData();
   formData.append('file', new Blob([buffer], { type: mimeType }), fileName);
 
@@ -60,11 +96,11 @@ export const uploadImageToPublit = async ({
   });
 
   const rawBody = await response.text();
-  let data = null;
+  let data: PublitResponse | null = null;
 
   try {
-    data = rawBody ? JSON.parse(rawBody) : null;
-  } catch (error) {
+    data = rawBody ? JSON.parse(rawBody) as PublitResponse : null;
+  } catch {
     data = null;
   }
 
@@ -73,14 +109,18 @@ export const uploadImageToPublit = async ({
     throw new Error(`Publit.io upload failed: ${response.status} ${errorMessage}`);
   }
 
-  const fileUrl = data.url_preview || data.url_download || data.url_thumbnail || data.url || '';
+  const fileUrl = data?.url_preview
+    || data?.url_download
+    || data?.url_thumbnail
+    || data?.url
+    || '';
 
   if (!fileUrl) {
     throw new Error('Publit.io upload succeeded but returned no usable URL');
   }
 
   return {
-    id: data.id,
+    id: data?.id,
     url: fileUrl,
   };
 };
