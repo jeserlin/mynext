@@ -9,6 +9,8 @@ module.exports = [
       'tsconfig.json',
       'package.json',
       'package-lock.json',
+      'playwright-report/**',
+      'test-results/**',
     ],
   },
 ];
