@@ -1,19 +1,25 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
+const { existsSync, writeFileSync } = require('node:fs');
+const path = require('node:path');
 
-const VALID_FOLDERS = new Set(['cooking', 'baking']);
+type RecipeFolder = 'cooking' | 'baking';
+
+const VALID_FOLDERS = new Set<RecipeFolder>(['cooking', 'baking']);
+
+const isRecipeFolder = (value: string | undefined): value is RecipeFolder => (
+  typeof value === 'string' && VALID_FOLDERS.has(value as RecipeFolder)
+);
 
 const [, , folderArg, ...titleParts] = process.argv;
 const title = titleParts.join(' ').trim();
 
-if (!VALID_FOLDERS.has(folderArg) || !title) {
+if (!isRecipeFolder(folderArg) || !title) {
   console.error('Usage: npm run new-recipe -- <cooking|baking> "<recipe title>"');
   process.exit(1);
 }
 
-const slugify = (value) => value
+const slugify = (value: string) => value
   .toLowerCase()
   .normalize('NFKD')
   .replace(/[\u0300-\u036f]/g, '')
@@ -25,7 +31,7 @@ const slug = slugify(title) || `recipe-${Date.now()}`;
 const postsDir = path.join(process.cwd(), '_posts', folderArg);
 const filePath = path.join(postsDir, `${slug}.md`);
 
-if (fs.existsSync(filePath)) {
+if (existsSync(filePath)) {
   console.error(`Recipe already exists: ${filePath}`);
   process.exit(1);
 }
@@ -67,7 +73,7 @@ gallery: [
 2. 第二步
 `;
 
-fs.writeFileSync(filePath, template, 'utf8');
+writeFileSync(filePath, template, 'utf8');
 
 console.log(`Created ${filePath}`);
 console.log(`Suggested cover image path: public${imagePath}`);
