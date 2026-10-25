@@ -1,3 +1,5 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { adminHeaderName, isAdminAuthorized } from 'lib/admin';
 import {
   formatValidationError,
@@ -5,14 +7,34 @@ import {
   saveRecipeSchema,
 } from 'lib/adminRecipeValidation';
 import { getPostSlugs } from 'lib/api';
+import { getErrorMessage } from 'lib/errors';
 import {
   createRecipeInNotion,
   getRecipeBySlugForAdminFromNotion,
   recipeSlugExistsInNotion,
   updateRecipeInNotion,
 } from 'lib/notion';
+import type { NotionRecipe, NotionRecipeInput, RecipeType } from 'types/recipe';
 
-const getRevalidatePaths = ({ type, slug, previousPath }) => {
+interface RevalidatePathInput {
+  type: RecipeType;
+  slug: string;
+  previousPath: string | null;
+}
+
+interface SavedRecipeResponse extends NotionRecipe {
+  previousPath: string | null;
+  revalidatedPaths: string[];
+  revalidationError: string;
+}
+
+type SaveRecipeResponse = SavedRecipeResponse | { error: string };
+
+const getRevalidatePaths = ({
+  type,
+  slug,
+  previousPath,
+}: RevalidatePathInput): string[] => {
   const paths = [`/${type}`, `/${type}/${slug}`];
 
   if (previousPath && !paths.includes(previousPath)) {
@@ -22,7 +44,10 @@ const getRevalidatePaths = ({ type, slug, previousPath }) => {
   return [...new Set(paths.filter(Boolean))];
 };
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<SaveRecipeResponse>,
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -56,11 +81,12 @@ export default async function handler(req, res) {
       published,
       date,
     } = validationResult.data;
+    const recipeType = type as RecipeType;
 
-    const recipePayload = {
+    const recipePayload: NotionRecipeInput = {
       title,
       slug,
-      type,
+      type: recipeType,
       desc,
       ingredient: parseLineList(ingredients),
       labels: parseLineList(labels),
@@ -71,19 +97,19 @@ export default async function handler(req, res) {
       date,
     };
 
-    let recipe = null;
-    let previousPath = null;
+    let recipe: NotionRecipe;
+    let previousPath: string | null = null;
 
     if (pageId) {
-      const existingRecipe = await getRecipeBySlugForAdminFromNotion(type, slug);
+      const existingRecipe = await getRecipeBySlugForAdminFromNotion(recipeType, slug);
 
       if (existingRecipe && existingRecipe.id !== pageId) {
         return res.status(409).json({ error: 'Another Notion recipe already uses this slug' });
       }
 
-      const markdownSlugExists = getPostSlugs(type)
+      const markdownSlugExists = getPostSlugs(recipeType)
         .some((item) => item.replace(/\.md$/, '') === slug);
-      if (markdownSlugExists && !(previousType === type && previousSlug === slug)) {
+      if (markdownSlugExists && !(previousType === recipeType && previousSlug === slug)) {
         return res.status(409).json({ error: 'A markdown recipe with this slug already exists' });
       }
 
@@ -92,12 +118,12 @@ export default async function handler(req, res) {
         previousPath = `/${previousType}/${previousSlug}`;
       }
     } else {
-      const slugExists = await recipeSlugExistsInNotion(type, slug);
+      const slugExists = await recipeSlugExistsInNotion(recipeType, slug);
       if (slugExists) {
         return res.status(409).json({ error: 'A recipe with this slug already exists in Notion' });
       }
 
-      const markdownSlugExists = getPostSlugs(type)
+      const markdownSlugExists = getPostSlugs(recipeType)
         .some((item) => item.replace(/\.md$/, '') === slug);
       if (markdownSlugExists) {
         return res.status(409).json({ error: 'A markdown recipe with this slug already exists' });
@@ -107,8 +133,8 @@ export default async function handler(req, res) {
     }
 
     const revalidatedPaths = getRevalidatePaths({
-      type,
-      slug: recipe.slug,
+      type: recipeType,
+      slug: recipe.slug || slug,
       previousPath,
     });
 
@@ -118,7 +144,7 @@ export default async function handler(req, res) {
       try {
         await res.revalidate(path);
       } catch (error) {
-        revalidationError = error.message || 'Revalidation failed';
+        revalidationError = getErrorMessage(error, 'Revalidation failed');
         break;
       }
     }
@@ -130,6 +156,8 @@ export default async function handler(req, res) {
       revalidationError,
     });
   } catch (error) {
-    return res.status(500).json({ error: error.message || 'Unable to save recipe' });
+    return res.status(500).json({
+      error: getErrorMessage(error, 'Unable to save recipe'),
+    });
   }
 }

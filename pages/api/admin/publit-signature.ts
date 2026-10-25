@@ -1,7 +1,16 @@
-import { adminHeaderName, isAdminAuthorized } from 'lib/admin';
-import { createPublitSignedQuery } from 'lib/publit';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req, res) {
+import { adminHeaderName, isAdminAuthorized } from 'lib/admin';
+import { getErrorMessage } from 'lib/errors';
+import { createPublitSignedQuery } from 'lib/publit';
+import type { PublitSignedQuery } from 'lib/publit';
+
+type SignatureResponse = PublitSignedQuery | { error: string };
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<SignatureResponse>,
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -13,6 +22,8 @@ export default async function handler(req, res) {
   try {
     return res.status(200).json(createPublitSignedQuery());
   } catch (error) {
-    return res.status(500).json({ error: error.message || 'Unable to sign upload' });
+    return res.status(500).json({
+      error: getErrorMessage(error, 'Unable to sign upload'),
+    });
   }
 }

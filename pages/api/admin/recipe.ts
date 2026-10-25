@@ -1,7 +1,20 @@
-import { adminHeaderName, isAdminAuthorized } from 'lib/admin';
-import { getRecipeBySlugForAdminFromNotion } from 'lib/notion';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req, res) {
+import { adminHeaderName, isAdminAuthorized } from 'lib/admin';
+import { getErrorMessage } from 'lib/errors';
+import { getRecipeBySlugForAdminFromNotion } from 'lib/notion';
+import type { NotionRecipe } from 'types/recipe';
+
+type RecipeResponse = NotionRecipe | { error: string };
+
+const getQueryString = (value: string | string[] | undefined): string => (
+  Array.isArray(value) ? value[0] || '' : value || ''
+);
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<RecipeResponse>,
+) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -11,7 +24,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { type = '', slug = '' } = req.query || {};
+    const type = getQueryString(req.query.type);
+    const slug = getQueryString(req.query.slug);
 
     if (!type || !slug) {
       return res.status(400).json({ error: 'Type and slug are required' });
@@ -25,6 +39,8 @@ export default async function handler(req, res) {
 
     return res.status(200).json(recipe);
   } catch (error) {
-    return res.status(500).json({ error: error.message || 'Unable to load recipe' });
+    return res.status(500).json({
+      error: getErrorMessage(error, 'Unable to load recipe'),
+    });
   }
 }
