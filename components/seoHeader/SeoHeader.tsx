@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import siteSeo from 'next-seo.config.js';
+import siteSeo from 'next-seo.config';
 
 export type JsonLdValue =
   | string

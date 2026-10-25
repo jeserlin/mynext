@@ -11,7 +11,7 @@ import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import { authorName } from 'constants/basicInfo';
 import type { RecipePost, RecipeType } from 'types/recipe';
-import siteSeo from 'next-seo.config.js';
+import siteSeo from 'next-seo.config';
 
 export interface RecipePostPageProps {
   mainPath: string;

@@ -14,7 +14,7 @@ import { getPostBySlug, getPostsByFolder } from 'lib/api';
 import { formatDate } from 'lib/convertors';
 import markdownToHtml from 'lib/markdownToHtml';
 import type { PostDetail, PostSummary } from 'types/post';
-import siteSeo from 'next-seo.config.js';
+import siteSeo from 'next-seo.config';
 
 interface TechPostParams extends ParsedUrlQuery {
   slug: string;
