@@ -1,4 +1,4 @@
-name: Lint & Test
+name: Quality Checks
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.14
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
@@ -29,5 +29,11 @@ jobs:
       - name: Run lint
         run: npm run lint -- --quiet
 
-      - name: Run build
+      - name: Run type check
+        run: npm run typecheck
+
+      - name: Build application
         run: npm run build
+
+      - name: Build Storybook
+        run: npm run build-storybook

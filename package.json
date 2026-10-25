@@ -14,6 +14,7 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.json",
+        "typecheck": "tsc --noEmit",
         "new-recipe": "node scripts/new-recipe.ts",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"
