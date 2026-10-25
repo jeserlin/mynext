@@ -11,26 +11,4 @@ module.exports = [
       'package-lock.json',
     ],
   },
-  {
-    files: ['**/*.{js,jsx}'],
-    settings: {
-      'import/resolver': {
-        node: {
-          paths: ['.'],
-        },
-      },
-    },
-    rules: {
-      'import/extensions': [
-        'error',
-        'ignorePackages',
-        {
-          js: 'never',
-          jsx: 'never',
-          ts: 'never',
-          tsx: 'never',
-        },
-      ],
-    },
-  },
 ];
