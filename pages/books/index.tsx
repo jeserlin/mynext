@@ -43,13 +43,13 @@ const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>)
         description="All about books"
       />
       <h1 className="mb-4 font-normal text-2xl leading-tight text-[#3d2a20] sm:text-3xl">Books</h1>
-      <div className="flex flex-row gap-2 mb-6 overflow-y-auto scrollbar-none" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex flex-nowrap gap-2 mb-6 overflow-x-auto overflow-y-hidden scrollbar-none" style={{ scrollbarWidth: 'none' }}>
         {years.map((year) => (
           <button
             type="button"
             key={year}
             aria-pressed={selectedYear === year}
-            className={`btn btn-sm btn-secondary rounded-lg hover:!text-white ${selectedYear === year
+            className={`btn btn-sm btn-secondary shrink-0 rounded-lg hover:!text-white ${selectedYear === year
               ? 'text-white'
               : 'btn-outline'
             }`}
