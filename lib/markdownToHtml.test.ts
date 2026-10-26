@@ -27,9 +27,18 @@ describe('markdownToHtml', () => {
   });
 
   it('highlights recognized fenced code blocks', async () => {
-    const html = await markdownToHtml('```js\nconst answer = 42;\n```');
+    const html = await markdownToHtml('```javascript\nconst answer = "hello";\n```');
 
-    expect(html).toContain('class="hljs language-js"');
+    expect(html).toContain('class="hljs language-javascript"');
+    expect(html).toContain('<span class="hljs-keyword">const</span>');
+    expect(html).toContain('<span class="hljs-string">"hello"</span>');
     expect(html).toContain('answer =');
+  });
+
+  it('does not keep unrelated span classes from Markdown HTML', async () => {
+    const html = await markdownToHtml('<span class="untrusted hljs-keyword">text</span>');
+
+    expect(html).not.toContain('untrusted');
+    expect(html).toContain('class="hljs-keyword"');
   });
 });

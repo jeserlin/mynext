@@ -84,6 +84,25 @@ const TechPost = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
         </div>
         <div className="w-full">
           <div className="w-full lg:w-5/6 xl:w-2/3">
+            {post.slug === 'mobile-search-ux-notes' && (
+              <section className="mb-8" aria-label="Interactive mobile search demo">
+                <h2 className="mb-3 text-xl font-normal text-primary-content">Try the example</h2>
+                <iframe
+                  title="Mobile search and browser Back demo"
+                  src="/demos/mobile-search/index.html"
+                  loading="lazy"
+                  className="h-[520px] w-full rounded-lg border border-[#e8ddd0] bg-white"
+                />
+                <a
+                  href="/demos/mobile-search/index.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-block text-sm text-secondary underline underline-offset-4"
+                >
+                  Open the demo in a new tab to test your browser Back button
+                </a>
+              </section>
+            )}
             <PostContent content={post.content} />
           </div>
         </div>

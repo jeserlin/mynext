@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile search and browser Back demo</title>
+    <style>
+      :root { font-family: system-ui, sans-serif; color: #3d2a20; background: #fffdf9; }
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      button, input { font: inherit; }
+      button { cursor: pointer; }
+      .toolbar { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 1rem; background: #fffdf9; border-bottom: 1px solid #e8ddd0; }
+      .toolbar strong { font-size: 1rem; font-weight: 600; }
+      .toolbar button, .overlay button { border: 1px solid #6b5e53; border-radius: 0.5rem; background: #6b5e53; color: #fff; padding: 0.45rem 0.8rem; }
+      .toolbar button:focus-visible, .overlay button:focus-visible, .overlay input:focus-visible { outline: 3px solid #aa927d; outline-offset: 2px; }
+      main { max-width: 34rem; margin: auto; padding: 1rem; }
+      main p { color: #75665b; line-height: 1.5; }
+      .position { font-size: 0.8rem; color: #75665b; }
+      .cards { display: grid; gap: 0.65rem; padding: 0; list-style: none; }
+      .cards li { min-height: 76px; padding: 1rem; border: 1px solid #e8ddd0; border-radius: 0.6rem; background: #fcfaf6; }
+      .overlay { position: fixed; inset: 0; z-index: 2; display: flex; flex-direction: column; gap: 1rem; padding: 1rem; background: #fffdf9; }
+      .overlay[hidden] { display: none; }
+      .search-row { display: flex; gap: 0.5rem; }
+      .search-row input { min-width: 0; flex: 1; padding: 0.65rem; border: 1px solid #6b5e53; border-radius: 0.5rem; background: #fff; }
+      .overlay p { color: #75665b; line-height: 1.5; }
+      .results { margin: 0; padding-left: 1.5rem; line-height: 2.2; }
+      .back-button { align-self: flex-start; }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <strong>Sample list</strong>
+      <span class="position">Scroll: <span id="scroll-position">0</span>px</span>
+      <button id="open-search" type="button">Open search</button>
+    </div>
+    <main>
+      <p>Scroll down first, then open search. Type a name and use Back. The list should stay at the same scroll position.</p>
+      <ol class="cards" id="cards"></ol>
+    </main>
+    <div class="overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="Search" hidden>
+      <div class="search-row">
+        <input id="search-input" type="search" aria-label="Search items" placeholder="Try pasta or soup" />
+        <button id="close-search" type="button">Close</button>
+      </div>
+      <p>Use the Close button here or your browser Back button. Both go back one history entry.</p>
+      <strong id="result-count"></strong>
+      <ol class="results" id="results"></ol>
+      <button class="back-button" id="browser-back" type="button">Try browser Back</button>
+    </div>
+    <script>
+      const names = ["Pasta House", "Soup Table", "Bagel Corner", "Cookie Café", "Noodle Kitchen", "Tea Room"];
+      const cards = document.getElementById("cards");
+      const overlay = document.getElementById("search-overlay");
+      const input = document.getElementById("search-input");
+      const results = document.getElementById("results");
+      const resultCount = document.getElementById("result-count");
+      const openButton = document.getElementById("open-search");
+
+      for (let index = 0; index < 18; index += 1) {
+        const card = document.createElement("li");
+        card.textContent = names[index % names.length];
+        cards.append(card);
+      }
+
+      function renderResults() {
+        const query = input.value.trim().toLowerCase();
+        const matches = names.filter((name) => name.toLowerCase().includes(query));
+        results.replaceChildren();
+        for (const name of matches) {
+          const item = document.createElement("li");
+          item.textContent = name;
+          results.append(item);
+        }
+        resultCount.textContent = `${matches.length} result${matches.length === 1 ? "" : "s"}`;
+      }
+
+      function openSearch() {
+        if (!overlay.hidden) return;
+        overlay.hidden = false;
+        history.pushState({ ...history.state, demoSearch: true }, "", location.href);
+        input.focus();
+        renderResults();
+      }
+
+      function hideSearch() {
+        overlay.hidden = true;
+        openButton.focus({ preventScroll: true });
+      }
+
+      function closeSearch() {
+        if (history.state?.demoSearch) history.back();
+        else hideSearch();
+      }
+
+      openButton.addEventListener("click", openSearch);
+      document.getElementById("close-search").addEventListener("click", closeSearch);
+      document.getElementById("browser-back").addEventListener("click", () => history.back());
+      input.addEventListener("input", renderResults);
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closeSearch();
+      });
+      window.addEventListener("popstate", (event) => {
+        if (!event.state?.demoSearch) hideSearch();
+      });
+      window.addEventListener("scroll", () => {
+        document.getElementById("scroll-position").textContent = Math.round(window.scrollY);
+      }, { passive: true });
+    </script>
+  </body>
+</html>

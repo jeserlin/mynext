@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="title">
+  <title id="title">Mobile search</title>
+  <rect width="800" height="600" fill="#e7ded2"/>
+  <rect x="269" y="67" width="262" height="466" rx="36" fill="#fdfbf7" stroke="#695d52" stroke-width="8"/>
+  <rect x="293" y="131" width="214" height="60" rx="14" fill="none" stroke="#695d52" stroke-width="5"/>
+  <circle cx="326" cy="159" r="12" fill="none" stroke="#695d52" stroke-width="5"/>
+  <path d="m335 168 10 10" fill="none" stroke="#695d52" stroke-width="5" stroke-linecap="round"/>
+  <path d="M307 240h186M307 287h151M307 334h172" fill="none" stroke="#b7a99a" stroke-width="11" stroke-linecap="round"/>
+  <circle cx="400" cy="495" r="9" fill="#b7a99a"/>
+</svg>

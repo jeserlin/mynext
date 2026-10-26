@@ -32,6 +32,11 @@ const allowedAttributes = {
   ],
   img: ['alt', 'height', 'loading', 'src', 'title', 'width'],
   pre: ['class'],
+  span: ['class'],
+};
+
+const allowedClasses = {
+  span: [/^hljs-/],
 };
 
 const allowedStyles = {
@@ -58,6 +63,7 @@ export default async function markdownToHtml(markdown: string): Promise<string> 
 
   return sanitizeHtml(result.toString(), {
     allowedAttributes,
+    allowedClasses,
     allowedIframeHostnames: ['codepen.io'],
     allowedSchemes: ['http', 'https', 'mailto'],
     allowedSchemesByTag: {
