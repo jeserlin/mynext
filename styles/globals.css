@@ -11,8 +11,8 @@
     default: true;
     color-scheme: light;
     --color-primary: #d7cebe;
-    --color-primary-content: #9c9085;
-    --color-secondary: #9c8686;
+    --color-primary-content: #6f6257;
+    --color-secondary: #765f5f;
     --color-secondary-content: #a2746a;
     --color-accent: #8c8c8c;
     --color-accent-content: #110700;
@@ -43,7 +43,7 @@
 @theme {
     --text-base: 16px;
     --color-text-primary: #383838;
-    --color-gray-dark: #888888;
+    --color-gray-dark: #666666;
     --color-gray-darker: #555555;
     --color-gray-darkest: #383838;
     --color-gray-light: #d2cdc9;
@@ -142,7 +142,7 @@ table th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
-    background-color: #9c9085;
+    background-color: #6f6257;
     color: #fff;
 }
 
