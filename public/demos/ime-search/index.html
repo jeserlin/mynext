@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IME search filtering comparison</title>
+    <style>
+      :root { font-family: system-ui, sans-serif; color: #3d2a20; background: #fffdf9; }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 1.25rem; }
+      main { max-width: 760px; margin: auto; }
+      h1 { font-size: 1.35rem; margin: 0 0 .5rem; }
+      p { color: #6b5e53; line-height: 1.5; }
+      .controls { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin: 1rem 0; }
+      button { font: inherit; cursor: pointer; padding: .5rem .8rem; border: 1px solid #6b5e53; border-radius: .5rem; background: #6b5e53; color: white; }
+      button:focus-visible, input:focus-visible { outline: 3px solid #aa927d; outline-offset: 2px; }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+      .panel { min-width: 0; padding: 1rem; border: 1px solid #d9cbbd; border-radius: .7rem; background: white; }
+      .panel h2 { font-size: 1rem; margin: 0 0 .5rem; }
+      .panel p { font-size: .85rem; min-height: 2.6rem; margin: 0 0 .8rem; }
+      input { width: 100%; padding: .55rem; border: 1px solid #8a796d; border-radius: .4rem; background: #fffdf9; color: #3d2a20; font: inherit; }
+      .status { margin: .7rem 0; font-size: .8rem; color: #6b5e53; min-height: 2.5rem; }
+      ul { padding-left: 1.25rem; margin: .5rem 0 0; line-height: 1.8; }
+      li.empty { color: #8a796d; }
+      @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } .panel p { min-height: 0; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>選字時，搜尋結果要不要跟著變？</h1>
+      <p>用中文輸入法輸入「台灣」，或按模擬按鈕觀察兩種處理方式。</p>
+      <div class="controls">
+        <button id="simulate" type="button">模擬選字過程</button>
+        <button id="reset" type="button">清除</button>
+      </div>
+      <div class="grid">
+        <section class="panel">
+          <h2>每次輸入都篩選</h2>
+          <p>組字中的字也會立刻拿來搜尋。</p>
+          <input id="immediate" aria-label="每次輸入都篩選" placeholder="試試中文輸入法" autocomplete="off" />
+          <div class="status" id="immediate-status" role="status"></div>
+          <ul id="immediate-results"></ul>
+        </section>
+        <section class="panel">
+          <h2>選字完成再篩選</h2>
+          <p>欄位繼續顯示組字，結果等送出後才更新。</p>
+          <input id="deferred" aria-label="選字完成再篩選" placeholder="試試中文輸入法" autocomplete="off" />
+          <div class="status" id="deferred-status" role="status"></div>
+          <ul id="deferred-results"></ul>
+        </section>
+      </div>
+    </main>
+    <script>
+      const countries = ["台灣", "日本", "韓國", "香港", "新加坡"];
+
+      function createSearch(id, waitForComposition) {
+        const input = document.getElementById(id);
+        const status = document.getElementById(`${id}-status`);
+        const results = document.getElementById(`${id}-results`);
+        let query = "";
+        let isComposing = false;
+
+        function render() {
+          const matches = countries.filter((name) => name.includes(query.trim()));
+          results.replaceChildren();
+          for (const name of matches) {
+            const item = document.createElement("li");
+            item.textContent = name;
+            results.append(item);
+          }
+          if (matches.length === 0) {
+            const empty = document.createElement("li");
+            empty.className = "empty";
+            empty.textContent = "沒有結果";
+            results.append(empty);
+          }
+          status.textContent = `搜尋字：${query || "（空白）"} · ${matches.length} 筆結果${isComposing ? " · 正在選字" : ""}`;
+        }
+
+        function search(value) {
+          query = value;
+          render();
+        }
+
+        input.addEventListener("compositionstart", () => {
+          isComposing = true;
+          render();
+        });
+        input.addEventListener("input", (event) => {
+          if (!waitForComposition || !isComposing) search(event.currentTarget.value);
+          else render();
+        });
+        input.addEventListener("compositionend", (event) => {
+          isComposing = false;
+          search(event.currentTarget.value);
+        });
+        render();
+        return { input, reset: () => { input.value = ""; isComposing = false; search(""); } };
+      }
+
+      const immediate = createSearch("immediate", false);
+      const deferred = createSearch("deferred", true);
+
+      document.getElementById("reset").addEventListener("click", () => {
+        immediate.reset();
+        deferred.reset();
+        immediate.input.focus();
+      });
+
+      document.getElementById("simulate").addEventListener("click", async (event) => {
+        const button = event.currentTarget;
+        button.disabled = true;
+        immediate.reset();
+        deferred.reset();
+        const inputs = [immediate.input, deferred.input];
+        for (const input of inputs) input.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
+        for (const value of ["ㄊ", "ㄊㄞ", "台"]) {
+          for (const input of inputs) {
+            input.value = value;
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+          }
+          await new Promise((resolve) => setTimeout(resolve, 850));
+        }
+        for (const input of inputs) input.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true }));
+        button.disabled = false;
+      });
+    </script>
+  </body>
+</html>

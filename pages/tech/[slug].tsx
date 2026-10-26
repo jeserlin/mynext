@@ -103,6 +103,25 @@ const TechPost = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => {
                 </a>
               </section>
             )}
+            {post.slug === 'ime-search-composition' && (
+              <section className="mb-8" aria-label="Interactive IME search demo">
+                <h2 className="mb-3 text-xl font-normal text-primary-content">Try the example</h2>
+                <iframe
+                  title="IME search filtering comparison"
+                  src="/demos/ime-search/index.html"
+                  loading="lazy"
+                  className="h-[520px] w-full rounded-lg border border-[#e8ddd0] bg-white"
+                />
+                <a
+                  href="/demos/ime-search/index.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-block text-sm text-secondary underline underline-offset-4"
+                >
+                  Open the demo in a new tab
+                </a>
+              </section>
+            )}
             <PostContent content={post.content} />
           </div>
         </div>

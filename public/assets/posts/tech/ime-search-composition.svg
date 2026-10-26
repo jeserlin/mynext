@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="title">
+  <title id="title">IME search composition</title>
+  <rect width="800" height="600" fill="#e7ded2"/>
+  <rect x="86" y="137" width="285" height="326" rx="22" fill="#fdfbf7" stroke="#b7a99a" stroke-width="5"/>
+  <rect x="429" y="137" width="285" height="326" rx="22" fill="#fdfbf7" stroke="#695d52" stroke-width="5"/>
+  <rect x="111" y="173" width="235" height="57" rx="10" fill="none" stroke="#b7a99a" stroke-width="5"/>
+  <rect x="454" y="173" width="235" height="57" rx="10" fill="none" stroke="#695d52" stroke-width="5"/>
+  <path d="M124 288h116M124 344h192M124 400h135M467 288h166M467 344h139M467 400h178" fill="none" stroke="#b7a99a" stroke-width="12" stroke-linecap="round"/>
+  <path d="m377 295 36 0m-13-13 13 13-13 13" fill="none" stroke="#695d52" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
