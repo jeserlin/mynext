@@ -35,6 +35,9 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Validate Markdown content
+        run: npm run validate:content
+
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 

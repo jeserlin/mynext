@@ -17,6 +17,7 @@
         "typecheck": "tsc --noEmit",
         "test": "vitest run",
         "test:e2e": "playwright test",
+        "validate:content": "node scripts/validate-content.js",
         "new-recipe": "node scripts/new-recipe.ts",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"

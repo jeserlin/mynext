@@ -46,6 +46,16 @@ Recommended workflow:
 3. Fill in the generated markdown file's `ingredient`, `labels`, and steps.
 4. Run `npm run dev` and open `http://localhost:3000/cooking` or `http://localhost:3000/baking` to check the result.
 
+## Validating Markdown Content
+
+Before publishing content changes, run:
+
+```bash
+npm run validate:content
+```
+
+This checks required frontmatter, dates, recipe fields, image paths, duplicate slugs, and Markdown parsing across `_posts`. GitHub Actions runs the same check for every pull request and push to `main`.
+
 You can start editing the home page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
 [API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
