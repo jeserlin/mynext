@@ -13,8 +13,7 @@ ingredient: [
   '橘子'
 ]
 labels: [
-  '瑪德蓮',
-  'madeleine'
+  '瑪德蓮'
 ]
 ---
 

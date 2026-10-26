@@ -14,9 +14,7 @@ ingredient: [
   '糖'
 ]
 labels: [
-  '芝麻',
-  '貝果',
-  'bagel'
+  '貝果'
 ]
 ---
 

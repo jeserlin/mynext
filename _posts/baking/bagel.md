@@ -12,8 +12,7 @@ ingredient: [
   '鹽'
 ]
 labels: [
-  '貝果',
-  'bagel'
+  '貝果'
 ]
 ---
 

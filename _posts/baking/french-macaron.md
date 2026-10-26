@@ -11,9 +11,7 @@ ingredient: [
   '巧克力粉'
 ]
 labels: [
-  '馬卡龍',
-  'macaron',
-  'macaroon'
+  '馬卡龍'
 ]
 ---
 

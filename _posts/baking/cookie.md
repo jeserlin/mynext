@@ -12,8 +12,6 @@ ingredient: [
   '鹽'
 ]
 labels: [
-  '珍妮曲奇',
-  '曲奇',
   'cookie'
 ]
 ---

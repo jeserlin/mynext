@@ -12,8 +12,7 @@ ingredient: [
   '海鹽'
 ]
 labels: [
-  '佛卡夏',
-  'focaccia'
+  '佛卡夏'
 ]
 ---
 

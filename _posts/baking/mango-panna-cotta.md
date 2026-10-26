@@ -12,10 +12,7 @@ ingredient: [
   '細砂糖'
 ]
 labels: [
-  '芒果',
-  '奶酪',
-  'mango',
-  'panna cotta'
+  '奶酪'
 ]
 ---
 

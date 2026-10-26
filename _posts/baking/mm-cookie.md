@@ -13,7 +13,6 @@ ingredient: [
   'MM 巧克力'
 ]
 labels: [
-  '餅乾',
   'cookie'
 ]
 ---
