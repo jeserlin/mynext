@@ -25,6 +25,7 @@ const Tech = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
         title="Tech"
         description="All about tech"
       />
+      <h1 className="mb-4 font-normal text-2xl leading-tight text-[#3d2a20] sm:text-3xl">Learning</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {posts.map(({
           slug, title, coverImage, desc, date,

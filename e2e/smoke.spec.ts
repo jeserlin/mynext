@@ -18,6 +18,23 @@ test.describe('public route smoke tests', () => {
   });
 });
 
+test('books show headings and open notes by keyboard only when notes exist', async ({ page }) => {
+  await page.goto('/books');
+  await expect(page.getByRole('heading', { name: 'Books', level: 1 })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'All', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: '2025', exact: true }).click();
+  await expect(page.getByRole('button', { name: '2025', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: '小鳥：《博士熱愛的算式》' })).toBeDisabled();
+
+  const noteButton = page.getByRole('button', { name: 'Read notes for 深夜圖書館的宵夜' });
+  await noteButton.focus();
+  await page.keyboard.press('Space');
+  await expect(page.getByRole('dialog')).toBeVisible();
+
+  await page.goto('/tech');
+  await expect(page.getByRole('heading', { name: 'Learning', level: 1 })).toBeVisible();
+});
+
 test('legacy recipe indexes redirect to the recipes finder', async ({ page }) => {
   for (const route of ['/cooking', '/baking']) {
     await page.goto(route);

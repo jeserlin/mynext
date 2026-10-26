@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
-import Image from 'next/image';
-import { NotebookPen } from 'lucide-react';
 
+import BookCard from 'components/bookCard';
 import Modal from 'components/modal';
 import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
@@ -20,7 +19,6 @@ const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>)
   const [selectedYear, setSelectedYear] = useState<string | number>(All);
   const [selectedBook, setSelectedBook] = useState<BookNote | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loadedImgs, setLoadedImgs] = useState<Record<string, boolean>>({});
 
   const onSelectBook = async (book: BookNote) => {
     const htmlContent = await markdownToHtml(book.content || '');
@@ -38,21 +36,19 @@ const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>)
     ? posts
     : posts.filter(({ date }) => new Date(date).getFullYear() === selectedYear);
 
-  const handleImageLoad = (url: string) => {
-    setLoadedImgs((prev) => ({ ...prev, [url]: true }));
-  };
-
   return (
     <div>
       <SeoHeader
         title="Books"
         description="All about books"
       />
+      <h1 className="mb-4 font-normal text-2xl leading-tight text-[#3d2a20] sm:text-3xl">Books</h1>
       <div className="flex flex-row gap-2 mb-6 overflow-y-auto scrollbar-none" style={{ scrollbarWidth: 'none' }}>
         {years.map((year) => (
           <button
             type="button"
             key={year}
+            aria-pressed={selectedYear === year}
             className={`btn btn-sm btn-secondary rounded-lg hover:!text-white ${selectedYear === year
               ? 'text-white'
               : 'btn-outline'
@@ -65,47 +61,16 @@ const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>)
       </div>
       <div className="text-sm text-primary-content mb-4">{`Total: ${filteredPosts.length}`}</div>
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        {filteredPosts.map(({
-          slug, coverImage, title, author, content,
-        }, index) => (
-          <div
-            key={slug}
-            className="flex flex-col items-center"
-          >
-            <div
-              className="relative w-fit mb-2 cursor-pointer"
-              onClick={() => void onSelectBook({ title, content })}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') void onSelectBook({ title, content });
-              }}
-              role="button"
-              tabIndex={0}
-            >
-              {coverImage && (
-                <div className="relative w-full aspect-[11/15]">
-                  {!loadedImgs[coverImage] && (
-                    <div className="absolute inset-0 skeleton" />
-                  )}
-                  <Image
-                    className="w-[110px] h-[150px] max-h-[150px] transition-transform duration-200 hover:scale-105"
-                    src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
-                    alt={title}
-                    height={150}
-                    width={110}
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    onLoad={() => handleImageLoad(coverImage)}
-                  />
-                </div>
-              )}
-              {content && (
-                <div className="absolute top-0 -right-1 bg-[#ece7df] rounded-lg text-black p-1">
-                  <NotebookPen size={20} />
-                </div>
-              )}
-            </div>
-            <div className="text-sm font-bold text-primary-content mb-1 text-center">{title}</div>
-            <div className="text-sm text-primary-content">{author}</div>
-          </div>
+        {filteredPosts.map((book, index) => (
+          <BookCard
+            key={book.slug}
+            title={book.title}
+            author={book.author}
+            coverImage={book.coverImage}
+            content={book.content}
+            loading={index === 0 ? 'eager' : 'lazy'}
+            onSelectNotes={(selected) => void onSelectBook(selected)}
+          />
         ))}
       </div>
       <Modal
