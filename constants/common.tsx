@@ -2,9 +2,8 @@ import type { ReactNode } from 'react';
 import {
   BookOpen,
   Code,
-  Cookie,
-  User,
   UtensilsCrossed,
+  User,
 } from 'lucide-react';
 
 export interface MenuItem {
@@ -21,13 +20,8 @@ export const menuList: MenuItem[] = [
   },
   {
     image: () => <UtensilsCrossed size={20} />,
-    text: 'Cooking',
-    path: '/cooking',
-  },
-  {
-    image: () => <Cookie size={20} />,
-    text: 'Baking',
-    path: '/baking',
+    text: 'Recipes',
+    path: '/recipes',
   },
   {
     image: () => <BookOpen size={20} />,
@@ -43,5 +37,6 @@ export const menuList: MenuItem[] = [
 
 export const getParentPath = (route: string) => {
   const parentRoute = route.split('/')[1];
+  if (parentRoute === 'cooking' || parentRoute === 'baking') return '/recipes';
   return parentRoute ? `/${parentRoute}` : '/';
 };

@@ -11,6 +11,7 @@ module.exports = [
       'package-lock.json',
       'playwright-report/**',
       'test-results/**',
+      'storybook-static/**',
     ],
   },
 ];

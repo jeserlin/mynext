@@ -14,7 +14,7 @@ interface BakingPostProps {
   post: RecipePost;
 }
 
-const bakingMainPath = '/baking';
+const bakingMainPath = '/recipes';
 
 const BakingPost = ({ post }: InferGetStaticPropsType<typeof getStaticProps>) => (
   <RecipePostPage

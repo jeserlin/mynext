@@ -3,7 +3,7 @@ import type { GetServerSideProps } from 'next';
 import { getPostsByFolder } from 'lib/api';
 
 const siteUrl = 'https://myblog-jeserlin.vercel.app';
-const staticPaths = ['/', '/tech', '/baking', '/cooking', '/books', '/about-me'];
+const staticPaths = ['/', '/tech', '/recipes', '/books', '/about-me'];
 const postTypes = ['tech', 'baking', 'cooking'];
 
 const escapeXml = (value: string) => value

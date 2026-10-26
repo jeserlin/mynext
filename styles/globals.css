@@ -54,6 +54,17 @@
     padding-top: 72px;
 }
 
+.recipe-search-input::-webkit-search-cancel-button,
+.recipe-search-input::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+
+.recipe-search-input::-ms-clear {
+    display: none;
+}
+
 @media (min-width: 640px) {
     .main-content {
         padding-top: 32px;

@@ -1,14 +1,12 @@
-import { useState } from 'react';
 import ErrorPage from 'next/error';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import SeoHeader from 'components/seoHeader';
 import GoBack from 'components/goBack';
 import ScrollTop from 'components/scrollTop';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
+import RecipeGallery from 'components/recipeGallery';
 import { authorName } from 'constants/basicInfo';
 import type { RecipePost, RecipeType } from 'types/recipe';
 import siteSeo from 'next-seo.config';
@@ -28,21 +26,11 @@ const RecipePostPage = ({
   recipeCategory,
   type,
 }: RecipePostPageProps) => {
-  const [loadedImgs, setLoadedImgs] = useState<Record<string, boolean>>({});
   const router = useRouter();
 
   if (!router.isFallback && !post.slug) {
     return <ErrorPage statusCode={404} />;
   }
-
-  const images = post.gallery && post.gallery.length > 0
-    ? [post.coverImage, ...post.gallery].filter((image): image is string => Boolean(image))
-    : post.coverImage ? [post.coverImage] : [];
-  const hasGallery = images.length > 0;
-
-  const handleImageLoad = (image: string) => {
-    setLoadedImgs((prev) => ({ ...prev, [image]: true }));
-  };
 
   return (
     <div>
@@ -76,78 +64,7 @@ const RecipePostPage = ({
             <PostContent content={post.content} />
           </div>
           <div className="w-full md:w-1/3 order-1 md:order-2">
-            {hasGallery && images.length === 1 ? (
-              <div className="relative">
-                {!loadedImgs[images[0]] && (
-                  <div className="absolute inset-0 skeleton rounded-3xl" />
-                )}
-                <Image
-                  className="rounded-3xl w-full h-auto"
-                  src={images[0]}
-                  alt={post.title || ''}
-                  width={1200}
-                  height={900}
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  loading="eager"
-                  onLoad={() => handleImageLoad(images[0])}
-                />
-              </div>
-            ) : hasGallery && images.length > 1 ? (
-              <div className="carousel w-full rounded-box group">
-                {images.map((image, index) => {
-                  const prevIndex = index === 0 ? images.length - 1 : index - 1;
-                  const nextIndex = index === images.length - 1 ? 0 : index + 1;
-
-                  return (
-                    <div key={image} id={`slide${index}`} className="carousel-item relative w-full">
-                      {!loadedImgs[image] && (
-                        <div className="absolute inset-0 skeleton rounded-box" />
-                      )}
-                      <Image
-                        className="w-full h-auto rounded-box"
-                        src={image}
-                        alt={`${post.title || ''} - ${index + 1}`}
-                        width={1200}
-                        height={900}
-                        sizes="(min-width: 768px) 33vw, 100vw"
-                        loading={index === 0 ? 'eager' : 'lazy'}
-                        onLoad={() => handleImageLoad(image)}
-                      />
-                      <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between opacity-0 transition-opacity group-hover:opacity-100">
-                        <a
-                          href={`#slide${prevIndex}`}
-                          className="btn btn-circle"
-                          onClick={(event) => {
-                            event.preventDefault();
-                            document.getElementById(`slide${prevIndex}`)?.scrollIntoView({
-                              behavior: 'smooth',
-                              block: 'nearest',
-                              inline: 'start',
-                            });
-                          }}
-                        >
-                          <ChevronLeft size={24} />
-                        </a>
-                        <a
-                          href={`#slide${nextIndex}`}
-                          className="btn btn-circle"
-                          onClick={(event) => {
-                            event.preventDefault();
-                            document.getElementById(`slide${nextIndex}`)?.scrollIntoView({
-                              behavior: 'smooth',
-                              block: 'nearest',
-                              inline: 'start',
-                            });
-                          }}
-                        >
-                          <ChevronRight size={24} />
-                        </a>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : null}
+            <RecipeGallery title={post.title || ''} coverImage={post.coverImage} gallery={post.gallery} />
           </div>
         </div>
       </div>
