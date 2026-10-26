@@ -67,7 +67,7 @@ const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>)
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
         {filteredPosts.map(({
           slug, coverImage, title, author, content,
-        }) => (
+        }, index) => (
           <div
             key={slug}
             className="flex flex-col items-center"
@@ -92,6 +92,7 @@ const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>)
                     alt={title}
                     height={150}
                     width={110}
+                    loading={index === 0 ? 'eager' : 'lazy'}
                     onLoad={() => handleImageLoad(coverImage)}
                   />
                 </div>

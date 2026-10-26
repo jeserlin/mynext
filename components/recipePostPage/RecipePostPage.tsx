@@ -88,6 +88,7 @@ const RecipePostPage = ({
                   width={1200}
                   height={900}
                   sizes="(min-width: 768px) 33vw, 100vw"
+                  loading="eager"
                   onLoad={() => handleImageLoad(images[0])}
                 />
               </div>
@@ -109,6 +110,7 @@ const RecipePostPage = ({
                         width={1200}
                         height={900}
                         sizes="(min-width: 768px) 33vw, 100vw"
+                        loading={index === 0 ? 'eager' : 'lazy'}
                         onLoad={() => handleImageLoad(image)}
                       />
                       <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between opacity-0 transition-opacity group-hover:opacity-100">

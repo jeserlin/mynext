@@ -27,7 +27,7 @@ const Baking = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {posts.map(({
           slug, title, coverImage, ingredient,
-        }) => (
+        }, index) => (
           <Link key={slug} href={`/baking/${slug}`}>
             <div className="flex w-full cursor-pointer">
               <div className="w-1/4 flex-shrink-0">
@@ -42,6 +42,7 @@ const Baking = ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
                       className={`rounded-lg object-cover ${!loadedImgs[coverImage] ? 'invisible' : ''}`}
                       src={coverImage}
                       alt={title}
+                      loading={index === 0 ? 'eager' : 'lazy'}
                       onLoad={() => handleImageLoad(coverImage)}
                     />
                   </div>
