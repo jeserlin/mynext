@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>搜尋請求完成順序範例</title>
+    <style>
+      :root { font-family: system-ui, sans-serif; color: #3d2a20; background: #fffdf9; }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 1.25rem; }
+      main { max-width: 760px; margin: auto; }
+      h1 { font-size: 1.3rem; margin: 0 0 .5rem; }
+      p { color: #6b5e53; line-height: 1.5; }
+      button { font: inherit; cursor: pointer; padding: .55rem .8rem; border: 1px solid #6b5e53; border-radius: .5rem; background: #6b5e53; color: white; }
+      button:disabled { opacity: .55; cursor: wait; }
+      button:focus-visible { outline: 3px solid #aa927d; outline-offset: 2px; }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+      .panel { min-width: 0; padding: 1rem; border: 1px solid #d9cbbd; border-radius: .7rem; background: white; }
+      .panel h2 { font-size: 1rem; margin: 0 0 .5rem; }
+      .status { min-height: 3rem; font-size: .85rem; }
+      ul { margin: .5rem 0 0; padding-left: 1.25rem; line-height: 1.8; }
+      .log { padding-left: 1.25rem; font-size: .8rem; color: #6b5e53; }
+      .bad { color: #a34731; }
+      .good { color: #41624b; }
+      @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>當舊搜尋比較慢</h1>
+      <p>先搜尋「台」，120ms 後搜尋「台灣」。第一筆要等 900ms，第二筆只要 180ms。</p>
+      <button id="run" type="button">重現問題</button>
+      <div class="grid">
+        <section class="panel">
+          <h2>沒有保護</h2>
+          <p id="unsafe-status" class="status" role="status">尚未搜尋</p>
+          <ul id="unsafe-results"></ul>
+          <ol id="unsafe-log" class="log" aria-label="沒有保護的請求紀錄"></ol>
+        </section>
+        <section class="panel">
+          <h2>取消舊請求</h2>
+          <p id="safe-status" class="status" role="status">尚未搜尋</p>
+          <ul id="safe-results"></ul>
+          <ol id="safe-log" class="log" aria-label="取消舊請求的紀錄"></ol>
+        </section>
+      </div>
+    </main>
+    <script>
+      const names = ["台灣漫遊錄", "台北散步", "台南食光"];
+
+      // 模擬支援 AbortSignal 的 fetch，不需要外部網路。
+      function fakeFetch(query, delay, signal) {
+        return new Promise((resolve, reject) => {
+          if (signal?.aborted) {
+            reject(new DOMException("Request aborted", "AbortError"));
+            return;
+          }
+          const onAbort = () => {
+            clearTimeout(timer);
+            reject(new DOMException("Request aborted", "AbortError"));
+          };
+          const timer = setTimeout(() => {
+            signal?.removeEventListener("abort", onAbort);
+            resolve(names.filter((name) => name.includes(query)));
+          }, delay);
+          signal?.addEventListener("abort", onAbort, { once: true });
+        });
+      }
+
+      function createPanel(id, protectedMode) {
+        const status = document.getElementById(`${id}-status`);
+        const results = document.getElementById(`${id}-results`);
+        const log = document.getElementById(`${id}-log`);
+        let controller;
+        let runId = 0;
+
+        function addLog(text) {
+          const item = document.createElement("li");
+          item.textContent = text;
+          log.append(item);
+        }
+
+        function reset() {
+          controller?.abort();
+          controller = undefined;
+          runId += 1;
+          results.replaceChildren();
+          log.replaceChildren();
+          status.textContent = "準備搜尋…";
+          status.className = "status";
+        }
+
+        async function search(query, delay) {
+          if (protectedMode) controller?.abort();
+          const requestController = new AbortController();
+          if (protectedMode) controller = requestController;
+          const thisRun = runId;
+          addLog(`送出「${query}」`);
+
+          try {
+            const items = await fakeFetch(query, delay, requestController.signal);
+            if (thisRun !== runId || (protectedMode && controller !== requestController)) return;
+            results.replaceChildren();
+            for (const name of items) {
+              const item = document.createElement("li");
+              item.textContent = name;
+              results.append(item);
+            }
+            status.textContent = `目前顯示「${query}」：${items.length} 筆`;
+            status.className = `status ${query === "台灣" ? "good" : "bad"}`;
+            addLog(`「${query}」完成並更新畫面`);
+          } catch (error) {
+            if (error.name === "AbortError") addLog(`「${query}」已取消`);
+            else throw error;
+          }
+        }
+
+        return { reset, search };
+      }
+
+      const unsafe = createPanel("unsafe", false);
+      const safe = createPanel("safe", true);
+      const runButton = document.getElementById("run");
+
+      runButton.addEventListener("click", async () => {
+        runButton.disabled = true;
+        unsafe.reset();
+        safe.reset();
+        void unsafe.search("台", 900);
+        void safe.search("台", 900);
+        await new Promise((resolve) => setTimeout(resolve, 120));
+        void unsafe.search("台灣", 180);
+        void safe.search("台灣", 180);
+        await new Promise((resolve) => setTimeout(resolve, 900));
+        runButton.disabled = false;
+      });
+    </script>
+  </body>
+</html>

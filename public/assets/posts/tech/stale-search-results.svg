@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="title">
+  <title id="title">Two search requests completing out of order</title>
+  <rect width="800" height="600" fill="#e7ded2"/>
+  <rect x="95" y="140" width="610" height="320" rx="22" fill="#fdfbf7" stroke="#b7a99a" stroke-width="5"/>
+  <rect x="138" y="185" width="524" height="66" rx="12" fill="none" stroke="#695d52" stroke-width="5"/>
+  <circle cx="184" cy="218" r="16" fill="none" stroke="#695d52" stroke-width="5"/>
+  <path d="m197 231 15 15" stroke="#695d52" stroke-width="5" stroke-linecap="round"/>
+  <path d="M250 215h265" stroke="#b7a99a" stroke-width="12" stroke-linecap="round"/>
+  <path d="M144 307h393" stroke="#b7a99a" stroke-width="13" stroke-linecap="round"/>
+  <path d="M144 369h279" stroke="#695d52" stroke-width="13" stroke-linecap="round"/>
+  <path d="m573 305 32 32 52-67" fill="none" stroke="#695d52" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
