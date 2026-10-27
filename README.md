@@ -48,7 +48,7 @@ Recommended workflow:
 
 ## Adding Books from the Admin Page
 
-`/admin/new-book` looks up a pasted ISBN with Open Library, then lets you edit the title and author and paste a cover URL and notes. If `GOOGLE_BOOKS_API_KEY` is configured, it tries Google Books first and falls back to Open Library. It saves new books to a separate Notion database. Existing `_posts/books` files remain visible; saving rejects an ISBN already present in either source.
+`/admin/new-book` lets you enter a title and open a 博客來 search for it. Check the edition there, then paste its ISBN into the form and enter the author, cover URL, and notes manually. It saves new books to a separate Notion database. Existing `_posts/books` files remain visible; saving rejects an ISBN already present in either source.
 
 The existing [books database](https://app.notion.com/p/406ea9196e4680aa9958e44b3b8a2457) is shared with the `mynext recipes` integration and has these properties:
 
@@ -61,7 +61,7 @@ The existing [books database](https://app.notion.com/p/406ea9196e4680aa9958e44b3
 | Read Date | Date |
 | Notes | Text |
 
-Set `NOTION_BOOKS_DATABASE_ID` to that database's ID in local and Vercel environment variables. The admin page uses the same `ADMIN_SECRET` as the recipe editor and reads the saved secret from this browser. Optionally set `GOOGLE_BOOKS_API_KEY` for additional ISBN coverage. Do not put these values in committed files. After adding the database ID to Vercel, redeploy once; saving a book then revalidates `/books` automatically.
+Set `NOTION_BOOKS_DATABASE_ID` to that database's ID in local and Vercel environment variables. The admin page uses the same `ADMIN_SECRET` as the recipe editor and reads the saved secret from this browser. Do not put these values in committed files. After adding the database ID to Vercel, redeploy once; saving a book then revalidates `/books` automatically.
 
 ## Validating Markdown Content
 

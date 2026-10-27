@@ -12,6 +12,7 @@ import publitSignatureHandler from 'pages/api/admin/publit-signature';
 import recipeHandler from 'pages/api/admin/recipe';
 import recipesHandler from 'pages/api/admin/recipes';
 import revalidateHandler from 'pages/api/admin/revalidate';
+import saveBookHandler from 'pages/api/admin/save-book';
 import saveRecipeHandler from 'pages/api/admin/save-recipe';
 import uploadImageHandler from 'pages/api/admin/upload-image';
 
@@ -54,6 +55,7 @@ const routes: RouteDefinition[] = [
   { name: 'recipes', method: 'GET', handler: recipesHandler as ApiHandler },
   { name: 'revalidate', method: 'POST', handler: revalidateHandler as ApiHandler },
   { name: 'save recipe', method: 'POST', handler: saveRecipeHandler as ApiHandler },
+  { name: 'save book', method: 'POST', handler: saveBookHandler as ApiHandler },
   { name: 'upload image', method: 'POST', handler: uploadImageHandler as ApiHandler },
 ];
 
@@ -94,6 +96,7 @@ describe('admin API route guards', () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
   });
 
   routes.forEach(({ name, method, handler }) => {
@@ -130,6 +133,7 @@ describe('admin API response contracts', () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
   });
 
   it('returns a signed Publit.io query', () => {

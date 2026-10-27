@@ -24,11 +24,11 @@ const emptyBook = (): BookForm => ({
 });
 
 const fieldClass = 'w-full rounded-lg border border-[#d8d0c3] bg-white px-4 py-3 text-sm text-primary-content outline-none focus:border-primary';
+const buttonClass = 'btn shrink-0 !border-[#705c55] !bg-[#705c55] !text-white hover:!bg-[#5b4943] disabled:!border-[#d8cfca] disabled:!bg-[#d8cfca] disabled:!text-[#4a3c36]';
 
 export default function NewBook() {
   const [secret, setSecret] = useState('');
   const [form, setForm] = useState<BookForm>(emptyBook);
-  const [isLookingUp, setIsLookingUp] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -44,32 +44,6 @@ export default function NewBook() {
 
   const update = (field: keyof BookForm, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
-  };
-
-  const lookup = async () => {
-    setIsLookingUp(true);
-    setError('');
-    setMessage('');
-    try {
-      const isbn = form.isbn.replace(/[-\s]/g, '');
-      const response = await fetch(`/api/admin/lookup-book?isbn=${encodeURIComponent(isbn)}`, {
-        headers: { [adminHeaderName]: secret },
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'ISBN lookup failed');
-      setForm((current) => ({
-        ...current,
-        isbn,
-        title: data.title || current.title,
-        author: data.author || current.author,
-        coverImage: data.coverImage || current.coverImage,
-      }));
-      setMessage('Book found. Check the details before saving.');
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'ISBN lookup failed');
-    } finally {
-      setIsLookingUp(false);
-    }
   };
 
   const save = async (event: FormEvent<HTMLFormElement>) => {
@@ -100,7 +74,7 @@ export default function NewBook() {
     <div className="mx-auto max-w-2xl pb-16">
       <SeoHeader title="New Book" description="Private book publishing tool" path="/admin/new-book" />
       <h1 className="mb-3 text-2xl font-normal text-primary-content">Add book</h1>
-      <p className="mb-6 text-sm text-primary-content/70">Look up the ISBN, check the details, then paste your notes and cover URL.</p>
+      <p className="mb-6 text-sm text-primary-content/70">Search 博客來 for the book, then paste its ISBN and add your notes.</p>
       <label className="mb-6 block text-sm text-primary-content">
         Admin secret
         <input
@@ -115,17 +89,22 @@ export default function NewBook() {
       {message && <p role="status" className="mb-4 text-sm text-green-800">{message}</p>}
       <form onSubmit={save} className="space-y-5">
         <div>
-          <label htmlFor="isbn" className="block text-sm text-primary-content">ISBN</label>
+          <label htmlFor="book-title" className="block text-sm text-primary-content">Title</label>
           <div className="mt-2 flex gap-2">
-            <input id="isbn" className={fieldClass} inputMode="numeric" value={form.isbn} onChange={(event) => update('isbn', event.target.value)} required />
-            <button type="button" className="btn btn-secondary shrink-0" onClick={lookup} disabled={isLookingUp || !secret || !form.isbn.trim()}>
-              {isLookingUp ? 'Looking up…' : 'Look up'}
-            </button>
+            <input id="book-title" className={`${fieldClass} min-w-0`} value={form.title} onChange={(event) => update('title', event.target.value)} required />
+            <a
+              href={form.title.trim() ? `https://search.books.com.tw/search/query/key/${encodeURIComponent(form.title.trim())}/cat/all` : 'https://www.books.com.tw/'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonClass}
+            >
+              Search 博客來
+            </a>
           </div>
         </div>
         <label className="block text-sm text-primary-content">
-          Title
-          <input className={`${fieldClass} mt-2`} value={form.title} onChange={(event) => update('title', event.target.value)} required />
+          ISBN
+          <input id="isbn" className={`${fieldClass} mt-2`} inputMode="numeric" value={form.isbn} onChange={(event) => update('isbn', event.target.value)} required />
         </label>
         <label className="block text-sm text-primary-content">
           Author
@@ -147,7 +126,7 @@ export default function NewBook() {
           Sentence or notes (optional)
           <textarea className={`${fieldClass} mt-2 min-h-36`} value={form.content} onChange={(event) => update('content', event.target.value)} placeholder="Paste a sentence or write your notes…" />
         </label>
-        <button type="submit" className="btn btn-secondary" disabled={isSaving || !secret}>
+        <button type="submit" className={buttonClass} disabled={isSaving || !secret}>
           {isSaving ? 'Saving…' : 'Save book'}
         </button>
       </form>
