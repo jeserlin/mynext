@@ -6,6 +6,7 @@ import Modal from 'components/modal';
 import SeoHeader from 'components/seoHeader';
 import { getPostsByFolder } from 'lib/api';
 import markdownToHtml from 'lib/markdownToHtml';
+import { getNotionBooks } from 'lib/notionBooks';
 import type { BookNote, BookPost } from 'types/book';
 
 const All = 'All';
@@ -84,10 +85,14 @@ const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>)
 };
 
 export const getStaticProps: GetStaticProps<BooksProps> = async () => {
-  const posts = getPostsByFolder({
+  const markdownPosts = getPostsByFolder({
     folder: 'books',
     fields: ['slug', 'title', 'coverImage', 'author', 'date', 'content'],
   }) as BookPost[];
+  const notionPosts = await getNotionBooks();
+  const existingIsbns = new Set(markdownPosts.map((post) => post.slug));
+  const posts = [...markdownPosts, ...notionPosts.filter((post) => !existingIsbns.has(post.slug))]
+    .sort((a, b) => b.date.localeCompare(a.date));
 
   const years = [
     All,

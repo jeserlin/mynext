@@ -23,6 +23,7 @@ const BookCard = ({
 }: BookCardProps) => {
   const [loadedImage, setLoadedImage] = useState<string | null>(null);
   const hasNotes = Boolean(content?.trim());
+  const isPublitCover = coverImage?.startsWith('https://media.publit.io/') || false;
 
   return (
     <div className="flex flex-col items-center">
@@ -38,7 +39,8 @@ const BookCard = ({
             {loadedImage !== coverImage && <div className="absolute inset-0 skeleton" />}
             <Image
               className="w-[110px] h-[150px] max-h-[150px] transition-transform duration-200 group-hover:scale-105"
-              src={`${coverImage}?w=164&h=164&fit=crop&auto=format`}
+              src={isPublitCover ? `${coverImage}?w=164&h=164&fit=crop&auto=format` : coverImage}
+              unoptimized={!isPublitCover}
               alt={title}
               height={150}
               width={110}
