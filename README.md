@@ -24,7 +24,7 @@ npm ci
 
 ## Adding A New Recipe
 
-Recipes are managed in Notion through `/admin/new-recipe`. All 26 former Markdown recipes have been published in Notion and removed from `_posts/cooking` and `_posts/baking`; books and technical posts remain in the repo. Keep `public/assets/posts` because some Notion covers still refer to these images.
+Recipes are managed in Notion through `/admin/new-recipe`. All 26 former Markdown recipes have been published in Notion and removed from `_posts/cooking` and `_posts/baking`; technical posts remain in the repo. Books are also managed in Notion. Keep `public/assets/posts` because some Notion covers still refer to these images.
 
 Set `ADMIN_SECRET`, `NOTION_TOKEN`, and `NOTION_DATABASE_ID` in `.env.local` for local editing, and in Vercel for production. Never commit actual values. GitHub Actions uses fixed Notion fixtures for browser tests and its verification build, so it needs no Notion secrets; normal `npm run build` still reads real Notion data.
 
@@ -50,7 +50,7 @@ For the standard workflow, open `/admin/new-recipe`, save your admin secret, edi
 
 ## Adding Books from the Admin Page
 
-`/admin/new-book` lets you enter a title and open a 博客來 search for it. Check the edition there, then paste its ISBN into the form and enter the author, cover URL, and notes manually. It saves new books to a separate Notion database. Existing `_posts/books` files remain visible; saving rejects an ISBN already present in either source.
+`/admin/new-book` lets you enter a title and open a 博客來 search for it. Check the edition there, then paste its ISBN into the form and enter the author, cover URL, and notes manually. It saves new books to a separate Notion database. All 51 existing books, including 30 reading notes, have been migrated to Notion and their local Markdown files removed. Saving rejects an ISBN already present in Notion or any local Markdown drafts.
 
 The existing [books database](https://app.notion.com/p/406ea9196e4680aa9958e44b3b8a2457) is shared with the `mynext recipes` integration and has these properties:
 
