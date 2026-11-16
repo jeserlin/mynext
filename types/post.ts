@@ -1,4 +1,7 @@
+import type { RecipeScaling } from 'types/recipe';
+
 export interface PostRecord {
+  scaling?: RecipeScaling;
   slug?: string;
   title?: string;
   desc?: string;

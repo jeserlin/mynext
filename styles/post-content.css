@@ -23,3 +23,106 @@
 .content-container *:not(pre) > code {
   @apply px-0.5 py-0.5 bg-[#ece7df]/50;
 }
+
+.recipe-scaler {
+  border-color: #e5d8cb;
+  background: #ffffff;
+}
+
+.recipe-scaler .recipe-scaler-basis {
+  border: 1px solid #e5d8cb;
+  background: #f6f1e9;
+}
+
+.recipe-scaler label,
+.recipe-scaler legend {
+  color: var(--color-primary-content);
+}
+
+.recipe-scaler .input,
+.recipe-scaler .select {
+  border-color: #dfd2c2;
+  background-color: #fcfaf6;
+  color: #3d2a20;
+  box-shadow: none;
+}
+
+.recipe-scaler .input:focus {
+  border-color: #806d5d;
+  outline: 2px solid #806d5d;
+  outline-offset: 2px;
+}
+
+.recipe-scaler .select:focus,
+.recipe-scaler .select:focus-visible,
+.recipe-scaler .select:focus-within,
+.recipe-scaler .select:open {
+  outline: none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+
+.recipe-scaler .select,
+.recipe-scaler .select option {
+  background-color: #ffffff;
+}
+
+.recipe-scaler .input[aria-invalid="true"] {
+  border-color: #9e5449;
+}
+
+.recipe-scaler .btn {
+  border-color: var(--color-secondary);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--color-secondary);
+  box-shadow: none;
+}
+
+.recipe-scaler .btn:hover:not(:disabled) {
+  border-color: var(--color-secondary);
+  background: var(--color-secondary);
+  color: white;
+}
+
+.recipe-scaler .btn[aria-pressed="true"] {
+  border-color: #6b5e53;
+  background: #6b5e53;
+  color: white;
+}
+
+.recipe-scaler .btn[aria-pressed="true"]:hover:not(:disabled) {
+  border-color: #6b5e53;
+  background: #6b5e53;
+}
+
+.recipe-scaler .btn:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+
+.recipe-scaler .btn:disabled {
+  border-color: #e5d8cb;
+  background: #f6f1e9;
+  color: #b5a699;
+}
+
+.recipe-scaler .recipe-scaler-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--color-primary-content);
+}
+
+.recipe-scaler li {
+  border-bottom: 1px solid #eee5dc;
+  color: var(--color-primary-content);
+}
+
+.recipe-scaler li:last-child {
+  border-bottom: 0;
+}
+
+.recipe-scaler li > span:last-child {
+  color: #3d2a20;
+}

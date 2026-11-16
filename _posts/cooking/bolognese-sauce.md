@@ -22,36 +22,34 @@ ingredient: [
   '紅酒',
   '奶油',
 ]
+scaling:
+  baseServings: 1
+  groups:
+    - title: 食材
+      items:
+        - { name: 牛絞肉, amount: 320, unit: g }
+        - { name: 豬絞肉, amount: 500, unit: g }
+        - { name: 胡蘿蔔, amount: 2, unit: 根 }
+        - { name: 西芹, amount: 2, unit: 根 }
+        - { name: 洋蔥, amount: 1, unit: 顆 }
+        - { name: 番茄膏, amount: 2, unit: 湯匙 }
+        - { name: 番茄罐頭, amount: 400, unit: g }
+        - { name: 奶油, amount: 50, unit: g }
+    - title: 調味料
+      items:
+        - { name: 橄欖油, note: 適量 }
+        - { name: 糖, amount: 1, unit: 湯匙 }
+        - { name: 鹽, note: 適量 }
+        - { name: 黑胡椒, note: 適量 }
+        - { name: 蒜頭, amount: 3, maxAmount: 4, unit: 個 }
+        - { name: 月桂葉, amount: 2, unit: 片 }
+        - { name: 迷迭香, note: 適量 }
+        - { name: 百里香, note: 適量 }
+        - { name: 紅酒, amount: 200, unit: ml }
 labels: [
   'pasta'
 ]
 ---
-
-### 材料
-
-
-#### 食材
-
-- 牛絞肉 `320g`
-- 豬絞肉 `500g`
-- 胡蘿蔔 `2根`
-- 西芹 `2根`
-- 洋蔥 `1顆`
-- 番茄膏 `2湯匙`
-- 番茄罐頭 `400g`
-- 奶油 `50g`
-
-#### 調味料
-
-- 橄欖油 `適量`
-- 糖 `1湯匙`
-- 鹽 `適量`
-- 黑胡椒 `適量`
-- 蒜頭 `3-4個`
-- 月桂葉 `2片`
-- 迷迭香 `適量`
-- 百里香 `適量`
-- 紅酒 `200ml`
 
 ### 步驟
 
@@ -62,6 +60,6 @@ labels: [
 5. 加入`胡蘿蔔泥`和`芹菜泥`炒到出水
 6. 加入`奶油`炒到融化
 7. 如果是用鑄鐵鍋可以直接下一步，如果用炒鍋這時候把食材倒入燉鍋中
-8. 加入2湯匙的`番茄膏`，`番茄罐頭`和`紅酒`
+8. 加入`番茄膏`，`番茄罐頭`和`紅酒`
 9. 加入步驟二的調味粉，`糖`,`鹽巴`和`黑胡椒`
 10. 攪拌均勻後加入適量的水，轉`小火`慢燉`1.5小時`

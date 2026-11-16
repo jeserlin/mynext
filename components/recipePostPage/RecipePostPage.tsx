@@ -7,6 +7,7 @@ import ScrollTop from 'components/scrollTop';
 import PostHeader from 'components/postHeader';
 import PostContent from 'components/postContent';
 import RecipeGallery from 'components/recipeGallery';
+import RecipeScaler from 'components/recipeScaler/RecipeScaler';
 import { authorName } from 'constants/basicInfo';
 import type { RecipePost, RecipeType } from 'types/recipe';
 import siteSeo from 'next-seo.config';
@@ -61,6 +62,7 @@ const RecipePostPage = ({
         <PostHeader title={post.title} />
         <div className="w-full flex flex-col md:flex-row gap-4">
           <div className="w-full md:w-2/3 order-2 md:order-1">
+            {post.scaling && <RecipeScaler key={post.slug} scaling={post.scaling} />}
             <PostContent content={post.content} />
           </div>
           <div className="w-full md:w-1/3 order-1 md:order-2">

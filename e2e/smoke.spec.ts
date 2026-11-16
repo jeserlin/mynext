@@ -46,6 +46,51 @@ test('event propagation article renders all Mermaid diagrams', async ({ page }) 
   }
 });
 
+test('bolognese ingredient quantities scale and reset on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/cooking/bolognese-sauce');
+  const scaler = page.getByRole('region', { name: '材料與份量換算' });
+  const beef = scaler.getByRole('listitem').filter({ hasText: '牛絞肉' });
+  const garlic = scaler.getByRole('listitem').filter({ hasText: '蒜頭' });
+  const salt = scaler.getByRole('listitem').filter({ hasText: /^鹽/ });
+  await expect(beef).toHaveText('牛絞肉320 g');
+  const pork = scaler.getByRole('listitem').filter({ hasText: '豬絞肉' });
+  const amount = scaler.getByLabel('實際用量');
+  await amount.fill('300');
+  await expect(beef).toHaveText('牛絞肉300 g');
+  await expect(pork).toHaveText('豬絞肉468.8 g');
+  await expect(scaler.getByRole('status')).toContainText('依牛絞肉 300 g換算');
+  await scaler.getByLabel('基準食材').selectOption({ label: '豬絞肉（原用量 500 g）' });
+  await amount.fill('300');
+  await expect(beef).toHaveText('牛絞肉192 g');
+  await expect(pork).toHaveText('豬絞肉300 g');
+  await amount.fill('0');
+  await expect(amount).toHaveAttribute('aria-invalid', 'true');
+  await expect(pork).toHaveText('豬絞肉300 g');
+  await scaler.getByRole('button', { name: '半份', exact: true }).click();
+  await expect(beef).toHaveText('牛絞肉160 g');
+  await expect(amount).toHaveValue('250');
+  await scaler.getByRole('button', { name: '一份', exact: true }).click();
+  await expect(beef).toHaveText('牛絞肉320 g');
+  await scaler.getByRole('button', { name: '兩份', exact: true }).click();
+  await expect(beef).toHaveText('牛絞肉640 g');
+  await expect(garlic).toHaveText('蒜頭6–8 個');
+  await expect(salt).toHaveText('鹽適量');
+  const servings = scaler.getByLabel('配方份數');
+  await servings.fill('1/2');
+  await expect(beef).toHaveText('牛絞肉160 g');
+  await expect(garlic).toHaveText('蒜頭1.5–2 個');
+  await servings.fill('0');
+  await expect(servings).toHaveAttribute('aria-invalid', 'true');
+  await expect(beef).toHaveText('牛絞肉160 g');
+  await scaler.getByRole('button', { name: '還原原配方' }).click();
+  await expect(servings).toHaveValue('1');
+  await expect(beef).toHaveText('牛絞肉320 g');
+  await expect(page.getByText('1.5小時', { exact: true })).toBeVisible();
+  await page.goto('/cooking/pumpkin-soup');
+  await expect(page.getByRole('region', { name: '材料與份量換算' })).toHaveCount(0);
+});
+
 test('legacy recipe indexes redirect to the recipes finder', async ({ page }) => {
   for (const route of ['/cooking', '/baking']) {
     await page.goto(route);

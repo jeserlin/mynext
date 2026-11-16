@@ -39,6 +39,7 @@ export const getStaticProps: GetStaticProps<CookingPostProps, RecipeParams> = as
       'coverImage',
       'gallery',
       'ingredient',
+      'scaling',
     ],
   }) as RecipePost;
   const content = await markdownToHtml(post.content || '');

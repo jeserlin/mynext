@@ -2,12 +2,26 @@ import type { PostSummary } from 'types/post';
 
 export type RecipeType = 'baking' | 'cooking';
 
+export interface ScalableIngredient {
+  name: string;
+  amount?: number;
+  maxAmount?: number;
+  unit?: string;
+  note?: string;
+}
+
+export interface RecipeScaling {
+  baseServings: number;
+  groups: Array<{ title: string; items: ScalableIngredient[] }>;
+}
+
 export interface RecipeSummary extends PostSummary {
   ingredient: string[];
   labels?: string[];
 }
 
 export interface RecipePost {
+  scaling?: RecipeScaling;
   slug?: string;
   title?: string;
   desc?: string;
