@@ -1,6 +1,7 @@
 import { useId, useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { recipeImageSrc } from 'lib/recipeImages';
 
 export interface RecipeGalleryProps {
   title: string;
@@ -29,7 +30,7 @@ const RecipeGallery = ({ title, coverImage, gallery = [] }: RecipeGalleryProps) 
           )}
           <Image
             className="rounded-3xl w-full h-auto"
-            src={images[0]}
+            src={recipeImageSrc(images[0])}
             alt={title}
             width={1200}
             height={900}
@@ -51,7 +52,7 @@ const RecipeGallery = ({ title, coverImage, gallery = [] }: RecipeGalleryProps) 
                 )}
                 <Image
                   className="w-full h-auto rounded-box"
-                  src={image}
+                  src={recipeImageSrc(image)}
                   alt={`${title} - ${index + 1}`}
                   width={1200}
                   height={900}

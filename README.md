@@ -24,7 +24,11 @@ npm ci
 
 ## Adding A New Recipe
 
-This project stores recipes as markdown files in `_posts/cooking` and `_posts/baking`.
+Recipes are managed in Notion through `/admin/new-recipe`. All 26 former Markdown recipes have been published in Notion and removed from `_posts/cooking` and `_posts/baking`; books and technical posts remain in the repo. Keep `public/assets/posts` because some Notion covers still refer to these images.
+
+Set `ADMIN_SECRET`, `NOTION_TOKEN`, and `NOTION_DATABASE_ID` in `.env.local` for local editing, and in Vercel for production. GitHub Actions also needs repository secrets named `NOTION_TOKEN` and `NOTION_DATABASE_ID` for recipe browser tests and builds. Never commit actual values.
+
+The Markdown scaffold remains available for an optional local draft; the primary publishing workflow is the admin page:
 
 Create a new recipe draft with:
 
@@ -40,12 +44,7 @@ npm run new-recipe -- baking "Basque Cheesecake"
 
 That command creates a ready-to-edit markdown file with the correct frontmatter and suggests the matching image path in `public/assets/posts/...`.
 
-Recommended workflow:
-
-1. Run the scaffold command.
-2. Add your cover image to `public/assets/posts/cooking/` or `public/assets/posts/baking/`.
-3. Fill in the generated markdown file's `ingredient`, `labels`, and steps.
-4. Run `npm run dev` and open `http://localhost:3000/cooking` or `http://localhost:3000/baking` to check the result.
+For the standard workflow, open `/admin/new-recipe`, save your admin secret, edit or create a recipe, upload images, and save to Notion with publishing enabled. The recipe finder at `/recipes` reads published Notion records.
 
 ## Adding Books from the Admin Page
 
@@ -63,6 +62,14 @@ The existing [books database](https://app.notion.com/p/406ea9196e4680aa9958e44b3
 | Notes | Text |
 
 Set `NOTION_BOOKS_DATABASE_ID` to that database's ID in local and Vercel environment variables. The admin page uses the same `ADMIN_SECRET` as the recipe editor and reads the saved secret from this browser. Do not put these values in committed files. After adding the database ID to Vercel, redeploy once; saving a book then revalidates `/books` automatically.
+
+## Editing recipe quantities
+
+Open `/admin/new-recipe`, save your admin secret, and select a recipe under **編輯現有食譜**. Existing recipes are loaded from Notion. Optional new Markdown drafts can also be imported at the same type/slug; the draft file is preserved and the published Notion version takes precedence.
+
+Enable **啟用份量換算** to enter the original recipe quantity, ingredient groups, amounts, optional range upper bounds, units, and notes. Amounts accept decimals or fractions such as `1/2`. For `適量`, leave the amount empty and enter it as a note. At least one ingredient must have an exact numeric amount. Ingredient search names are synchronized from these rows.
+
+With scaling enabled, the Markdown `材料` section is replaced by the structured ingredient table; keep steps and other notes in the Markdown editor. Disabling scaling on a loaded recipe restores its original ingredient quantities as a static Markdown section. Scaling metadata is stored as YAML frontmatter in the existing Notion **Content Markdown** property, so no new database properties or environment variables are needed. Both cooking and baking detail pages support it.
 
 ## Validating Markdown Content
 

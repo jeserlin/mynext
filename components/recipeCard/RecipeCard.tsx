@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { recipeImageSrc } from 'lib/recipeImages';
 
 import type { RecipeType } from 'types/recipe';
 
@@ -35,7 +36,7 @@ const RecipeCard = ({
             {loadedImage !== coverImage && <div className="skeleton absolute inset-0" />}
             <Image
               fill
-              src={coverImage}
+              src={recipeImageSrc(coverImage)}
               alt=""
               sizes="(min-width: 1280px) 22vw, (min-width: 1024px) 30vw, 50vw"
               className={`object-cover transition-transform duration-300 group-hover:scale-[1.03] ${loadedImage === coverImage ? 'opacity-100' : 'opacity-0'}`}

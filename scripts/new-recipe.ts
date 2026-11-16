@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { existsSync, writeFileSync } = require('node:fs');
+const { existsSync, mkdirSync, writeFileSync } = require('node:fs');
 const path = require('node:path');
 
 type RecipeFolder = 'cooking' | 'baking';
@@ -73,6 +73,7 @@ gallery: [
 2. 第二步
 `;
 
+mkdirSync(postsDir, { recursive: true });
 writeFileSync(filePath, template, 'utf8');
 
 console.log(`Created ${filePath}`);

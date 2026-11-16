@@ -47,7 +47,7 @@ const RecipePostPage = ({
           '@type': 'Recipe',
           name: post.title,
           description: post.desc,
-          image: post.coverImage ? [`${siteUrl}${post.coverImage}`] : undefined,
+          image: post.coverImage ? [new URL(post.coverImage, siteUrl).href] : undefined,
           datePublished: post.date,
           author: {
             '@type': 'Person',

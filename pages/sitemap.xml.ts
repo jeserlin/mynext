@@ -1,10 +1,10 @@
 import type { GetServerSideProps } from 'next';
 
 import { getPostsByFolder } from 'lib/api';
+import { getRecipesByType } from 'lib/recipes';
 
 const siteUrl = 'https://myblog-jeserlin.vercel.app';
 const staticPaths = ['/', '/tech', '/recipes', '/books', '/about-me'];
-const postTypes = ['tech', 'baking', 'cooking'];
 
 const escapeXml = (value: string) => value
   .replaceAll('&', '&amp;')
@@ -26,14 +26,15 @@ const createUrl = ({ path, lastModified }: SitemapUrl) => {
   return `  <url>\n    <loc>${escapeXml(`${siteUrl}${path}`)}</loc>${lastModifiedTag}\n  </url>`;
 };
 
-const createSitemap = () => {
+const createSitemap = async () => {
   const staticUrls = staticPaths.map((path) => createUrl({ path }));
-  const postUrls = postTypes.flatMap((type) => (
-    getPostsByFolder({ folder: type, fields: ['slug', 'date'] })
-      .flatMap(({ slug, date }) => (
-        slug ? [createUrl({ path: `/${type}/${slug}`, lastModified: date })] : []
-      ))
-  ));
+  const recipeGroups = await Promise.all((['baking', 'cooking'] as const).map(async (type) => ({
+    type, posts: await getRecipesByType({ type, fields: ['slug', 'date'] }),
+  })));
+  const postUrls = [{ type: 'tech', posts: getPostsByFolder({ folder: 'tech', fields: ['slug', 'date'] }) }, ...recipeGroups]
+    .flatMap(({ type, posts }) => posts.flatMap(({ slug, date }) => (
+      slug ? [createUrl({ path: `/${type}/${slug}`, lastModified: date })] : []
+    )));
 
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
@@ -49,7 +50,7 @@ const Sitemap = () => null;
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   res.setHeader('Content-Type', 'application/xml');
   res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
-  res.write(createSitemap());
+  res.write(await createSitemap());
   res.end();
 
   return { props: {} };
