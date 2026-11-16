@@ -13,7 +13,7 @@ const child = spawn(process.execPath, [fileURLToPath(new URL('../../node_modules
     MYNEXT_E2E_NOTION: '1',
     NOTION_TOKEN: 'e2e-test-token',
     NOTION_DATABASE_ID: 'e2e-recipes',
-    NOTION_BOOKS_DATABASE_ID: '',
+    NOTION_BOOKS_DATABASE_ID: 'e2e-books',
     ADMIN_SECRET: 'e2e-test-secret',
   },
 });

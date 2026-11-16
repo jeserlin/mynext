@@ -1,5 +1,6 @@
 import process from 'node:process';
 import { notionRecipePages } from '../fixtures/notion-recipes.mjs';
+import { notionBookPages } from '../fixtures/notion-books.mjs';
 
 // This preload is installed only by run-with-fixtures.mjs, never by the app.
 if (process.env.MYNEXT_E2E_NOTION === '1') {
@@ -18,11 +19,13 @@ if (process.env.MYNEXT_E2E_NOTION === '1') {
   globalThis.fetch = async (input, init) => {
     const url = new URL(typeof input === 'string' || input instanceof URL ? input : input.url);
     if (url.hostname !== 'api.notion.com') return originalFetch(input, init);
-    if (url.pathname !== '/v1/databases/e2e-recipes/query' || (init?.method || input.method || 'GET') !== 'POST') {
+    const pages = url.pathname === '/v1/databases/e2e-recipes/query' ? notionRecipePages
+      : url.pathname === '/v1/databases/e2e-books/query' ? notionBookPages : null;
+    if (!pages || (init?.method || input.method || 'GET') !== 'POST') {
       throw new Error(`Unexpected Notion request in browser test: ${url.pathname}`);
     }
     const body = JSON.parse(init?.body || await input.clone().text());
-    const results = notionRecipePages.filter((page) => matches(page, body.filter));
+    const results = pages.filter((page) => matches(page, body.filter));
     return new Response(JSON.stringify({ results, has_more: false, next_cursor: null }), {
       status: 200, headers: { 'Content-Type': 'application/json' },
     });

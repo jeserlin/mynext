@@ -24,14 +24,18 @@ test('books show headings and open notes by keyboard only when notes exist', asy
   await page.goto('/books');
   await expect(page.getByRole('heading', { name: 'Books', level: 1 })).toBeVisible();
   await expect(page.getByRole('button', { name: 'All', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByText('Total: 3', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: '2025', exact: true }).click();
   await expect(page.getByRole('button', { name: '2025', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByText('Total: 2', { exact: true })).toBeVisible();
+  await expect(page.getByText('在咖啡冷掉之前', { exact: true })).toHaveCount(0);
   await expect(page.getByRole('button', { name: '小鳥：《博士熱愛的算式》' })).toBeDisabled();
 
   const noteButton = page.getByRole('button', { name: 'Read notes for 深夜圖書館的宵夜' });
   await noteButton.focus();
   await page.keyboard.press('Space');
   await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('dialog')).toContainText('這是一段測試用的閱讀心得。');
 
   await page.goto('/tech');
   await expect(page.getByRole('heading', { name: 'Learning', level: 1 })).toBeVisible();
