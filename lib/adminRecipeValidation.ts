@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import type { RecipeType } from 'types/recipe';
+import { recipeScalingSchema } from 'lib/recipeScalingSchema';
 
 const maxMarkdownLength = 100000;
 const maxListLines = 80;
@@ -32,14 +33,14 @@ const optionalTrimString = (maxLength: number) => z.string()
 const recipeTypeSchema = z.string()
   .transform((value) => value.trim().toLowerCase())
   .refine((value): value is RecipeType => allowedRecipeTypes.has(value as RecipeType), {
-    message: 'Type must be cooking or baking',
+    message: '食譜類別必須是料理或烘焙',
   });
 
 const optionalRecipeTypeSchema = z.string()
   .default('')
   .transform((value) => value.trim().toLowerCase())
   .refine((value) => !value || allowedRecipeTypes.has(value as RecipeType), {
-    message: 'Previous type must be cooking or baking',
+    message: '原食譜類別必須是料理或烘焙',
   });
 
 const isValidDate = (value: string): boolean => {
@@ -81,7 +82,7 @@ const lineListSchema = (maxLineLength: number, fieldName: string) => z.string()
     if (lines.length > maxListLines) {
       context.addIssue({
         code: 'custom',
-        message: `${fieldName} can include at most ${maxListLines} lines`,
+        message: `${fieldName}最多可填寫 ${maxListLines} 行`,
       });
     }
 
@@ -89,42 +90,44 @@ const lineListSchema = (maxLineLength: number, fieldName: string) => z.string()
       if (line.length > maxLineLength) {
         context.addIssue({
           code: 'custom',
-          message: `${fieldName} line ${index + 1} is too long`,
+          message: `${fieldName}第 ${index + 1} 行過長`,
         });
       }
     });
   });
 
-const imageLineListSchema = lineListSchema(300, 'Gallery')
+const imageLineListSchema = lineListSchema(300, '食譜照片')
   .superRefine((value, context) => {
     parseLineList(value).forEach((line, index) => {
       if (!isSafeImagePath(line)) {
         context.addIssue({
           code: 'custom',
-          message: `Gallery line ${index + 1} must be a local path or http(s) URL`,
+          message: `食譜照片第 ${index + 1} 行必須是本機路徑或 http(s) 網址`,
         });
       }
     });
   });
 
 const rawRecipeSchema = z.object({
+  source: z.enum(['markdown', 'notion']).default('notion'),
+  scaling: recipeScalingSchema.nullable().optional(),
   pageId: optionalTrimString(120),
-  title: trimString(140).pipe(z.string().min(1, 'Title is required')),
+  title: trimString(140).pipe(z.string().min(1, '請填寫食譜名稱')),
   slug: optionalTrimString(140),
   type: recipeTypeSchema,
   previousType: optionalRecipeTypeSchema,
   previousSlug: optionalTrimString(140).transform(slugify),
   desc: optionalTrimString(500),
-  ingredients: lineListSchema(180, 'Ingredients'),
-  labels: lineListSchema(80, 'Labels'),
+  ingredients: lineListSchema(180, '材料'),
+  labels: lineListSchema(80, '標籤'),
   coverImage: optionalTrimString(300).refine(isSafeImagePath, {
-    message: 'Cover image must be a local path or http(s) URL',
+    message: '封面圖片必須是本機路徑或 http(s) 網址',
   }),
   gallery: imageLineListSchema,
-  contentMarkdown: trimString(maxMarkdownLength).pipe(z.string().min(1, 'Markdown content is required')),
+  contentMarkdown: trimString(maxMarkdownLength).pipe(z.string().min(1, '請填寫食譜內容')),
   published: z.boolean().default(false),
   date: optionalTrimString(40).refine(isValidDate, {
-    message: 'Date must be a valid date',
+    message: '請填寫有效的發布日期',
   }),
 }).transform((recipe, context) => {
   const normalizedSlug = slugify(recipe.slug || recipe.title);
@@ -132,7 +135,7 @@ const rawRecipeSchema = z.object({
   if (!normalizedSlug) {
     context.addIssue({
       code: 'custom',
-      message: 'Slug is required',
+      message: '請填寫英文網址代稱，例如 bolognese-sauce',
       path: ['slug'],
     });
     return z.NEVER;
@@ -150,5 +153,5 @@ export type SaveRecipeInput = z.input<typeof saveRecipeSchema>;
 export type SaveRecipe = z.output<typeof saveRecipeSchema>;
 
 export const formatValidationError = (error: z.ZodError): string => (
-  error.issues.map((issue) => issue.message).join('; ') || 'Invalid request body'
+  error.issues.map((issue) => issue.message).join('; ') || '食譜資料格式不正確'
 );

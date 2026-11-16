@@ -8,7 +8,11 @@ const postDirectory = join(process.cwd(), '_posts');
 
 const postFolderDirectory = (folder: string) => join(process.cwd(), `_posts/${folder}`);
 
-export const getPostSlugs = (folder: string) => fs.readdirSync(postFolderDirectory(folder));
+export const getPostSlugs = (folder: string) => (
+  fs.existsSync(postFolderDirectory(folder))
+    ? fs.readdirSync(postFolderDirectory(folder)).filter((name) => name.endsWith('.md'))
+    : []
+);
 
 export const getPostBySlug = (
   folder: string,

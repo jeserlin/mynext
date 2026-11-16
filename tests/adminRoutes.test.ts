@@ -15,9 +15,13 @@ import revalidateHandler from 'pages/api/admin/revalidate';
 import saveBookHandler from 'pages/api/admin/save-book';
 import saveRecipeHandler from 'pages/api/admin/save-recipe';
 import uploadImageHandler from 'pages/api/admin/upload-image';
+import { getPostBySlug, getPostSlugs } from 'lib/api';
+import { createRecipeInNotion, getRecipeBySlugForAdminFromNotion } from 'lib/notion';
 
 vi.mock('lib/api', () => ({
   getPostSlugs: vi.fn(() => []),
+  getPostBySlug: vi.fn(),
+  getPostsByFolder: vi.fn(() => []),
 }));
 
 vi.mock('lib/notion', () => ({
@@ -149,6 +153,51 @@ describe('admin API response contracts', () => {
     }));
   });
 
+  it('loads Markdown scaling data without exposing a writable Notion page id', async () => {
+    vi.mocked(getPostSlugs).mockReturnValueOnce(['bolognese-sauce.md']);
+    const scaling = { baseServings: 1, groups: [{ title: '食材', items: [{ name: '牛絞肉', amount: 320, unit: 'g' }] }] };
+    vi.mocked(getPostBySlug).mockReturnValueOnce({ slug: 'bolognese-sauce', title: '肉醬', content: '### 步驟', scaling });
+    const response = createResponse();
+    await recipeHandler(createRequest({ method: 'GET', authorized: true, query: { type: 'cooking', slug: 'bolognese-sauce' } }), response);
+    expect(response.status).toHaveBeenCalledWith(200);
+    expect(response.json).toHaveBeenCalledWith(expect.objectContaining({ source: 'markdown', scaling }));
+  });
+
+  it('loads original scaling for an older Notion version at the same slug', async () => {
+    const scaling = { baseServings: 1, groups: [{ title: '食材', items: [{ name: '牛絞肉', amount: 320, unit: 'g' }] }] };
+    vi.mocked(getRecipeBySlugForAdminFromNotion).mockResolvedValueOnce({ id: 'notion-page', type: 'cooking', slug: 'bolognese-sauce', published: true });
+    vi.mocked(getPostSlugs).mockReturnValueOnce(['bolognese-sauce.md']);
+    vi.mocked(getPostBySlug).mockReturnValueOnce({ slug: 'bolognese-sauce', scaling });
+    const response = createResponse();
+    await recipeHandler(createRequest({ method: 'GET', authorized: true, query: { type: 'cooking', slug: 'bolognese-sauce' } }), response);
+    expect(response.status).toHaveBeenCalledWith(200);
+    expect(response.json).toHaveBeenCalledWith(expect.objectContaining({ id: 'notion-page', scaling }));
+  });
+
+  it('allows an explicit Markdown import and forwards validated scaling to Notion', async () => {
+    vi.mocked(getPostSlugs).mockReturnValueOnce(['bolognese-sauce.md']).mockReturnValueOnce(['bolognese-sauce.md']);
+    vi.mocked(getPostBySlug).mockReturnValueOnce({ slug: 'bolognese-sauce' });
+    vi.mocked(createRecipeInNotion).mockResolvedValueOnce({ id: 'notion-page', type: 'cooking', slug: 'bolognese-sauce', published: true });
+    const scaling = { baseServings: 1, groups: [{ title: '食材', items: [{ name: '牛絞肉', amount: 300, unit: 'g' }] }] };
+    const response = createResponse();
+    await saveRecipeHandler(createRequest({ method: 'POST', authorized: true, body: {
+      title: '肉醬', slug: 'bolognese-sauce', type: 'cooking', source: 'markdown', previousType: 'cooking', previousSlug: 'bolognese-sauce', contentMarkdown: '### 步驟\n1. 煮', scaling,
+    } }), response);
+    expect(response.status).toHaveBeenCalledWith(200);
+    expect(createRecipeInNotion).toHaveBeenCalledWith(expect.objectContaining({ scaling }));
+    expect(response.revalidate).toHaveBeenCalledWith('/recipes');
+  });
+
+  it('keeps duplicate Markdown protection for ordinary creation', async () => {
+    vi.mocked(getPostSlugs).mockReturnValueOnce(['bolognese-sauce.md']);
+    const response = createResponse();
+    await saveRecipeHandler(createRequest({ method: 'POST', authorized: true, body: {
+      title: '肉醬', slug: 'bolognese-sauce', type: 'cooking', contentMarkdown: '### 步驟',
+    } }), response);
+    expect(response.status).toHaveBeenCalledWith(409);
+    expect(createRecipeInNotion).not.toHaveBeenCalled();
+  });
+
   it('requires type and slug when loading a recipe', async () => {
     const request = createRequest({ method: 'GET', authorized: true });
     const response = createResponse();
@@ -157,6 +206,14 @@ describe('admin API response contracts', () => {
 
     expect(response.status).toHaveBeenCalledWith(400);
     expect(response.json).toHaveBeenCalledWith({ error: 'Type and slug are required' });
+  });
+
+  it('reports a missing admin configuration instead of an empty list', async () => {
+    vi.stubEnv('ADMIN_SECRET', '');
+    const response = createResponse();
+    await recipesHandler(createRequest({ method: 'GET', authorized: true }), response);
+    expect(response.status).toHaveBeenCalledWith(503);
+    expect(response.json).toHaveBeenCalledWith({ error: expect.stringContaining('ADMIN_SECRET') });
   });
 
   it('rejects invalid recipe save payloads', async () => {
@@ -175,7 +232,7 @@ describe('admin API response contracts', () => {
 
     expect(response.status).toHaveBeenCalledWith(400);
     expect(response.json).toHaveBeenCalledWith(expect.objectContaining({
-      error: expect.stringContaining('Title is required'),
+      error: expect.stringContaining('請填寫食譜名稱'),
     }));
   });
 

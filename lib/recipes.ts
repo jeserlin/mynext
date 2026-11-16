@@ -1,4 +1,5 @@
-import { getPostBySlug, getPostsByFolder } from 'lib/api';
+import { getPostBySlug, getPostSlugs, getPostsByFolder } from 'lib/api';
+import { inheritRecipeScaling } from 'lib/recipeDefaults';
 import { getPublishedRecipesByType, getRecipeBySlugFromNotion } from 'lib/notion';
 import type { PostField } from 'types/post';
 import type { RecipePost, RecipeType } from 'types/recipe';
@@ -15,7 +16,7 @@ const mergeRecipes = ({
   const recipeMap = new Map(markdownRecipes.map((recipe) => [recipe.slug, recipe]));
 
   notionRecipes.forEach((recipe) => {
-    recipeMap.set(recipe.slug, recipe);
+    recipeMap.set(recipe.slug, inheritRecipeScaling(recipe, recipeMap.get(recipe.slug)));
   });
 
   return Array.from(recipeMap.values())
@@ -34,12 +35,14 @@ interface RecipeSlugQuery extends RecipeQuery {
 const selectRecipeFields = (recipe: RecipePost, fields: PostField[]): RecipePost => {
   if (!fields.length) return recipe;
 
-  return fields.reduce<RecipePost>((selectedRecipe, field) => {
+  const selected = fields.reduce<RecipePost>((selectedRecipe, field) => {
     if (recipe[field as keyof RecipePost] !== undefined) {
       Object.assign(selectedRecipe, { [field]: recipe[field as keyof RecipePost] });
     }
     return selectedRecipe;
   }, {});
+  if (fields.includes('scaling') && recipe.scalingDisabled) selected.scalingDisabled = true;
+  return selected;
 };
 
 export const getRecipesByType = async ({
@@ -61,8 +64,13 @@ export const getRecipeBySlug = async ({
   const notionRecipe = await getRecipeBySlugFromNotion(type, slug) as RecipePost | null;
 
   if (notionRecipe) {
-    return selectRecipeFields(notionRecipe, fields);
+    const original = (!fields.length || fields.includes('scaling')) && getPostSlugs(type).includes(`${slug}.md`)
+      ? getPostBySlug(type, slug, fields.length ? fields : ['scaling']) as RecipePost
+      : undefined;
+    return selectRecipeFields(inheritRecipeScaling(notionRecipe, original), fields);
   }
 
-  return getPostBySlug(type, slug, fields) as RecipePost;
+  return getPostSlugs(type).includes(`${slug}.md`)
+    ? getPostBySlug(type, slug, fields) as RecipePost
+    : {};
 };

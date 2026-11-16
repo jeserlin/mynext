@@ -1,3 +1,4 @@
+import { readRecipeDocument, writeRecipeDocument } from 'lib/recipeDocument';
 import type {
   NotionRecipe,
   NotionRecipeInput,
@@ -70,6 +71,7 @@ const getRecipeFromPage = (page: NotionPage): NotionRecipe => {
   const properties = page.properties || {};
 
   return {
+    ...readRecipeDocument(getPlainText(properties['Content Markdown']?.rich_text)),
     id: page.id,
     title: getPlainText(properties.Title?.title),
     slug: getPlainText(properties.Slug?.rich_text),
@@ -85,7 +87,6 @@ const getRecipeFromPage = (page: NotionPage): NotionRecipe => {
       .split('\n')
       .map((item) => item.trim())
       .filter(Boolean),
-    content: getPlainText(properties['Content Markdown']?.rich_text),
     date: properties['Publish Date']?.date?.start || page.created_time,
     published: Boolean(properties.Published?.checkbox),
   };
@@ -321,6 +322,7 @@ const buildRecipeProperties = ({
   coverImage,
   gallery,
   contentMarkdown,
+  scaling,
   published,
   date,
 }: NotionRecipeInput) => ({
@@ -349,7 +351,7 @@ const buildRecipeProperties = ({
     rich_text: toRichText(gallery.join('\n')),
   },
   'Content Markdown': {
-    rich_text: toRichText(contentMarkdown),
+    rich_text: toRichText(writeRecipeDocument(contentMarkdown, scaling)),
   },
   Published: {
     checkbox: Boolean(published),

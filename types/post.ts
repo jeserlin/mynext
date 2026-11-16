@@ -1,6 +1,7 @@
 import type { RecipeScaling } from 'types/recipe';
 
 export interface PostRecord {
+  scalingDisabled?: boolean;
   scaling?: RecipeScaling;
   slug?: string;
   title?: string;

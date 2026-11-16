@@ -39,8 +39,10 @@ export const getStaticProps: GetStaticProps<BakingPostProps, RecipeParams> = asy
       'coverImage',
       'gallery',
       'ingredient',
+      'scaling',
     ],
   }) as RecipePost;
+  if (!post.slug) return { notFound: true, revalidate: 60 };
   const content = await markdownToHtml(post.content || '');
 
   return {

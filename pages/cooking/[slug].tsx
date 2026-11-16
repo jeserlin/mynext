@@ -42,6 +42,7 @@ export const getStaticProps: GetStaticProps<CookingPostProps, RecipeParams> = as
       'scaling',
     ],
   }) as RecipePost;
+  if (!post.slug) return { notFound: true, revalidate: 60 };
   const content = await markdownToHtml(post.content || '');
 
   return {

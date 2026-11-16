@@ -13,6 +13,11 @@ const validRecipe = {
 };
 
 describe('recipe validation', () => {
+  it('rejects invalid scaling payloads and accepts explicit disable', () => {
+    expect(saveRecipeSchema.safeParse({ ...validRecipe, scaling: { baseServings: 0, groups: [] } }).success).toBe(false);
+    expect(saveRecipeSchema.parse({ ...validRecipe, scaling: null }).scaling).toBeNull();
+    expect(saveRecipeSchema.parse(validRecipe).scaling).toBeUndefined();
+  });
   it('normalizes recipe slugs and types', () => {
     const recipe = saveRecipeSchema.parse({
       ...validRecipe,

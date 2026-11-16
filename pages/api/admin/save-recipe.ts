@@ -7,6 +7,7 @@ import {
   saveRecipeSchema,
 } from 'lib/adminRecipeValidation';
 import { getPostSlugs } from 'lib/api';
+import { getMarkdownRecipeForAdmin } from 'lib/adminRecipes';
 import { getErrorMessage } from 'lib/errors';
 import {
   createRecipeInNotion,
@@ -35,7 +36,7 @@ const getRevalidatePaths = ({
   slug,
   previousPath,
 }: RevalidatePathInput): string[] => {
-  const paths = [`/${type}`, `/${type}/${slug}`];
+  const paths = ['/recipes', `/${type}`, `/${type}/${slug}`];
 
   if (previousPath && !paths.includes(previousPath)) {
     paths.push(previousPath);
@@ -80,6 +81,8 @@ export default async function handler(
       contentMarkdown,
       published,
       date,
+      scaling,
+      source,
     } = validationResult.data;
     const recipeType = type as RecipeType;
 
@@ -95,6 +98,7 @@ export default async function handler(
       contentMarkdown,
       published,
       date,
+      scaling,
     };
 
     let recipe: NotionRecipe;
@@ -125,8 +129,15 @@ export default async function handler(
 
       const markdownSlugExists = getPostSlugs(recipeType)
         .some((item) => item.replace(/\.md$/, '') === slug);
-      if (markdownSlugExists) {
+      const importingMarkdown = source === 'markdown'
+        && previousType === recipeType && previousSlug === slug
+        && Boolean(getMarkdownRecipeForAdmin(recipeType, slug));
+      if (markdownSlugExists && !importingMarkdown) {
         return res.status(409).json({ error: 'A markdown recipe with this slug already exists' });
+      }
+
+      if (source === 'markdown' && !importingMarkdown) {
+        return res.status(400).json({ error: 'Reload the original Markdown recipe before saving; keep its type and slug unchanged' });
       }
 
       recipe = await createRecipeInNotion(recipePayload);

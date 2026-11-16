@@ -21,6 +21,7 @@ export interface RecipeSummary extends PostSummary {
 }
 
 export interface RecipePost {
+  scalingDisabled?: boolean;
   scaling?: RecipeScaling;
   slug?: string;
   title?: string;
@@ -35,12 +36,14 @@ export interface RecipePost {
 }
 
 export interface NotionRecipe extends RecipePost {
+  source?: 'markdown' | 'notion';
   id: string;
   type: string;
   published: boolean;
 }
 
 export interface NotionRecipeInput {
+  scaling?: RecipeScaling | null;
   title: string;
   slug: string;
   type: RecipeType;
