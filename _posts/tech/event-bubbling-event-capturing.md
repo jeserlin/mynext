@@ -51,13 +51,13 @@ graph TD
 <div class="mermaid">
 graph TD
     window["Window"] -- 1. capture --> document["Document"]
-    document["Document"] -. 8. bubble .-> window["Window"]
+    document["Document"] -.->|8. bubble| window["Window"]
     document -- 2. capture --> html["Element html"]
-    html["Element html"] -. 7. bubble .-> document
+    html["Element html"] -.->|7. bubble| document
     html  -- 3. capture --> body["Element body"]
-    body["Element body"] -. 6. bubble .-> html
+    body["Element body"] -.->|6. bubble| html
     body  -- 4. capture --> div["Element div"]
-    div["Element div"] -. 5. bubble .-> body
+    div["Element div"] -.->|5. bubble| body
 </div>
 
 同樣我們也可以從事件傳遞的階段常數(Event Phase)了解到他的順序：

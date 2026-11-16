@@ -35,6 +35,17 @@ test('books show headings and open notes by keyboard only when notes exist', asy
   await expect(page.getByRole('heading', { name: 'Learning', level: 1 })).toBeVisible();
 });
 
+test('event propagation article renders all Mermaid diagrams', async ({ page }) => {
+  await page.goto('/tech/event-bubbling-event-capturing');
+
+  const diagrams = page.locator('.mermaid');
+  await expect(diagrams).toHaveCount(3);
+  for (const diagram of await diagrams.all()) {
+    await expect(diagram.locator('svg .nodeLabel')).toHaveCount(5);
+    await expect(diagram.locator('.error-text')).toHaveCount(0);
+  }
+});
+
 test('legacy recipe indexes redirect to the recipes finder', async ({ page }) => {
   for (const route of ['/cooking', '/baking']) {
     await page.goto(route);
