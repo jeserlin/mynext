@@ -39,6 +39,7 @@ const SeoHeader = ({
 }: SeoHeaderProps) => {
   const router = useRouter();
   const routePath = (path || router.asPath || '/').split(/[?#]/)[0] || '/';
+  const isAdminPage = /^\/admin(?:\/|$)/.test(routePath);
   const normalizedPath = routePath === '/'
     ? ''
     : routePath.startsWith('/') ? routePath : `/${routePath}`;
@@ -54,7 +55,7 @@ const SeoHeader = ({
     <Head>
       <title>{pageTitle}</title>
       <meta name="description" content={metaDescription} />
-      <meta name="robots" content="index,follow" />
+      <meta name="robots" content={isAdminPage ? 'noindex,nofollow' : 'index,follow'} />
       <link rel="canonical" href={canonicalUrl} />
 
       <meta property="og:site_name" content={siteSeo.openGraph.site_name} />

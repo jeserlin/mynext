@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-const routes = ['/about-me', '/books', '/recipes'];
+const routes = ['/about-me', '/books', '/recipes', '/admin'];
 
 test.describe('public page accessibility', () => {
   routes.forEach((route) => {

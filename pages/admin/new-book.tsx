@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 
@@ -118,6 +119,7 @@ export default function NewBook() {
 
   return (
     <div className="mx-auto max-w-2xl pb-16">
+      <Link href="/admin" className="mb-5 inline-flex text-sm text-primary-content underline underline-offset-4">返回管理首頁</Link>
       <SeoHeader title="書籍編輯與發布" description="新增書籍與編輯閱讀筆記" path="/admin/new-book" />
       <h1 className="mb-3 text-2xl font-normal text-primary-content">書籍編輯與發布</h1>
       <p className="mb-6 text-sm text-primary-content/70">新增書籍，或載入現有書籍修改資料與閱讀筆記。</p>

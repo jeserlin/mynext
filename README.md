@@ -48,6 +48,10 @@ That command creates a ready-to-edit markdown file with the correct frontmatter 
 
 For the standard workflow, open `/admin/new-recipe`, save your admin secret, edit or create a recipe, upload images, and save to Notion with publishing enabled. The recipe finder at `/recipes` reads published Notion records.
 
+## Admin Home
+
+Open `/admin` directly or bookmark it to access the recipe and book editors. Admin pages are omitted from public navigation and the sitemap, and use `noindex,nofollow` metadata. Save or clear the shared admin secret there; both editors use the same browser storage. Each editor links back to the admin home. Saving a secret stores it locally; API requests validate it when loading or saving content.
+
 ## Adding Books from the Admin Page
 
 `/admin/new-book` lets you enter a title and open a 博客來 search for it. Check the edition there, then paste its ISBN into the form and enter the author, cover URL, and notes manually. It saves new books to a separate Notion database. All 51 existing books, including 30 reading notes, have been migrated to Notion and their local Markdown files removed. Save the admin secret to load existing books, search by title, author, or ISBN, and load one to edit. Saving edits updates the original Notion page; changing an ISBN is rejected if another book already uses it. Notes retain their Markdown formatting. Saving a new book rejects an ISBN already present in Notion or any local Markdown drafts.

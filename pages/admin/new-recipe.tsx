@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
@@ -649,6 +650,7 @@ const NewRecipeAdmin = () => {
           )}
         </div>
       )}
+      <Link href="/admin" className="mb-5 inline-flex text-sm text-primary-content underline underline-offset-4">返回管理首頁</Link>
       <SeoHeader
         title="新增與編輯食譜"
         description="私人食譜編輯與發布工具"

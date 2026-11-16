@@ -319,3 +319,58 @@ test('book editor shows load errors separately from an empty collection', async 
   await expect(page.getByText('目前沒有書籍。')).toBeVisible();
   await expect(page.getByRole('region', { name: '編輯現有書籍' }).getByRole('alert')).toHaveCount(0);
 });
+
+test('admin home shares and clears the secret across both editors', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const credentials: string[] = [];
+  await page.route('**/api/admin/books', (route) => {
+    credentials.push(route.request().headers()['x-admin-secret']);
+    return route.fulfill({ json: { books: [] } });
+  });
+  await page.route('**/api/admin/recipes?*', (route) => {
+    credentials.push(route.request().headers()['x-admin-secret']);
+    return route.fulfill({ json: { recipes: [] } });
+  });
+  await page.goto('/admin');
+  await expect(page.getByRole('heading', { name: '內容管理', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: '清除密鑰', exact: true })).toBeDisabled();
+  await page.getByLabel('輸入管理密鑰').fill('test-only-secret');
+  await page.getByRole('button', { name: '儲存密鑰', exact: true }).click();
+  await page.getByRole('link', { name: /^管理書籍/ }).click();
+  await expect(page.getByText('目前沒有書籍。')).toBeVisible();
+  await expect(page.getByLabel('管理密鑰', { exact: true })).toHaveValue('test-only-secret');
+  await page.getByRole('link', { name: '返回管理首頁', exact: true }).click();
+  await expect(page.getByLabel('輸入管理密鑰')).toHaveValue('test-only-secret');
+  await page.getByRole('link', { name: /^管理食譜/ }).click();
+  await expect(page.getByPlaceholder('管理密鑰', { exact: true })).toHaveValue('test-only-secret');
+  await expect.poll(() => credentials.length).toBeGreaterThanOrEqual(2);
+  expect(credentials.every((secret) => secret === 'test-only-secret')).toBe(true);
+  await page.getByRole('link', { name: '返回管理首頁', exact: true }).click();
+  await page.getByRole('button', { name: '清除密鑰', exact: true }).click();
+  await expect(page.getByLabel('輸入管理密鑰')).toHaveValue('');
+  expect(await page.evaluate(() => localStorage.getItem('mynext-admin-secret'))).toBeNull();
+  await page.reload();
+  await expect(page.getByRole('status')).toHaveText('尚未儲存管理密鑰。');
+  await page.getByRole('link', { name: /^管理書籍/ }).click();
+  await expect(page.getByText('請先輸入並儲存管理密鑰，即可載入現有書籍。')).toBeVisible();
+  await page.getByRole('link', { name: '返回管理首頁', exact: true }).click();
+  await page.getByRole('link', { name: /^管理食譜/ }).click();
+  await expect(page.getByText('請先在上方輸入並儲存管理密鑰，驗證後即可載入現有食譜。')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.getByRole('button', { name: 'Toggle menu' }).click();
+  await expect(page.getByRole('navigation', { name: 'Mobile navigation' }).locator('a[href^="/admin"]')).toHaveCount(0);
+});
+
+
+test('admin pages stay out of public navigation and request no indexing', async ({ page }) => {
+  for (const path of ['/admin', '/admin/new-book', '/admin/new-recipe']) {
+    await page.goto(path);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+  }
+  await page.goto('/about-me');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index,follow');
+  await expect(page.getByRole('navigation', { name: 'Primary navigation' }).locator('a[href^="/admin"]')).toHaveCount(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole('button', { name: 'Toggle menu' }).click();
+  await expect(page.getByRole('navigation', { name: 'Mobile navigation' }).locator('a[href^="/admin"]')).toHaveCount(0);
+});
