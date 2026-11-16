@@ -26,7 +26,9 @@ npm ci
 
 Recipes are managed in Notion through `/admin/new-recipe`. All 26 former Markdown recipes have been published in Notion and removed from `_posts/cooking` and `_posts/baking`; books and technical posts remain in the repo. Keep `public/assets/posts` because some Notion covers still refer to these images.
 
-Set `ADMIN_SECRET`, `NOTION_TOKEN`, and `NOTION_DATABASE_ID` in `.env.local` for local editing, and in Vercel for production. GitHub Actions also needs repository secrets named `NOTION_TOKEN` and `NOTION_DATABASE_ID` for recipe browser tests and builds. Never commit actual values.
+Set `ADMIN_SECRET`, `NOTION_TOKEN`, and `NOTION_DATABASE_ID` in `.env.local` for local editing, and in Vercel for production. Never commit actual values. GitHub Actions uses fixed Notion fixtures for browser tests and its verification build, so it needs no Notion secrets; normal `npm run build` still reads real Notion data.
+
+Run browser tests with `npm run test:e2e` after stopping any existing development server. Playwright starts its own server with isolated fixture credentials and data; it never reuses the normal development server. Set `PLAYWRIGHT_BROWSER_CHANNEL=chrome` to use an installed Chrome instead of Playwright's Chromium. Test fixtures do not write to Notion. CI uploads browser diagnostics after failures.
 
 The Markdown scaffold remains available for an optional local draft; the primary publishing workflow is the admin page:
 
