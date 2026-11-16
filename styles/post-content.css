@@ -47,10 +47,12 @@
   box-shadow: none;
 }
 
-.recipe-scaler .input:focus {
-  border-color: #806d5d;
-  outline: 2px solid #806d5d;
-  outline-offset: 2px;
+.recipe-scaler .input:focus,
+.recipe-scaler .input:focus-visible,
+.recipe-scaler .input:focus-within {
+  outline: none;
+  outline-offset: 0;
+  box-shadow: none;
 }
 
 .recipe-scaler .select:focus,
@@ -65,6 +67,14 @@
 .recipe-scaler .select,
 .recipe-scaler .select option {
   background-color: #ffffff;
+}
+
+.recipe-scaler .select {
+  appearance: none;
+  padding-inline-end: 2.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .recipe-scaler .input[aria-invalid="true"] {
