@@ -21,11 +21,10 @@ const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>)
   const [selectedBook, setSelectedBook] = useState<BookNote | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const onSelectBook = async (book: BookNote) => {
-    const htmlContent = await markdownToHtml(book.content || '');
-    if (!htmlContent) return;
+  const onSelectBook = (book: BookNote) => {
+    if (!book.content) return;
 
-    setSelectedBook({ ...book, content: htmlContent });
+    setSelectedBook(book);
     setIsModalOpen(true);
   };
 
@@ -70,7 +69,7 @@ const Books = ({ years, posts }: InferGetStaticPropsType<typeof getStaticProps>)
             coverImage={book.coverImage}
             content={book.content}
             loading={index === 0 ? 'eager' : 'lazy'}
-            onSelectNotes={(selected) => void onSelectBook(selected)}
+            onSelectNotes={onSelectBook}
           />
         ))}
       </div>
@@ -91,8 +90,12 @@ export const getStaticProps: GetStaticProps<BooksProps> = async () => {
   }) as BookPost[];
   const notionPosts = await getNotionBooks();
   const existingIsbns = new Set(markdownPosts.map((post) => post.slug));
-  const posts = [...markdownPosts, ...notionPosts.filter((post) => !existingIsbns.has(post.slug))]
+  const sortedPosts = [...markdownPosts, ...notionPosts.filter((post) => !existingIsbns.has(post.slug))]
     .sort((a, b) => b.date.localeCompare(a.date));
+  const posts = await Promise.all(sortedPosts.map(async (post) => ({
+    ...post,
+    content: await markdownToHtml(post.content || ''),
+  })));
 
   const years = [
     All,
