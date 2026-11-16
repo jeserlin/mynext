@@ -5,6 +5,8 @@ const notionVersion = '2022-06-28';
 interface RichText { plain_text?: string }
 interface NotionBookPage {
   id: string;
+  archived?: boolean;
+  parent?: { database_id?: string };
   properties?: Record<string, {
     title?: RichText[];
     rich_text?: RichText[];
@@ -13,6 +15,10 @@ interface NotionBookPage {
   }>;
 }
 interface QueryResponse { results?: NotionBookPage[]; has_more?: boolean; next_cursor?: string | null }
+
+export interface AdminBook extends BookPost {
+  id: string;
+}
 
 export interface NewBook {
   isbn: string;
@@ -53,27 +59,54 @@ const fromPage = (page: NotionBookPage): BookPost => ({
   content: plainText(page.properties?.Notes?.rich_text),
 });
 
+export const getBooksForAdminFromNotion = async (): Promise<AdminBook[]> => {
+  if (!configured()) throw new Error('尚未設定 Notion 書籍資料庫，請確認 NOTION_TOKEN 與 NOTION_BOOKS_DATABASE_ID。');
+  const books: AdminBook[] = [];
+  let cursor: string | undefined;
+  do {
+    const data = await request<QueryResponse>(`/databases/${process.env.NOTION_BOOKS_DATABASE_ID}/query`, {
+      method: 'POST',
+      body: JSON.stringify({ page_size: 100, ...(cursor ? { start_cursor: cursor } : {}) }),
+    });
+    books.push(...(data.results || []).map((page) => ({ ...fromPage(page), id: page.id })));
+    cursor = data.has_more ? data.next_cursor || undefined : undefined;
+  } while (cursor);
+  return books.filter((book) => book.slug && book.title);
+};
+
 export const getNotionBooks = async (): Promise<BookPost[]> => {
   if (!configured()) return [];
   try {
-    const books: BookPost[] = [];
-    let cursor: string | undefined;
-    do {
-      const data = await request<QueryResponse>(`/databases/${process.env.NOTION_BOOKS_DATABASE_ID}/query`, {
-        method: 'POST',
-        body: JSON.stringify({
-          page_size: 100,
-          ...(cursor ? { start_cursor: cursor } : {}),
-        }),
-      });
-      books.push(...(data.results || []).map(fromPage));
-      cursor = data.has_more ? data.next_cursor || undefined : undefined;
-    } while (cursor);
-    return books.filter((book) => book.slug && book.title && book.author && book.date);
+    return (await getBooksForAdminFromNotion()).filter((book) => book.author && book.date)
+      .map((book) => ({ slug: book.slug, title: book.title, author: book.author, coverImage: book.coverImage, date: book.date, content: book.content }));
   } catch (error) {
     console.warn('Notion books read fallback:', error);
     return [];
   }
+};
+
+export const getBookForAdminFromNotion = async (pageId: string): Promise<AdminBook | null> => {
+  if (!configured()) throw new Error('尚未設定 Notion 書籍資料庫');
+  const page = await request<NotionBookPage>(`/pages/${pageId}`);
+  const normalize = (id: string) => id.replace(/-/g, '').toLowerCase();
+  if (page.archived || !page.parent?.database_id
+    || normalize(page.parent.database_id) !== normalize(process.env.NOTION_BOOKS_DATABASE_ID!)) return null;
+  return { ...fromPage(page), id: page.id };
+};
+
+const bookProperties = (book: NewBook) => ({
+  Name: { title: richText(book.title) },
+  ISBN: { rich_text: richText(book.isbn) },
+  Author: { rich_text: richText(book.author) },
+  'Cover Image': { url: book.coverImage || null },
+  'Read Date': { date: { start: book.date } },
+  Notes: { rich_text: richText(book.content) },
+});
+
+export const updateBookInNotion = async (pageId: string, book: NewBook): Promise<void> => {
+  await request(`/pages/${pageId}`, {
+    method: 'PATCH', body: JSON.stringify({ properties: bookProperties(book) }),
+  });
 };
 
 export const bookExistsInNotion = async (isbn: string): Promise<boolean> => {
@@ -91,14 +124,7 @@ export const createBookInNotion = async (book: NewBook): Promise<BookPost> => {
     method: 'POST',
     body: JSON.stringify({
       parent: { database_id: process.env.NOTION_BOOKS_DATABASE_ID },
-      properties: {
-        Name: { title: richText(book.title) },
-        ISBN: { rich_text: richText(book.isbn) },
-        Author: { rich_text: richText(book.author) },
-        'Cover Image': { url: book.coverImage || null },
-        'Read Date': { date: { start: book.date } },
-        Notes: { rich_text: richText(book.content) },
-      },
+      properties: bookProperties(book),
     }),
   });
   return fromPage(page);

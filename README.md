@@ -50,7 +50,7 @@ For the standard workflow, open `/admin/new-recipe`, save your admin secret, edi
 
 ## Adding Books from the Admin Page
 
-`/admin/new-book` lets you enter a title and open a 博客來 search for it. Check the edition there, then paste its ISBN into the form and enter the author, cover URL, and notes manually. It saves new books to a separate Notion database. All 51 existing books, including 30 reading notes, have been migrated to Notion and their local Markdown files removed. Saving rejects an ISBN already present in Notion or any local Markdown drafts.
+`/admin/new-book` lets you enter a title and open a 博客來 search for it. Check the edition there, then paste its ISBN into the form and enter the author, cover URL, and notes manually. It saves new books to a separate Notion database. All 51 existing books, including 30 reading notes, have been migrated to Notion and their local Markdown files removed. Save the admin secret to load existing books, search by title, author, or ISBN, and load one to edit. Saving edits updates the original Notion page; changing an ISBN is rejected if another book already uses it. Notes retain their Markdown formatting. Saving a new book rejects an ISBN already present in Notion or any local Markdown drafts.
 
 The existing [books database](https://app.notion.com/p/406ea9196e4680aa9958e44b3b8a2457) is shared with the `mynext recipes` integration and has these properties:
 

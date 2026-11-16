@@ -264,3 +264,54 @@ test('recipe finder search expands from an icon on mobile', async ({ page }) => 
   await expect(search).toBeHidden();
   await expect(page.getByRole('button', { name: 'Open recipe search' })).toBeFocused();
 });
+
+test('book editor loads, edits, saves and starts a new book in Chinese', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const id = '406ea919-6e46-80aa-9958-e44b3b8a2457';
+  let book = { id, slug: '9786263143630', title: '小鳥', author: '小川洋子', coverImage: '', date: '2025-11-01T00:00:00.000Z', content: '### 原始筆記\n\n喜歡的一句話。' };
+  const writes: Record<string, string>[] = [];
+  await page.route('**/api/admin/books', (route) => route.fulfill({ json: { books: [book] } }));
+  await page.route('**/api/admin/save-book', async (route) => {
+    const body = route.request().postDataJSON();
+    writes.push(body);
+    book = { ...book, ...body, slug: body.isbn };
+    await route.fulfill({ json: { isbn: body.isbn, refreshed: true } });
+  });
+  await page.goto('/admin/new-book');
+  await expect(page.getByText('請先輸入並儲存管理密鑰，即可載入現有書籍。')).toBeVisible();
+  await page.getByLabel('管理密鑰').fill('test-only-secret');
+  await page.getByRole('button', { name: '儲存密鑰', exact: true }).click();
+  await page.getByLabel('搜尋書籍', { exact: true }).fill('小川');
+  await page.getByLabel('選擇書籍', { exact: true }).selectOption(id);
+  await page.getByRole('button', { name: '載入書籍', exact: true }).click();
+  await expect(page.getByLabel('閱讀日期', { exact: true })).toHaveValue('2025-11-01');
+  await expect(page.getByLabel('摘錄或閱讀筆記（選填）')).toHaveValue(book.content);
+  await page.getByLabel('摘錄或閱讀筆記（選填）').fill('### 新筆記\n\n修改後的心得。');
+  await page.getByRole('button', { name: '儲存修改', exact: true }).click();
+  await expect(page.getByText('書籍已更新，Books 頁已同步。')).toBeVisible();
+  expect(writes[0]).toMatchObject({ pageId: id, isbn: '9786263143630', content: '### 新筆記\n\n修改後的心得。' });
+  await page.getByRole('button', { name: '載入書籍', exact: true }).click();
+  await expect(page.getByLabel('摘錄或閱讀筆記（選填）')).toHaveValue('### 新筆記\n\n修改後的心得。');
+  await page.getByRole('button', { name: '新增另一書籍', exact: true }).click();
+  await expect(page.getByLabel('書名', { exact: true })).toHaveValue('');
+  await page.getByLabel('書名', { exact: true }).fill('另一本書');
+  await page.getByLabel('作者', { exact: true }).fill('另一位作者');
+  await page.getByLabel('ISBN', { exact: true }).fill('9786263582309');
+  await page.getByRole('button', { name: '新增書籍', exact: true }).click();
+  await expect(page.getByText('書籍已新增，可在 Books 頁查看。')).toBeVisible();
+  expect(writes[1]).not.toHaveProperty('pageId');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test('book editor shows load errors separately from an empty collection', async ({ page }) => {
+  await page.route('**/api/admin/books', (route) => route.fulfill({ status: 401, json: { error: '管理密鑰不正確，請重新輸入。' } }));
+  await page.goto('/admin/new-book');
+  await page.getByLabel('管理密鑰').fill('incorrect-secret');
+  await page.getByRole('button', { name: '儲存密鑰', exact: true }).click();
+  await expect(page.getByRole('region', { name: '編輯現有書籍' }).getByRole('alert')).toContainText('管理密鑰不正確');
+  await expect(page.getByText('目前沒有書籍。')).toHaveCount(0);
+  await page.route('**/api/admin/books', (route) => route.fulfill({ json: { books: [] } }));
+  await page.getByRole('button', { name: '重新載入清單', exact: true }).click();
+  await expect(page.getByText('目前沒有書籍。')).toBeVisible();
+  await expect(page.getByRole('region', { name: '編輯現有書籍' }).getByRole('alert')).toHaveCount(0);
+});
