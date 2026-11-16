@@ -5,11 +5,14 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 import SeoHeader from 'components/seoHeader';
+import RecipeScalingEditor from 'components/recipeScalingEditor/RecipeScalingEditor';
+import { fromScalingDraft, materialMarkdown, toScalingDraft, withoutMaterialSection } from 'lib/recipeScalingForm';
+import type { ScalingDraft } from 'lib/recipeScalingForm';
 import { adminHeaderName } from 'lib/admin';
 import { getErrorMessage } from 'lib/errors';
 import { publitBaseUrl } from 'lib/publit';
 import type { PublitSignedQuery } from 'lib/publit';
-import type { NotionRecipe, RecipeType } from 'types/recipe';
+import type { NotionRecipe, RecipeScaling, RecipeType } from 'types/recipe';
 
 const defaultMarkdownTemplate = `### 材料
 
@@ -28,6 +31,10 @@ const defaultMarkdownTemplate = `### 材料
 `;
 
 interface RecipeForm {
+  source: 'markdown' | 'notion';
+  scalingEnabled: boolean;
+  scalingDraft: ScalingDraft;
+  originalScaling: RecipeScaling | null;
   pageId: string;
   title: string;
   slug: string;
@@ -81,7 +88,28 @@ interface PublitUploadResponse extends ErrorResponse {
   url?: string;
 }
 
+const recipeEditorError = (error: unknown, fallback: string): string => {
+  const message = getErrorMessage(error, fallback);
+  const messages: Record<string, string> = {
+    Unauthorized: '管理密鑰不正確，請確認後重新儲存密鑰。',
+    'Recipe not found in Notion': '找不到這份食譜，請重新載入清單。',
+    'Invalid recipe type': '食譜類別不正確，請選擇料理或烘焙。',
+    'Type and slug are required': '請提供食譜類別與網址代稱。',
+    'Another Notion recipe already uses this slug': '已有其他食譜使用這個網址代稱。',
+    'A markdown recipe with this slug already exists': '已有 Markdown 食譜使用這個網址代稱，請從清單載入原食譜編輯。',
+    'A recipe with this slug already exists in Notion': 'Notion 已有相同網址的食譜，請從清單載入後編輯。',
+    'Reload the original Markdown recipe before saving; keep its type and slug unchanged': '請重新載入原本的 Markdown 食譜，並保留原類別與網址代稱。',
+    'Notion is not configured': '尚未設定 Notion 連線，請先完成網站的 Notion 設定。',
+    'Failed to fetch': '無法連線，請檢查網路後再試。',
+  };
+  return messages[message] || message;
+};
+
 const initialForm: RecipeForm = {
+  source: 'notion',
+  scalingEnabled: false,
+  scalingDraft: toScalingDraft(),
+  originalScaling: null,
   pageId: '',
   title: '',
   slug: '',
@@ -118,7 +146,7 @@ const readFileAsDataUrl = (file: File): Promise<string> => new Promise((resolve,
       resolve(reader.result);
       return;
     }
-    reject(new Error('Could not read image file'));
+    reject(new Error('無法讀取圖片檔案'));
   };
   reader.onerror = reject;
   reader.readAsDataURL(file);
@@ -143,14 +171,14 @@ const compressImage = async (file: File): Promise<Blob> => {
 
       const context = canvas.getContext('2d');
       if (!context) {
-        reject(new Error('Could not prepare image for upload'));
+        reject(new Error('無法處理要上傳的圖片'));
         return;
       }
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
       canvas.toBlob((blob) => {
         if (!blob) {
-          reject(new Error('Could not prepare image for upload'));
+          reject(new Error('無法處理要上傳的圖片'));
           return;
         }
         resolve(blob);
@@ -187,6 +215,8 @@ const NewRecipeAdmin = () => {
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
   const [isLoadingRecipe, setIsLoadingRecipe] = useState(false);
   const [isLoadingRecipeList, setIsLoadingRecipeList] = useState(false);
+  const [recipeListError, setRecipeListError] = useState('');
+  const recipeListRequest = useRef(0);
   const editTypeDropdownRef = useRef<HTMLDivElement>(null);
   const typeDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -286,12 +316,14 @@ const NewRecipeAdmin = () => {
   };
 
   const loadRecipeList = useCallback(async (type: RecipeType) => {
+    const requestId = ++recipeListRequest.current;
     if (!adminSecret || !hasSavedSecret) {
       setAdminRecipes([]);
       return;
     }
 
     setIsLoadingRecipeList(true);
+    setRecipeListError('');
 
     try {
       const query = new URLSearchParams({ type }).toString();
@@ -304,22 +336,26 @@ const NewRecipeAdmin = () => {
 
       const data = await response.json() as RecipeListResponse;
       if (!response.ok) {
-        throw new Error(data.error || 'Unable to load recipes');
+        throw new Error(data.error || '無法載入食譜清單');
       }
 
-      setAdminRecipes(data.recipes || []);
+      if (requestId === recipeListRequest.current) setAdminRecipes(data.recipes || []);
     } catch (loadError) {
-      setAdminRecipes([]);
-      setError(getErrorMessage(loadError, 'Unable to load recipes'));
+      if (requestId === recipeListRequest.current) {
+        setAdminRecipes([]);
+        const message = recipeEditorError(loadError, '無法載入食譜清單');
+        setRecipeListError(message);
+        setError(message);
+      }
     } finally {
-      setIsLoadingRecipeList(false);
+      if (requestId === recipeListRequest.current) setIsLoadingRecipeList(false);
     }
   }, [adminSecret, hasSavedSecret]);
 
   const persistSecret = () => {
     window.localStorage.setItem('mynext-admin-secret', adminSecret);
     setHasSavedSecret(true);
-    setStatus('Admin secret saved on this device.');
+    setStatus('管理密鑰已儲存在此裝置。');
     setError('');
   };
 
@@ -335,7 +371,7 @@ const NewRecipeAdmin = () => {
     }));
     setLoadedRecipeRef({ type: '', slug: '' });
     setSlugTouched(false);
-    setStatus('Switched to create mode.');
+    setStatus('已切換至新增食譜模式。');
     setError('');
   };
 
@@ -362,14 +398,18 @@ const NewRecipeAdmin = () => {
 
       const data = await response.json() as RecipeDetailResponse;
       if (!response.ok) {
-        throw new Error(data.error || 'Unable to load recipe');
+        throw new Error(data.error || '無法載入食譜');
       }
 
       const recipeType = data.type === 'baking' || data.type === 'cooking'
         ? data.type
         : type;
       setForm({
-        pageId: data.id || '',
+        source: data.source || 'notion',
+        scalingEnabled: Boolean(data.scaling),
+        scalingDraft: toScalingDraft(data.scaling),
+        originalScaling: data.scaling || null,
+        pageId: data.source === 'markdown' ? '' : data.id || '',
         title: data.title || '',
         slug: data.slug || '',
         type: recipeType,
@@ -378,7 +418,7 @@ const NewRecipeAdmin = () => {
         labels: (data.labels || []).join('\n'),
         coverImage: data.coverImage || '',
         gallery: (data.gallery || []).join('\n'),
-        contentMarkdown: data.content || defaultMarkdownTemplate,
+        contentMarkdown: data.content ?? defaultMarkdownTemplate,
         published: Boolean(data.published),
         date: (data.date || new Date().toISOString()).slice(0, 10),
       });
@@ -391,9 +431,9 @@ const NewRecipeAdmin = () => {
         search: '',
       });
       setSlugTouched(true);
-      setStatus(`Loaded ${data.slug} for editing.`);
+      setStatus(`已載入食譜：${data.slug}，可以開始編輯。`);
     } catch (loadError) {
-      setError(getErrorMessage(loadError, 'Unable to load recipe'));
+      setError(recipeEditorError(loadError, '無法載入食譜'));
     } finally {
       setIsLoadingRecipe(false);
     }
@@ -410,11 +450,11 @@ const NewRecipeAdmin = () => {
   }, [adminSecret, editLookup.type, hasSavedSecret, loadRecipeList]);
 
   const uploadSingleImage = async (file: File, publicId: string): Promise<string> => {
-    setUploadStatus('Preparing image...');
+    setUploadStatus('正在處理圖片⋯');
     const uploadFile = file.size > maxUploadSizeWithoutCompression
       ? await compressImage(file)
       : file;
-    setUploadStatus('Getting upload signature...');
+    setUploadStatus('正在準備上傳⋯');
 
     const signatureResponse = await fetch('/api/admin/publit-signature', {
       method: 'POST',
@@ -423,7 +463,7 @@ const NewRecipeAdmin = () => {
 
     const signatureData = await signatureResponse.json() as PublitSignedQuery & ErrorResponse;
     if (!signatureResponse.ok) {
-      throw new Error(signatureData.error || 'Unable to sign image upload');
+      throw new Error(signatureData.error || '無法取得圖片上傳授權');
     }
 
     const formData = new FormData();
@@ -441,9 +481,9 @@ const NewRecipeAdmin = () => {
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
           const percentage = Math.round((event.loaded / event.total) * 100);
-          setUploadStatus(`Uploading image... ${percentage}%`);
+          setUploadStatus(`正在上傳圖片⋯ ${percentage}%`);
         } else {
-          setUploadStatus('Uploading image...');
+          setUploadStatus('正在上傳圖片⋯');
         }
       };
 
@@ -472,16 +512,16 @@ const NewRecipeAdmin = () => {
           responseData?.message
           || responseData?.error
           || xhr.responseText
-          || `Upload failed with status ${xhr.status}`,
+          || `圖片上傳失敗（狀態碼：${xhr.status}）`,
         ));
       };
 
-      xhr.onerror = () => reject(new Error('Browser upload to Publit.io failed'));
-      xhr.ontimeout = () => reject(new Error('Upload timed out after 60 seconds'));
+      xhr.onerror = () => reject(new Error('圖片上傳至 Publit.io 失敗'));
+      xhr.ontimeout = () => reject(new Error('圖片上傳逾時（超過 60 秒）'));
       xhr.send(formData);
     });
 
-    setUploadStatus('Upload complete.');
+    setUploadStatus('圖片上傳完成。');
     return data.url_preview || data.url_download || data.url_thumbnail || data.url || '';
   };
 
@@ -497,9 +537,9 @@ const NewRecipeAdmin = () => {
     try {
       const url = await uploadSingleImage(file, form.slug || slugify(form.title));
       setForm((current) => ({ ...current, coverImage: url }));
-      setStatus('Cover image uploaded.');
+      setStatus('封面圖片已上傳。');
     } catch (uploadError) {
-      setError(getErrorMessage(uploadError, 'Unable to upload cover image'));
+      setError(recipeEditorError(uploadError, '無法上傳封面圖片'));
     } finally {
       setIsUploadingCover(false);
       setUploadStatus('');
@@ -528,9 +568,9 @@ const NewRecipeAdmin = () => {
         ...current,
         gallery: [current.gallery, ...uploadedUrls].filter(Boolean).join('\n'),
       }));
-      setStatus('Gallery image(s) uploaded.');
+      setStatus('食譜照片已上傳。');
     } catch (uploadError) {
-      setError(getErrorMessage(uploadError, 'Unable to upload gallery images'));
+      setError(recipeEditorError(uploadError, '無法上傳食譜照片'));
     } finally {
       setIsUploadingGallery(false);
       setUploadStatus('');
@@ -546,11 +586,20 @@ const NewRecipeAdmin = () => {
     setError('');
 
     try {
+      const scaling = form.scalingEnabled ? fromScalingDraft(form.scalingDraft) : null;
+      const contentMarkdown = scaling
+        ? withoutMaterialSection(form.contentMarkdown)
+        : form.originalScaling && !/^#{1,6}\s+材料\s*$/m.test(form.contentMarkdown)
+          ? `${materialMarkdown(form.originalScaling)}\n\n${form.contentMarkdown}`
+          : form.contentMarkdown;
       const response = await fetch('/api/admin/save-recipe', {
         method: 'POST',
         headers,
         body: JSON.stringify({
           ...form,
+          scaling,
+          contentMarkdown,
+          ingredients: scaling ? scaling.groups.flatMap((group) => group.items.map((item) => item.name)).join('\n') : form.ingredients,
           previousType: loadedRecipeRef.type,
           previousSlug: loadedRecipeRef.slug,
         }),
@@ -558,14 +607,14 @@ const NewRecipeAdmin = () => {
 
       const data = await response.json() as SaveRecipeResponse;
       if (!response.ok) {
-        throw new Error(data.error || 'Unable to save recipe');
+        throw new Error(data.error || '無法儲存食譜');
       }
 
       setStatus(data.revalidationError
-        ? `Recipe saved to Notion, but production refresh failed: ${data.revalidationError}`
+        ? `食譜已儲存至 Notion，但網站更新失敗：${data.revalidationError}`
         : form.pageId
-          ? `Recipe updated in Notion: ${data.slug}`
-          : `Recipe saved to Notion: ${data.slug}`);
+          ? `已更新 Notion 食譜：${data.slug}`
+          : `食譜已儲存至 Notion：${data.slug}`);
       setForm({
         ...initialForm,
         type: form.type,
@@ -578,7 +627,7 @@ const NewRecipeAdmin = () => {
       setSlugTouched(false);
       await loadRecipeList(form.type);
     } catch (saveError) {
-      setError(getErrorMessage(saveError, 'Unable to save recipe'));
+      setError(recipeEditorError(saveError, '無法儲存食譜'));
     } finally {
       setIsSaving(false);
     }
@@ -601,14 +650,14 @@ const NewRecipeAdmin = () => {
         </div>
       )}
       <SeoHeader
-        title="New Recipe"
-        description="Private recipe publishing tool"
+        title="新增與編輯食譜"
+        description="私人食譜編輯與發布工具"
         path="/admin/new-recipe"
       />
       <div className="mb-8 rounded-lg border border-[#e5ddd0] bg-[#faf6ef] p-5">
-        <div className="mb-2 text-xl font-semibold text-primary-content">Private Recipe Publisher</div>
-        <p className="mb-4 text-sm text-primary-content/70">
-          Upload images to Publit.io and save markdown recipes to Notion from one page.
+        <div className="mb-2 text-xl font-semibold text-primary-content">食譜編輯與發布</div>
+        <p className="!mx-0 mb-4 text-sm text-primary-content/70">
+          在這裡上傳圖片、編輯食譜，並儲存至 Notion。
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <input
@@ -616,22 +665,22 @@ const NewRecipeAdmin = () => {
             value={adminSecret}
             onChange={(event) => setAdminSecret(event.target.value)}
             className={fieldClassName}
-            placeholder="Admin secret"
+            placeholder="管理密鑰"
           />
           <button
             type="button"
             className={`btn ${actionButtonClassName}`}
             onClick={persistSecret}
           >
-            Save Secret
+            儲存密鑰
           </button>
         </div>
       </div>
 
       <div className="mb-8 rounded-lg border border-[#e5ddd0] bg-white p-5">
-        <div className="mb-2 text-xl font-semibold text-primary-content">Edit Existing</div>
-        <p className="mb-4 text-sm text-primary-content/70">
-          Browse your Notion recipes, search by title or slug, and tap one to load it into the editor.
+        <div className="mb-2 text-xl font-semibold text-primary-content">編輯現有食譜</div>
+        <p className="!mx-0 mb-4 text-sm text-primary-content/70">
+          以名稱或網址代稱搜尋食譜，點選後即可編輯。Markdown 食譜的原始檔會保留，儲存後建立 Notion 版本，發布後優先顯示。
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-[160px_1fr_auto]">
           <div className="relative w-full" ref={editTypeDropdownRef}>
@@ -642,14 +691,14 @@ const NewRecipeAdmin = () => {
               aria-haspopup="listbox"
               onClick={() => setIsEditTypeDropdownOpen((current) => !current)}
             >
-              <span className="flex-1 text-left">{editLookup.type === 'baking' ? 'Baking' : 'Cooking'}</span>
+              <span className="flex-1 text-left">{editLookup.type === 'baking' ? '烘焙' : '料理'}</span>
               <ChevronDown size={18} className="text-primary-content/60" />
             </button>
             {isEditTypeDropdownOpen && (
               <div
                 className="absolute left-0 top-full z-10 mt-2 w-full rounded-lg border border-[#d8d0c3] bg-white p-2 shadow-lg"
                 role="listbox"
-                aria-label="Recipe type"
+                aria-label="食譜類別"
               >
                 {(['cooking', 'baking'] as RecipeType[]).map((type) => (
                   <button
@@ -664,7 +713,7 @@ const NewRecipeAdmin = () => {
                       setIsEditTypeDropdownOpen(false);
                     }}
                   >
-                    {type === 'baking' ? 'Baking' : 'Cooking'}
+                    {type === 'baking' ? '烘焙' : '料理'}
                   </button>
                 ))}
               </div>
@@ -672,7 +721,7 @@ const NewRecipeAdmin = () => {
           </div>
           <input
             className={fieldClassName}
-            placeholder="Search by title or slug"
+            placeholder="搜尋食譜名稱或網址代稱"
             value={editLookup.search}
             onChange={updateEditLookup('search')}
           />
@@ -681,12 +730,21 @@ const NewRecipeAdmin = () => {
             className="btn rounded-lg border border-[#d8d0c3] bg-white px-5 text-sm font-normal text-text-primary shadow-none hover:border-[#d8d0c3] hover:bg-white"
             onClick={resetToCreateMode}
           >
-            New
+            新增食譜
           </button>
         </div>
         <div className="mt-4 rounded-lg border border-[#ece3d6] bg-[#fcfaf6] p-2">
-          {isLoadingRecipeList ? (
-            <div className="px-3 py-8 text-center text-sm text-primary-content/60">Loading recipes...</div>
+          {!adminSecret || !hasSavedSecret ? (
+            <div className="px-3 py-6 text-center text-sm text-primary-content">
+              請先在上方輸入並儲存管理密鑰，驗證後即可載入現有食譜。
+            </div>
+          ) : isLoadingRecipeList ? (
+            <div className="px-3 py-8 text-center text-sm text-primary-content/60">正在載入食譜⋯</div>
+          ) : recipeListError ? (
+            <div className="px-3 py-6 text-center text-sm text-primary-content">
+              <p className="!mx-0" role="alert">食譜清單載入失敗：{recipeListError}</p>
+              <button type="button" className="btn btn-sm btn-outline btn-secondary rounded-lg" onClick={() => loadRecipeList(editLookup.type)}>重新載入食譜</button>
+            </div>
           ) : filteredAdminRecipes.length ? (
             <div className="flex max-h-72 flex-col gap-2 overflow-y-auto">
               {filteredAdminRecipes.map((recipe) => {
@@ -707,7 +765,8 @@ const NewRecipeAdmin = () => {
                     <div className="font-medium text-primary-content">{recipe.title || recipe.slug}</div>
                     <div className="mt-1 text-xs text-primary-content/60">
                       {recipe.slug}
-                      {recipe.published ? ' · Published' : ' · Draft'}
+                      {recipe.source === 'markdown' ? ' · Markdown' : ' · Notion'}
+                      {recipe.published ? ' · 已發布' : ' · 草稿'}
                     </div>
                   </button>
                 );
@@ -716,8 +775,8 @@ const NewRecipeAdmin = () => {
           ) : (
             <div className="px-3 py-8 text-center text-sm text-primary-content/60">
               {editLookup.search.trim()
-                ? 'No recipes match that search yet.'
-                : `No ${editLookup.type} recipes found in Notion yet.`}
+                ? '找不到符合搜尋條件的食譜。'
+                : `目前沒有${editLookup.type === 'baking' ? '烘焙' : '料理'}食譜。`}
             </div>
           )}
         </div>
@@ -725,17 +784,19 @@ const NewRecipeAdmin = () => {
 
       <form className="flex flex-col gap-5" onSubmit={onSubmit}>
         <div className="rounded-lg border border-[#e5ddd0] bg-[#faf6ef] px-4 py-3 text-sm text-primary-content">
-          {form.pageId
-            ? `Edit mode: updating ${loadedRecipeRef.slug || form.slug}`
-            : 'Create mode: saving a new Notion recipe'}
+          {form.source === 'markdown'
+            ? `編輯 Markdown 食譜：${loadedRecipeRef.slug}。儲存後建立 Notion 版本，發布後優先顯示，原始檔案保留；類別與網址請維持原值。`
+            : form.pageId
+            ? `編輯模式：${loadedRecipeRef.slug || form.slug}`
+            : '新增模式：儲存為新的 Notion 食譜'}
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-primary-content">Title</span>
+            <span className="text-sm font-medium text-primary-content">食譜名稱</span>
             <input className={fieldClassName} value={form.title} onChange={updateField('title')} />
           </label>
           <label className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-primary-content">Slug</span>
+            <span className="text-sm font-medium text-primary-content">網址代稱（英文）</span>
             <input
               className={fieldClassName}
               value={form.slug}
@@ -746,14 +807,14 @@ const NewRecipeAdmin = () => {
             />
           </label>
           <label className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-primary-content">Type</span>
+            <span className="text-sm font-medium text-primary-content">食譜類別</span>
             <div className="relative w-full" ref={typeDropdownRef}>
               <button
                 type="button"
                 className={dropdownButtonClassName}
                 onClick={() => setIsTypeDropdownOpen((current) => !current)}
               >
-                <span className="flex-1 text-left">{form.type === 'baking' ? 'Baking' : 'Cooking'}</span>
+                <span className="flex-1 text-left">{form.type === 'baking' ? '烘焙' : '料理'}</span>
                 <ChevronDown size={18} className="text-primary-content/60" />
               </button>
               {isTypeDropdownOpen && (
@@ -766,7 +827,7 @@ const NewRecipeAdmin = () => {
                       setIsTypeDropdownOpen(false);
                     }}
                   >
-                    Cooking
+                    料理
                   </button>
                   <button
                     type="button"
@@ -776,14 +837,14 @@ const NewRecipeAdmin = () => {
                       setIsTypeDropdownOpen(false);
                     }}
                   >
-                    Baking
+                    烘焙
                   </button>
                 </div>
               )}
             </div>
           </label>
           <label className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-primary-content">Publish Date</span>
+            <span className="text-sm font-medium text-primary-content">發布日期</span>
             <input
               type="date"
               className={`${fieldClassName} appearance-none`}
@@ -794,66 +855,79 @@ const NewRecipeAdmin = () => {
         </div>
 
         <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-primary-content">Description</span>
+          <span className="text-sm font-medium text-primary-content">食譜簡介</span>
           <textarea className={`${fieldClassName} min-h-24`} value={form.desc} onChange={updateField('desc')} />
         </label>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-primary-content">Ingredients</span>
+            <span className="text-sm font-medium text-primary-content">材料名稱</span>
             <textarea
               className={`${fieldClassName} min-h-36`}
-              value={form.ingredients}
+              value={form.scalingEnabled ? form.scalingDraft.groups.flatMap((group) => group.items.map((item) => item.name)).filter(Boolean).join('\n') : form.ingredients}
+              readOnly={form.scalingEnabled}
               onChange={updateField('ingredients')}
-              placeholder={'One ingredient per line'}
+              placeholder={form.scalingEnabled ? '使用下方換算材料，儲存時自動同步' : '每行填寫一項材料'}
             />
           </label>
           <label className="flex flex-col gap-2">
-            <span className="text-sm font-medium text-primary-content">Labels</span>
+            <span className="text-sm font-medium text-primary-content">標籤</span>
             <textarea
               className={`${fieldClassName} min-h-36`}
               value={form.labels}
               onChange={updateField('labels')}
-              placeholder={'One label per line'}
+              placeholder={'每行填寫一個標籤'}
             />
           </label>
         </div>
 
+        <section className="min-w-0 rounded-lg border border-[#e5ddd0] bg-[#faf6ef] p-4" aria-label="份量換算設定">
+          <label className="flex items-center gap-3 text-sm font-medium text-primary-content">
+            <input type="checkbox" checked={form.scalingEnabled} onChange={(event) => setForm((current) => ({ ...current, scalingEnabled: event.target.checked }))} />
+            啟用份量換算
+          </label>
+          {form.scalingEnabled ? (
+            <RecipeScalingEditor value={form.scalingDraft} onChange={(scalingDraft) => setForm((current) => ({ ...current, scalingDraft }))} />
+          ) : (
+            <p className="!mx-0 text-sm text-primary-content">關閉時依原本 Markdown 顯示材料，不提供換算；重新開啟可繼續編輯尚未儲存的材料設定。</p>
+          )}
+        </section>
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="rounded-lg border border-[#e5ddd0] bg-white p-4">
-            <div className="mb-2 text-sm font-medium text-primary-content">Cover Image</div>
+            <div className="mb-2 text-sm font-medium text-primary-content">封面圖片</div>
             <div className="mb-3 text-xs text-primary-content/60">
-              Upload from phone and the page will store the returned Publit.io URL.
+              可直接從手機上傳封面，系統會自動填入圖片網址。
             </div>
             <input type="file" accept="image/*" className={fileInputClassName} onChange={onUploadCover} />
-            {isUploadingCover && <div className="mt-3 text-sm text-primary-content/70">{uploadStatus || 'Uploading cover image...'}</div>}
+            {isUploadingCover && <div className="mt-3 text-sm text-primary-content/70">{uploadStatus || '正在上傳封面圖片⋯'}</div>}
             {form.coverImage && (
               <div className="mt-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={form.coverImage} alt="Cover preview" className="w-full rounded-lg object-cover" />
+                <img src={form.coverImage} alt="封面預覽" className="w-full rounded-lg object-cover" />
                 <input className={`${fieldClassName} mt-3`} value={form.coverImage} onChange={updateField('coverImage')} />
               </div>
             )}
           </div>
 
           <div className="rounded-lg border border-[#e5ddd0] bg-white p-4">
-            <div className="mb-2 text-sm font-medium text-primary-content">Gallery Images</div>
+            <div className="mb-2 text-sm font-medium text-primary-content">食譜照片</div>
             <div className="mb-3 text-xs text-primary-content/60">
-              Upload one or more extra images. They will be appended as newline-separated URLs.
+              可一次上傳多張照片，圖片網址會自動加入下方清單。
             </div>
             <input type="file" accept="image/*" multiple className={fileInputClassName} onChange={onUploadGallery} />
-            {isUploadingGallery && <div className="mt-3 text-sm text-primary-content/70">{uploadStatus || 'Uploading gallery images...'}</div>}
+            {isUploadingGallery && <div className="mt-3 text-sm text-primary-content/70">{uploadStatus || '正在上傳食譜照片⋯'}</div>}
             <textarea
               className={`${fieldClassName} mt-4 min-h-36`}
               value={form.gallery}
               onChange={updateField('gallery')}
-              placeholder={'One image URL per line'}
+              placeholder={'每行填寫一個圖片網址'}
             />
           </div>
         </div>
 
         <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-primary-content">Content Markdown</span>
+          <span className="text-sm font-medium text-primary-content">食譜內容（Markdown）</span>
           <textarea
             className={`${fieldClassName} min-h-[420px] font-mono`}
             value={form.contentMarkdown}
@@ -864,7 +938,7 @@ const NewRecipeAdmin = () => {
 
         <label className="flex items-center gap-3 text-sm text-primary-content">
           <input type="checkbox" checked={form.published} onChange={updateField('published')} />
-          Publish immediately
+          立即發布
         </label>
 
         <button
@@ -872,7 +946,7 @@ const NewRecipeAdmin = () => {
           className={`btn ${actionButtonClassName}`}
           disabled={isSaving || isUploadingCover || isUploadingGallery}
         >
-          {isSaving ? 'Saving...' : 'Save Recipe To Notion'}
+          {isSaving ? '正在儲存⋯' : '儲存食譜至 Notion'}
         </button>
       </form>
     </div>

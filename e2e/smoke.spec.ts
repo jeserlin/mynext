@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import type { NotionRecipe } from '../types/recipe';
+import { editorRecipeFixture } from './fixtures/recipe';
 
 const publicRoutes = [
   { path: '/about-me', activeLink: 'About Me' },
@@ -99,21 +101,114 @@ test('legacy recipe indexes redirect to the recipes finder', async ({ page }) =>
   }
 });
 
+test('admin recipe list distinguishes authentication and load errors from an empty list', async ({ page }) => {
+  await page.goto('/admin/new-recipe');
+  await expect(page.getByText('請先在上方輸入並儲存管理密鑰，驗證後即可載入現有食譜。')).toBeVisible();
+  await expect(page.getByText('目前沒有料理食譜。')).toHaveCount(0);
+  await page.route('**/api/admin/recipes?*', (route) => route.fulfill({ status: 401, json: { error: 'Unauthorized' } }));
+  await page.getByPlaceholder('管理密鑰', { exact: true }).fill('test-only-secret');
+  await page.getByRole('button', { name: '儲存密鑰', exact: true }).click();
+  await expect(page.getByRole('alert').filter({ hasText: '食譜清單載入失敗' })).toContainText('管理密鑰不正確');
+  await expect(page.getByText('目前沒有料理食譜。')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '重新載入食譜' })).toBeVisible();
+});
+
+test('admin editor preserves scaling through load, edit, save, reload and disable', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  let recipe: NotionRecipe = structuredClone(editorRecipeFixture);
+  let saves = 0;
+  await page.route('**/api/admin/recipes?*', (route) => route.fulfill({ json: { recipes: [recipe] } }));
+  await page.route('**/api/admin/recipe?*', (route) => route.fulfill({ json: recipe }));
+  await page.route('**/api/admin/save-recipe', async (route) => {
+    const body = route.request().postDataJSON();
+    expect(body.previousSlug).toBe('bolognese-sauce');
+    if (saves === 0) {
+      expect(body.source).toBe('markdown');
+      expect(body.scaling.groups[0].items[0].amount).toBe(300);
+      expect(body.scaling.groups[1].items.find((item: { name: string }) => item.name === '蒜頭').maxAmount).toBe(4);
+      expect(body.contentMarkdown).not.toContain('### 材料');
+    } else {
+      expect(body.pageId).toBe('notion-page');
+      expect(body.scaling).toBeNull();
+      expect(body.contentMarkdown).toContain('牛絞肉 300 g');
+      expect(body.contentMarkdown).toContain('### 步驟');
+    }
+    recipe = { ...recipe, id: 'notion-page', source: 'notion', scaling: body.scaling || undefined, content: body.contentMarkdown };
+    saves++;
+    await route.fulfill({ json: { ...recipe, revalidationError: '' } });
+  });
+  await page.goto('/admin/new-recipe');
+  await page.getByPlaceholder('管理密鑰', { exact: true }).fill('test-only-secret');
+  await page.getByRole('button', { name: '儲存密鑰', exact: true }).click();
+  await page.getByRole('button', { name: /義大利經典肉醬/ }).click();
+  await expect(page.getByLabel('啟用份量換算')).toBeChecked();
+  await expect(page.getByLabel('原配方份數')).toHaveValue('1');
+  const beef = page.getByRole('group', { name: '材料 1-1', exact: true });
+  await expect(beef.getByLabel('材料名稱', { exact: true })).toHaveValue('牛絞肉');
+  await beef.getByLabel('數量', { exact: true }).fill('1/0');
+  await page.getByRole('button', { name: '儲存食譜至 Notion' }).click();
+  await expect(page.getByText(/份量換算：/)).toBeVisible();
+  expect(saves).toBe(0);
+  await beef.getByLabel('數量', { exact: true }).fill('300');
+  await page.getByRole('button', { name: '儲存食譜至 Notion' }).click();
+  await expect(page.getByText('食譜已儲存至 Notion：bolognese-sauce', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: /義大利經典肉醬/ }).click();
+  await expect(beef.getByLabel('數量', { exact: true })).toHaveValue('300');
+  await page.getByLabel('啟用份量換算').uncheck();
+  await page.getByRole('button', { name: '儲存食譜至 Notion' }).click();
+  await expect(page.getByText('已更新 Notion 食譜：bolognese-sauce', { exact: true })).toBeVisible();
+  expect(saves).toBe(2);
+});
+
+test('admin can add scaling groups and fractional ingredients to a new recipe', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  let saved = false;
+  await page.route('**/api/admin/save-recipe', async (route) => {
+    const body = route.request().postDataJSON();
+    expect(body.scaling.baseServings).toBe(2);
+    expect(body.scaling.groups).toHaveLength(2);
+    expect(body.scaling.groups[0].items[0]).toEqual(expect.objectContaining({ name: '糖', amount: 0.5, unit: '湯匙' }));
+    expect(body.scaling.groups[1].items[0]).toEqual(expect.objectContaining({ name: '鹽', note: '適量' }));
+    expect(body.ingredients).toBe('糖\n鹽');
+    expect(body.contentMarkdown).not.toContain('食材1');
+    expect(body.contentMarkdown).toContain('### 步驟');
+    saved = true;
+    await route.fulfill({ json: { slug: 'scaling-test', revalidationError: '' } });
+  });
+  await page.goto('/admin/new-recipe');
+  await page.getByLabel('食譜名稱', { exact: true }).fill('Scaling test');
+  await page.getByLabel('啟用份量換算').check();
+  await page.getByLabel('原配方份數').fill('2');
+  const first = page.getByRole('group', { name: '材料 1-1', exact: true });
+  await first.getByLabel('材料名稱', { exact: true }).fill('糖');
+  await first.getByLabel('數量', { exact: true }).fill('1/2');
+  await first.getByLabel('單位', { exact: true }).fill('湯匙');
+  await page.getByRole('button', { name: '新增材料至分組 1', exact: true }).click();
+  await page.getByRole('button', { name: '移除材料 1-2', exact: true }).click();
+  await page.getByRole('button', { name: '新增材料分組', exact: true }).click();
+  const second = page.getByRole('group', { name: '材料 2-1', exact: true });
+  await second.getByLabel('材料名稱', { exact: true }).fill('鹽');
+  await second.getByLabel('備註', { exact: true }).fill('適量');
+  await page.getByRole('button', { name: '儲存食譜至 Notion' }).click();
+  await expect(page.getByText('食譜已儲存至 Notion：scaling-test', { exact: true })).toBeVisible();
+  expect(saved).toBe(true);
+});
+
 test('admin recipe type uses an interactive selector', async ({ page }) => {
   const response = await page.goto('/admin/new-recipe');
 
   expect(response?.ok()).toBe(true);
-  await expect(page.getByText('Edit Existing', { exact: true })).toBeVisible();
+  await expect(page.getByText('編輯現有食譜', { exact: true })).toBeVisible();
 
-  const selector = page.getByRole('button', { name: 'Cooking', exact: true }).first();
+  const selector = page.getByRole('button', { name: '料理', exact: true }).first();
   await selector.click();
 
-  const listbox = page.getByRole('listbox', { name: 'Recipe type' });
+  const listbox = page.getByRole('listbox', { name: '食譜類別' });
   await expect(listbox).toBeVisible();
-  await expect(listbox.getByRole('option', { name: 'Cooking' })).toBeVisible();
-  await listbox.getByRole('option', { name: 'Baking' }).click();
+  await expect(listbox.getByRole('option', { name: '料理' })).toBeVisible();
+  await listbox.getByRole('option', { name: '烘焙' }).click();
 
-  await expect(page.getByRole('button', { name: 'Baking', exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: '烘焙', exact: true }).first()).toBeVisible();
   await expect(listbox).toBeHidden();
 });
 
