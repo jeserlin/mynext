@@ -17,8 +17,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 This project requires Node.js 24. With `nvm`, install and select it before running the project:
 
 ```bash
-nvm install 24
-nvm use 24
+nvm install
+nvm use
+npm ci
 ```
 
 ## Adding A New Recipe
